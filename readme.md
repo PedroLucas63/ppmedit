@@ -1,3 +1,4 @@
+[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=11024782&assignment_repo_type=AssignmentRepo)
 # Processamento de imagens
 
 Processamento de imagem é qualquer processo de transformação de dados no qual a entrada e saída são imagens, tais como fotografias ou quadros de vídeo. Neste projeto, você irá criar um programa que realize transformações simples em imagens. Ele deverá realizar as seguintes operações:
