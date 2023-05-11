@@ -17,7 +17,7 @@ public:
       setWidth(width_image);
       setHeight(height_image);
       setColors(colors_image);
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
+      pixels = new Pixel[getSize()];  //~ Defines array of pixels with size
       setPixels(pixels_image);
    }
 
@@ -28,7 +28,7 @@ public:
       setWidth(image.getWidth());
       setHeight(image.getHeight());
       setColors(image.getColors());
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
+      pixels = new Pixel[getSize()];  //~ Defines array of pixels with size
       setPixels(image.getPixels());
    }
 
@@ -39,7 +39,7 @@ public:
       setWidth(image.getWidth());
       setHeight(image.getHeight());
       setColors(image.getColors());
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
+      pixels = new Pixel[getSize()];  //~ Defines array of pixels with size
       setPixels(image.getPixels());
    }
 
@@ -47,41 +47,29 @@ public:
    ~Image() {}
 
    //^ Get image type
-   std::string getType() const {
-      return type;
-   }
+   std::string getType() const { return type; }
 
    //^ Get image width
-   int getWidth() const {
-      return width;
-   }
+   int getWidth() const { return width; }
 
    //^ Get image height
-   int getHeight() const {
-      return height;
-   }
+   int getHeight() const { return height; }
 
    //^ Gey image size
-   int getSize() const {
-      return getWidth() * getHeight();
-   }
+   int getSize() const { return getWidth() * getHeight(); }
 
    //^ Get image colors
-   int getColors() const {
-      return colors;
-   }
+   int getColors() const { return colors; }
 
    //^ Set image pixels
    void setPixels(Pixel* pixels_image) {
-      for (int i{0}; i < getSize(); i++) { //~ Repeat "image size" times
+      for (int i{0}; i < getSize(); i++) {  //~ Repeat "image size" times
          pixels[i] = pixels_image[i];
       }
    }
 
    //^ Get image pixels
-   Pixel* getPixels() const {
-      return pixels;
-   }
+   Pixel* getPixels() const { return pixels; }
 
    //^ Get one pixel in image
    Pixel getPixel(int row, int column) const {
@@ -96,14 +84,14 @@ public:
       std::string colors{std::to_string(getColors())};
 
       std::string separator{" "};  //~ Define separator of values
-      std::string endline{"\n"}; //~ Define end line
+      std::string endline{"\n"};   //~ Define end line
 
       //~ Create a buffer string with data
       std::string buff{getType() + endline};
       buff += width + separator + height + endline;
       buff += colors + endline;
 
-      for (int i{0}; i < getSize(); i++) { //~ Repeat "image size" times
+      for (int i{0}; i < getSize(); i++) {  //~ Repeat "image size" times
          buff += pixels[i].to_string() + endline;
       }
 
@@ -134,24 +122,24 @@ private:
 
    //^ Set image width
    void setWidth(int width_image) {
-      int min_width{1}; //~ Minimum value accepted
+      int min_width{1};  //~ Minimum value accepted
 
       //~ Check if image width is accepted
       if (width_image >= min_width) {
          width = width_image;
-      } else { //~ Image width is not accepted 
+      } else {  //~ Image width is not accepted
          width = min_width;
       }
    }
 
    //^ Set image height
    void setHeight(int height_image) {
-      int min_height{1}; //~ Minimum value accepted
+      int min_height{1};  //~ Minimum value accepted
 
       //~ Check if image height is accepted
       if (height_image >= min_height) {
          height = height_image;
-      } else { //~ Image height is not accepted 
+      } else {  //~ Image height is not accepted
          height = min_height;
       }
    }
