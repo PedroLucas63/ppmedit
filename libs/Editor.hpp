@@ -4,7 +4,7 @@
 
 //! Editor class start
 class Editor {
-   //* Public elements
+//* Public elements
 public:
    //^ Editor constructor without data
    Editor() {}
@@ -67,7 +67,7 @@ public:
    //^ Restore image output
    void restore() { setImageOutput(getImageInput()); }
 
-   //* Private elements
+//* Private elements
 private:
    Image image_in;   //^ Image input (unedited)
    Image image_out;  //^ Image output (edited)
