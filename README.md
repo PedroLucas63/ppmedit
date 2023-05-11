@@ -167,3 +167,6 @@ A nota correspodente ao projeto seguirá os critérios e distribuição abaixo:
 * Cada dupla deve desenvolver sua solução de forma independente das demais. Soluções idênticas serão consideradas plágios e, portanto, sanções serão devidamente aplicadas em todas as duplas com soluções similares.
 * Caso algum trecho de código seja utilizado da web ou gerado via IA, essa informação deve estar presente na documentação do projeto.
 * A solução apresentada poderá usar recursos de C++ além dos que foram apresentados em sala de aula. Porém, não haverá pontuação adicional por isso.
+
+## Direitos
+Feito com ❤️ por Pedro Lucas!

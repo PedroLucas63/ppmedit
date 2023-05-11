@@ -2,5 +2,6 @@
   "files.associations": {
     "ostream": "cpp",
     "iostream": "cpp"
-  }
+  },
+  "cmake.sourceDirectory": "/home/pedrolcs/github-classroom/dimap-ufrn/processamento-de-imagens---p1-team-1/src"
 }
