@@ -35,8 +35,8 @@ int main() {
    }
 
    Image image1, image2;  //* Create two images without data
-   Image image3{type, width, height, colors,
-                pixels};  //* Create a image with data
+   //* Create a image with data
+   Image image3{type, width, height, colors, pixels}; 
    Image image4{image3};  //* Create a image with other image
    image2 = image4;       //* Receipt operator of image
 
