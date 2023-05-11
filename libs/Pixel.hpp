@@ -9,9 +9,8 @@ public:
 
    //^ Pixel constructor with data
    Pixel(int red_intensity, int green_intensity, int blue_intensity,
-         int maximum_colors = 255, int minimum_colors = 0) {
+         int maximum_colors = 255) {
       //~ Set values in order
-      setMinColors(minimum_colors);
       setMaxColors(maximum_colors);
       setRed(red_intensity);
       setGreen(green_intensity);
@@ -21,7 +20,6 @@ public:
    //^ Pixel constructor with other pixel (copy constructor)
    Pixel(Pixel const& pixel) {
       //~ Set values in order
-      setMinColors(pixel.getMinColors());
       setMaxColors(pixel.getMaxColors());
       setRed(pixel.getRed());
       setGreen(pixel.getGreen());
@@ -31,7 +29,6 @@ public:
    //^ Receipt operator
    void operator=(Pixel const& pixel) {
       //~ Set values in order
-      setMinColors(pixel.getMinColors());
       setMaxColors(pixel.getMaxColors());
       setRed(pixel.getRed());
       setGreen(pixel.getGreen());
@@ -117,18 +114,6 @@ private:
    int red{0};         //^ Intensity of red in pixel
    int green{0};       //^ Intensity of green in pixel
    int blue{0};        //^ Intensity of blue in pixel
-
-   //^ Set minimum colors
-   void setMinColors(int minimum_colors) {
-      int min_accepted{0};  //~ Minimum value accepted
-
-      //~ Check if minimum colors is accepted
-      if (minimum_colors >= min_accepted) {
-         min_colors = minimum_colors;
-      } else {  //~ minimum colors is not accepted
-         min_colors = min_accepted;
-      }
-   }
 
    //^ Set maximum colors
    void setMaxColors(int maximum_colors) {
