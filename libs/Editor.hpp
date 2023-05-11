@@ -67,6 +67,30 @@ public:
    //^ Restore image output
    void restore() { setImageOutput(getImageInput()); }
 
+   //^ Turn to gray
+   void toGray() {
+      Image image{getImageOutput()};  //~ Get the output image to transform
+
+      Pixel* pixels = image.getPixels();  //~ Get image output pixel's
+
+      int const quant_colors{3};  //~ Colors quantify in a pixel
+
+      for (int i{0}; i < image.getSize(); i++) {  //~ Repeat "image size" times
+         Pixel pixel = pixels[i];                 //? Get pixel
+         //? Calculate the grayscale of the colors in the pixel
+         int grayscale{(pixel.getRed() + pixel.getGreen() + pixel.getBlue())
+                       / quant_colors};
+         //? Create a new pixel with grayscale in all colors
+         Pixel new_pixel{grayscale, grayscale, grayscale, image.getColors()};
+         //? Sets the new pixel in place of the old pixel
+         pixels[i] = new_pixel;
+      }
+
+      image.setPixels(pixels);  //? Set pixels in image
+
+      setImageOutput(image);  //? Set image output to gray image
+   }
+
 //* Private elements
 private:
    Image image_in;   //^ Image input (unedited)
