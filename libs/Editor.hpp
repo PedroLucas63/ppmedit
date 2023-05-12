@@ -162,8 +162,8 @@ public:
       for (int i{ 0 }; i < height; i++) {
          //? Repeat "width" times
          for (int j{ 0 }; j < width; j++) {
-            Pixel new_pixel;            // Create the new pixel
-            int quant_pixels{ 2 };      // Quantify of pixels to average
+            Pixel new_pixel;       // Create the new pixel
+            int quant_pixels{ 2 }; // Quantify of pixels to average
 
             if (i == j && i % 2 == 0) { // Make sure it's the original pixels
                new_pixel = image.getPixel(i / 2, j / 2);
@@ -204,16 +204,16 @@ public:
 
       //~ Define width and height from reduce image
       int width{ image.getWidth() % 2 == 0 ? image.getWidth() / 2
-                                           : (image.getWidth() - 1) % 2 };
+                                           : (image.getWidth() - 1) / 2 };
       int height{ image.getHeight() % 2 == 0 ? image.getHeight() / 2
-                                             : (image.getHeight() - 1) % 2 };
+                                             : (image.getHeight() - 1) / 2 };
       int size{ width * height };
 
       Pixel pixels_reduce[size]; //~ Define pixels reduce array
 
       for (int i{ 0 }; i < height; i++) {   //~ Repeat "height" times
          for (int j{ 0 }; j < width; j++) { //?  Repeat "width" times
-            int quant_pixels{ 2 };          // Quantify of pixels to average
+            int quant_pixels{ 4 };          // Quantify of pixels to average
             //  Array of pixels to average
             Pixel pixels[quant_pixels]
                = { image.getPixel(i * 2, j * 2),
