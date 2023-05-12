@@ -4,7 +4,7 @@
 
 //! Image class start
 class Image {
-//* Public elements
+   //* Public elements
 public:
    //^ Image constructor without data
    Image() {}
@@ -61,19 +61,26 @@ public:
    //^ Get image colors
    int getColors() const { return colors; }
 
-   //^ Set image pixels
-   void setPixels(Pixel* pixels_image) {
-      for (int i{0}; i < getSize(); i++) {  //~ Repeat "image size" times
-         pixels[i] = pixels_image[i];
-      }
-   }
-
    //^ Get image pixels
    Pixel* getPixels() const { return pixels; }
 
-   //^ Get one pixel in image
+   //^ Set an image pixel
+   void setPixel(Pixel pixel, int row, int column) {
+      pixels[row * getWidth() + column] = pixel;
+   }
+
+   //^ Get an image pixel
    Pixel getPixel(int row, int column) const {
-      return pixels[getWidth() * row + column];
+      return getPixels()[row * getWidth() + column];
+   }
+
+   //^ Set image pixels
+   void setPixels(Pixel* pixels_image) {
+      for (int i{0}; i < getHeight(); i++) {    //~ Repeat "image height" times
+         for (int j{0}; j < getWidth(); j++) {  //? Repeat "image width" times
+            setPixel(pixels_image[i * getWidth() + j], i, j);
+         }
+      }
    }
 
    //^ Convert data to string
@@ -91,14 +98,16 @@ public:
       buff += width + separator + height + endline;
       buff += colors + endline;
 
-      for (int i{0}; i < getSize(); i++) {  //~ Repeat "image size" times
-         buff += pixels[i].to_string() + endline;
+      for (int i{0}; i < getHeight(); i++) {    //~ Repeat "image height" times
+         for (int j{0}; j < getWidth(); j++) {  //? Repeat "image width" times
+            buff += getPixel(i, j).to_string() + endline;
+         }
       }
 
       return buff;
    }
 
-//* Private elements
+   //* Private elements
 private:
    std::string type{""};  //^ Image type
    int width{0};          //^ Image width
