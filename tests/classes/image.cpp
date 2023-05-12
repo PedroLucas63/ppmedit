@@ -1,11 +1,11 @@
-#include "../libs/Editor.hpp"  //! Include Editor header
+#include "../../libs/Image.hpp"  //! Include Image header
 
 #include <iostream>
 using namespace std;
 
 //! Main function start
 int main() {
-   //* Definition of variables to create a editor object
+   //* Definition of variables to create a image object
    string type{""};
    int width{0};
    int height{0};
@@ -34,11 +34,16 @@ int main() {
       pixels[i] = pixel;
    }
 
-   //* Create a editor with data
-   Editor editor{type, width, height, colors, pixels};
-   
-   editor.toGray(); //* Turn image to gray
+   Image image1, image2;  //* Create two images without data
+   //* Create a image with data
+   Image image3{type, width, height, colors, pixels}; 
+   Image image4{image3};  //* Create a image with other image
+   image2 = image4;       //* Receipt operator of image
 
-   editor.save(); //* Save the image output
+   //* Show data
+   cout << image1.to_string() << "\n";
+   cout << image2.to_string() << "\n";
+   cout << image3.to_string() << "\n";
+   cout << image4.to_string() << "\n\n";
 }
 //! End of main function

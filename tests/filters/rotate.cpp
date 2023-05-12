@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../libs/Editor.hpp"  //! Include Editor header
+#include "../../libs/Editor.hpp"  //! Include Editor header
 using namespace std;
 
 //! Main function start

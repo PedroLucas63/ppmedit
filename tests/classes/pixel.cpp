@@ -1,4 +1,4 @@
-#include "../libs/Pixel.hpp"  //! Include Pixel header
+#include "../../libs/Pixel.hpp"  //! Include Pixel header
 
 #include <iostream>
 using namespace std;

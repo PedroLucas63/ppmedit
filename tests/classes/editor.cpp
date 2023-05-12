@@ -1,11 +1,11 @@
-#include "../libs/Image.hpp"  //! Include Image header
+#include "../../libs/Editor.hpp"  //! Include Editor header
 
 #include <iostream>
 using namespace std;
 
 //! Main function start
 int main() {
-   //* Definition of variables to create a image object
+   //* Definition of variables to create a editor object
    string type{""};
    int width{0};
    int height{0};
@@ -34,16 +34,16 @@ int main() {
       pixels[i] = pixel;
    }
 
-   Image image1, image2;  //* Create two images without data
-   //* Create a image with data
-   Image image3{type, width, height, colors, pixels}; 
-   Image image4{image3};  //* Create a image with other image
-   image2 = image4;       //* Receipt operator of image
+   Editor editor1, editor2;  //* Create two editor's without data
+   //* Create a editor with data
+   Editor editor3{type, width, height, colors, pixels};
+   Editor editor4{editor3};  //* Create a editor with other editor
+   editor2 = editor4;        //* Receipt operator of editor
 
-   //* Show data
-   cout << image1.to_string() << "\n";
-   cout << image2.to_string() << "\n";
-   cout << image3.to_string() << "\n";
-   cout << image4.to_string() << "\n\n";
+   //* Save images output (show values)
+   //~ editor1.save(); -> Error because no image opens
+   editor2.save();
+   editor3.save();
+   editor4.save();
 }
 //! End of main function

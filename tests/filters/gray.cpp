@@ -1,4 +1,4 @@
-#include "../libs/Editor.hpp"  //! Include Editor header
+#include "../../libs/Editor.hpp"  //! Include Editor header
 
 #include <iostream>
 using namespace std;
@@ -34,16 +34,11 @@ int main() {
       pixels[i] = pixel;
    }
 
-   Editor editor1, editor2;  //* Create two editor's without data
    //* Create a editor with data
-   Editor editor3{type, width, height, colors, pixels};
-   Editor editor4{editor3};  //* Create a editor with other editor
-   editor2 = editor4;        //* Receipt operator of editor
+   Editor editor{type, width, height, colors, pixels};
+   
+   editor.toGray(); //* Turn image to gray
 
-   //* Save images output (show values)
-   //~ editor1.save(); -> Error because no image opens
-   editor2.save();
-   editor3.save();
-   editor4.save();
+   editor.save(); //* Save the image output
 }
 //! End of main function
