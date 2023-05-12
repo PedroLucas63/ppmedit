@@ -4,7 +4,7 @@
 
 //! Editor class start
 class Editor {
-//* Public elements
+   //* Public elements
 public:
    //^ Editor constructor without data
    Editor() {}
@@ -71,27 +71,74 @@ public:
    void toGray() {
       Image image{getImageOutput()};  //~ Get the output image to transform
 
-      Pixel* pixels = image.getPixels();  //~ Get image output pixel's
-
       int const quant_colors{3};  //~ Colors quantify in a pixel
 
-      for (int i{0}; i < image.getSize(); i++) {  //~ Repeat "image size" times
-         Pixel pixel = pixels[i];                 //? Get pixel
-         //? Calculate the grayscale of the colors in the pixel
-         int grayscale{(pixel.getRed() + pixel.getGreen() + pixel.getBlue())
-                       / quant_colors};
-         //? Create a new pixel with grayscale in all colors
-         Pixel new_pixel{grayscale, grayscale, grayscale, image.getColors()};
-         //? Sets the new pixel in place of the old pixel
-         pixels[i] = new_pixel;
+      //~ Repeat "image height" times
+      for (int i{0}; i < image.getHeight(); i++) {
+         //? Repeat "image width" times
+         for (int j{0}; j < image.getWidth(); j++) {
+            Pixel pixel = image.getPixel(i, j);  //? Get original pixel
+            //? Calculate the grayscale and create a gray pixel
+            int grayscale{(pixel.getRed() + pixel.getGreen() + pixel.getBlue())
+                          / quant_colors};
+            Pixel new_pixel{grayscale, grayscale, grayscale, image.getColors()};
+            image.setPixel(new_pixel, i, j);
+         }
       }
 
-      image.setPixels(pixels);  //? Set pixels in image
-
-      setImageOutput(image);  //? Set image output to gray image
+      setImageOutput(image);  //~ Set image output to gray image
    }
 
-//* Private elements
+   //^ Rotate the image
+   void rotate(char side = 'R') {
+      side = std::toupper(side);  //~ Convert side character to upper
+
+      if (side == 'R') {  //~ Check if side is "right"
+         rotateRight();
+      } else if (side == 'L') {  //~ Check if side is "left"
+         rotateLeft();
+      }
+   }
+
+   //^ Rotate the image to the right
+   void rotateRight() {
+      Image image{getImageOutput()};  //~ Get the output image to auxiliary
+      //~ Get the output image to transform
+      Image image_rotate{image.getType(), image.getHeight(), image.getWidth(),
+                         image.getColors(), image.getPixels()};
+
+      //~ Repeat "image height" times
+      for (int i{0}; i < image.getHeight(); i++) {
+         //? Repeat "image width" times
+         for (int j{0}; j < image.getWidth(); j++) {
+            image_rotate.setPixel(image.getPixel(i, j), j,
+                                  image.getHeight() - 1 - i);
+         }
+      }
+
+      setImageOutput(image_rotate);  //~ Set image output to rotation image
+   }
+
+   //^ Rotate the image to the left
+   void rotateLeft() {
+      Image image{getImageOutput()};  //~ Get the output image to auxiliary
+      //~ Get the output image to transform
+      Image image_rotate{image.getType(), image.getHeight(), image.getWidth(),
+                         image.getColors(), image.getPixels()};
+
+      //~ Repeat "image height" times
+      for (int i{0}; i < image.getHeight(); i++) {
+         //? Repeat "image width" times
+         for (int j{0}; j < image.getWidth(); j++) {
+            image_rotate.setPixel(image.getPixel(i, j),
+                                  image.getWidth() - 1 - j, i);
+         }
+      }
+
+      setImageOutput(image_rotate);  //~ Set image output to rotation image
+   }
+
+   //* Private elements
 private:
    Image image_in;   //^ Image input (unedited)
    Image image_out;  //^ Image output (edited)
