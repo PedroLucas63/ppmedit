@@ -4,7 +4,7 @@
 
 //! Editor class start
 class Editor {
-   //* Public elements
+//* Public elements
 public:
    //^ Editor constructor without data
    Editor() {}
@@ -138,7 +138,55 @@ public:
       setImageOutput(image_rotate);  //~ Set image output to rotation image
    }
 
-   //* Private elements
+   //^ Enlarge image
+   void enlarge() {
+      Image image{getImageOutput()};  //~ Get the output image to auxiliary
+      //~ Get maximum pixel color intensity value
+      int colors{image.getColors()};
+
+      //~ Get width and height from enlarged image
+      int width{2 * image.getWidth() - 1};
+      int height{2 * image.getHeight() - 1};
+      int size{width * height};
+
+      Pixel pixels_enlarge[size];  //~ Pixels of the enlarged image
+
+      //~ Repeat "height" times
+      for (int i{0}; i < height; i++) {
+         //~ Repeat "width" times
+         for (int j{0}; j < width; j++) {
+            Pixel new_pixel;             //~ Create the new pixel
+            if (i == j && i % 2 == 0) {  //~ Make sure it's the original pixels
+               new_pixel = image.getPixel(i / 2, j / 2);
+            } else if (i == j) {  //~ Checks if it's pixels diagonally
+               Pixel pixel_top = image.getPixel((i - 1) / 2, (j - 1) / 2);
+               Pixel pixel_bottom = image.getPixel((i + 1) / 2, (j + 1) / 2);
+               new_pixel
+                  = getAveragePixelIntensity(pixel_top, pixel_bottom, colors);
+            } else if (i % 2 == 0) {  //~ Checks if the pixels are horizontal
+               Pixel pixel_left = image.getPixel(i / 2, (j - 1) / 2);
+               Pixel pixel_right = image.getPixel(i / 2, (j + 1) / 2);
+               new_pixel
+                  = getAveragePixelIntensity(pixel_left, pixel_right, colors);
+            } else {  //~ Are the pixels vertically
+               Pixel pixel_top = image.getPixel((i - 1) / 2, j / 2);
+               Pixel pixel_bottom = image.getPixel((i + 1) / 2, j / 2);
+               new_pixel
+                  = getAveragePixelIntensity(pixel_top, pixel_bottom, colors);
+            }
+            //~ Define new pixel in pixels array
+            pixels_enlarge[i * width + j] = new_pixel;
+         }
+      }
+
+      //~ Create a image enlarge object
+      Image image_enlarge{image.getType(), width, height, colors,
+                          pixels_enlarge};
+
+      setImageOutput(image_enlarge);  //~ Set image output to enlarge image
+   }
+
+//* Private elements
 private:
    Image image_in;   //^ Image input (unedited)
    Image image_out;  //^ Image output (edited)
@@ -163,5 +211,21 @@ private:
 
    //^ Set image output with image
    void setImageOutput(Image const& image) { image_out = image; }
+
+   //~ Get average pixel intensity
+   Pixel getAveragePixelIntensity(Pixel const& first_pixel,
+                                  Pixel const& second_pixel, int colors) {
+      //~ Get average colors intensity
+      int red_intensity{(first_pixel.getRed() + second_pixel.getRed()) / 2};
+      int green_intensity{(first_pixel.getGreen() + second_pixel.getGreen())
+                          / 2};
+      int blue_intensity{(first_pixel.getBlue() + second_pixel.getBlue()) / 2};
+
+      //~ Create a average pixel
+      Pixel average_pixel{red_intensity, green_intensity, blue_intensity,
+                          colors};
+
+      return average_pixel;
+   }
 };
 //! End of editor class
