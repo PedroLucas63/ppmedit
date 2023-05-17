@@ -29,7 +29,7 @@ O arquivo PPM obedece a uma formação específica composta por um cabeçalho, c
 
 Para ilustrar melhor, a figura e conteúdo a seguir exemplificam uma imagem (ampliada para ser melhor exibida) com dimensões de 3x2 representada na versão do formato PPM que iremos utilizar (versão P3).
 
-![Exemplo de imagem PPM](./imgs/pixels.png)
+![Exemplo de imagem PPM](./docs/imgs/pixels.png)
 
 ```
 P3
@@ -60,13 +60,13 @@ Normalmente, quando ampliamos uma imagem, ela perde a nitidez, uma vez que as in
 
 Os valores intermediários entre os pixels espaçados serão definidos em função da média dos componentes RGB de dois adjacentes. Por exemplo, na ampliação da imagem à esquerda da figura abaixo, o pixel que ficará no espaçamento entre o pixel vermelho (R=204, G=0, B=0) e o amarelo (R=241, G=194, B=50) será laranja (R=222, G=97, B=25).
 
-![Exemplo de ampliação de imagem](./imgs/ampliacao.png)
+![Exemplo de ampliação de imagem](./docs/imgs/ampliacao.png)
 
 ## Redução da imagem
 
 A redução da imagem neste projeto será semelhante à ampliação. Você irá remover o espaçamento entre linhas e colunas. Porém, ao invés de simplesmente remover linhas e colunas, cada pixel da nova imagem será a junção de um "quadrado" de 4 pixels da imagem original. Essa "junção" será calculada a partir da média dos componentes de cada 4 pixels. Por exemplo, os valores RGB dos 4 pixels que formam o quadrado superior esquerdo da imagem à esquerda da figura abaixo serão usados para calcular os valores RGB (usando a média) do pixel superior esquerdo da imagem à direita. Os próximos 4 para calcular o pixel seguinte e assim por diante.
 
-![Exemplo de redução de imagem](./imgs/reducao.png)
+![Exemplo de redução de imagem](./docs/imgs/reducao.png)
 
 Caso a largura ou a altura da imagem seja ímpar, a última coluna ou última linha de pixels da imagem original será desconsiderada (não será usada na geração da imagem reduzida).
 
@@ -74,7 +74,7 @@ Caso a largura ou a altura da imagem seja ímpar, a última coluna ou última li
 
 A rotação a ser feita será de 90º no sentido horário, fazendo com que o pixel do canto superior esquerdo da imagem original passe ao canto superior direito na imagem rotacionada, como ilustra a figura abaixo.
 
-![Exemplo de rotação de imagem](./imgs/rotacao.png)
+![Exemplo de rotação de imagem](./docs/imgs/rotacao.png)
 
 Perceba que, na rotação, as dimensões da imagem são trocadas. A rotação de uma imagem com dimensão 640 x 320 resultará em uma imagem de 320 x 640.
 
@@ -82,13 +82,13 @@ Perceba que, na rotação, as dimensões da imagem são trocadas. A rotação de
 
 Aplicação de filtros é uma técnica de processamento de imagens que normalmente manipula os valores de uma vizinhança para modificar a imagem. Esta técnica é normalmente utilizada para destacar, suavizar e/ou remover determinadas características da imagem. Podemos, por exemplo, aumentar o contraste dos pixels vizinhos ou deixá-los mais difusos, como ilustrados na figura a seguir, em que os filtros de sharpening e blurring foram aplicados.
 
-![Exemplo de aplicação de filtros](./imgs/filtros.png)
+![Exemplo de aplicação de filtros](./docs/imgs/filtros.png)
 
 Para a aplicação de filtros, é necessário utilizar uma "máscara" que percorre os pixels da imagem realizando as transformações sobre eles. Essa máscara é definida por uma matriz cujos valores são "pesos" (importância) dos pixels durante a transformação. Normalmente, as matrizes são quadradas de tamanho ímpar (ex: 3x3, 5x5, 7x7, ...) indicando a área de influência dos vizinhos sobre um pixel.
 
 Ao aplicar um filtro 3x3, estamos indicando que os pixels adjacentes a um determinado pixel irão influenciar sua nova cor. A figura abaixo ilustra a aplicação de uma máscara 3x3 sobre o pixel (1,1) de uma imagem 5x5. Perceba que o pixel (1,1) está no centro da máscara e todos seus adjacentes influenciam sua nova cor. O mesmo ocorre quando a máscara for aplicada ao pixel (1,2), depois ao pixel (1,3) e assim por diante.
 
-![Aplicação de um filtro 3x3](./imgs/aplicacao_filtro.png)
+![Aplicação de um filtro 3x3](./docs/imgs/aplicacao_filtro.png)
 
 Em função dos valores na matriz, podemos transformar a imagem de diferentes formas. As matrizes a seguir correspondem às imagens apresentadas acima na aplicação dos filtros de sharpening e blurring.
 
