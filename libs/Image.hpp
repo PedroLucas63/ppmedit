@@ -4,7 +4,7 @@
 
 //! Image class start
 class Image {
-   //* Public elements
+//* Public elements
 public:
    //^ Image constructor without data
    Image() {}
@@ -113,14 +113,14 @@ public:
       buff += width + separator + height + endline;
       buff += colors + endline;
 
-      std::string buff_line{""}; //~ Buffer line with pixels
+      std::string buff_line{ "" }; //~ Buffer line with pixels
 
       for (int i{ 0 }; i < getHeight(); i++) {   //~ Repeat "image height" times
          for (int j{ 0 }; j < getWidth(); j++) { //? Repeat "image width" times
             //? Length of buff line and pixel to string
-            int buff_line_length{buff_line.length()};
-            int pixel_length{getPixel(i, j).to_string().length()};
-            
+            int buff_line_length{ buff_line.length() };
+            int pixel_length{ getPixel(i, j).to_string().length() };
+
             //? Sum is less than or equal that 70
             if (buff_line_length + pixel_length <= 70) {
                buff_line += getPixel(i, j).to_string() + separator;
@@ -134,7 +134,7 @@ public:
       return buff;
    }
 
-   //* Private elements
+//* Private elements
 private:
    std::string type{ "" }; //^ Image type
    int width{ 0 };         //^ Image width
