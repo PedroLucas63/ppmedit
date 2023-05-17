@@ -113,9 +113,21 @@ public:
       buff += width + separator + height + endline;
       buff += colors + endline;
 
+      std::string buff_line{""}; //~ Buffer line with pixels
+
       for (int i{ 0 }; i < getHeight(); i++) {   //~ Repeat "image height" times
          for (int j{ 0 }; j < getWidth(); j++) { //? Repeat "image width" times
-            buff += getPixel(i, j).to_string() + endline;
+            //? Length of buff line and pixel to string
+            int buff_line_length{buff_line.length()};
+            int pixel_length{getPixel(i, j).to_string().length()};
+            
+            //? Sum is less than or equal that 70
+            if (buff_line_length + pixel_length <= 70) {
+               buff_line += getPixel(i, j).to_string() + separator;
+            } else { //? Sum is greater than 70
+               buff += buff_line + endline;
+               buff_line = getPixel(i, j).to_string() + separator;
+            }
          }
       }
 
