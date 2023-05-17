@@ -4,7 +4,7 @@
 
 //! Image class start
 class Image {
-//* Public elements
+   //* Public elements
 public:
    //^ Image constructor without data
    Image() {}
@@ -74,6 +74,18 @@ public:
 
    //^ Get an image pixel
    Pixel getPixel(int row, int column) const {
+      if (row < 0) { //~ Line is less than 0
+         row = 0;
+      } else if (row > getHeight() - 1) { //~ Line is greater than height
+         row = getHeight() - 1;
+      }
+
+      if (column < 0) { //~ Column is less than 0
+         column = 0;
+      } else if (column > getWidth() - 1) { //~ Column is greater than width
+         column = getWidth() - 1;
+      }
+
       return getPixels()[row * getWidth() + column];
    }
 
@@ -168,4 +180,5 @@ private:
       }
    }
 };
+
 //! End of image class
