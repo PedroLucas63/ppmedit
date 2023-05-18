@@ -54,11 +54,11 @@ public:
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
       //~ Red intensity is accepted
-      if (red_intensity >= MIN_AMOUNT_COLORS && red_intensity <= max_accepted) {
+      if (red_intensity >= getMinColors() && red_intensity <= max_accepted) {
          red = red_intensity;
          //~ Red intensity is less than accepted
-      } else if (red_intensity < MIN_AMOUNT_COLORS) {
-         red = MIN_AMOUNT_COLORS;
+      } else if (red_intensity < getMinColors()) {
+         red = getMinColors();
       } else { //~ Red intensity is greater than accepted
          red = max_accepted;
       }
@@ -72,12 +72,12 @@ public:
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
       //~ Green intensity is accepted
-      if (green_intensity >= MIN_AMOUNT_COLORS
+      if (green_intensity >= getMinColors()
           && green_intensity <= max_accepted) {
          green = green_intensity;
          //~ Green intensity is less than accepted
-      } else if (green_intensity < MIN_AMOUNT_COLORS) {
-         green = MIN_AMOUNT_COLORS;
+      } else if (green_intensity < getMinColors()) {
+         green = getMinColors();
       } else { //~ Green intensity is greater than accepted
          green = max_accepted;
       }
@@ -91,12 +91,11 @@ public:
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
       //~ Blue intensity is accepted
-      if (blue_intensity >= MIN_AMOUNT_COLORS
-          && blue_intensity <= max_accepted) {
+      if (blue_intensity >= getMinColors() && blue_intensity <= max_accepted) {
          blue = blue_intensity;
          //~ Blue intensity is less than accepted
-      } else if (blue_intensity < MIN_AMOUNT_COLORS) {
-         blue = MIN_AMOUNT_COLORS;
+      } else if (blue_intensity < getMinColors()) {
+         blue = getMinColors();
       } else { //~ Blue intensity is greater than accepted
          blue = max_accepted;
       }
