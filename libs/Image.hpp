@@ -1,53 +1,55 @@
 #include <iostream>
-
 #include "Pixel.hpp" //! Include Pixel header
+
+#define ASCII_TYPE "P3" //! Set ascii type for a ppm image
+#define MIN_WIDTH 1     //! Set minimum width for a ppm image
+#define MIN_HEIGHT 1    //! Set minimum height for a ppm image
 
 //! Image class start
 class Image {
 //* Public elements
 public:
    //^ Image constructor without data
-   Image() {}
+   Image() { }
 
    //^ Image constructor with data
-   Image(std::string type_image,
-         int width_image,
-         int height_image,
-         int colors_image,
-         Pixel* pixels_image) {
+   Image(int width, int height, int colors, Pixel* pixels_array) {
       //~ Set values in order
-      setType(type_image);
-      setWidth(width_image);
-      setHeight(height_image);
-      setColors(colors_image);
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
-      setPixels(pixels_image);
+      setWidth(width);
+      setHeight(height);
+      setColors(colors);
+
+      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+
+      setPixels(pixels_array);
    }
 
    //^ Image constructor with other image
    Image(Image const& image) {
       //~ Set values in order
-      setType(image.getType());
       setWidth(image.getWidth());
       setHeight(image.getHeight());
       setColors(image.getColors());
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
+
+      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+
       setPixels(image.getPixels());
    }
 
    //^ Receipt operator
    void operator=(Image const& image) {
       //~ Set values in order
-      setType(image.getType());
       setWidth(image.getWidth());
       setHeight(image.getHeight());
       setColors(image.getColors());
-      pixels = new Pixel[getSize()]; //~ Defines array of pixels with size
+
+      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+
       setPixels(image.getPixels());
    }
 
    //^ Image destructor
-   ~Image() {}
+   ~Image() { }
 
    //^ Get image type
    std::string getType() const { return type; }
@@ -74,9 +76,9 @@ public:
 
    //^ Get an image pixel
    Pixel getPixel(int row, int column) const {
-      if (row < 0) { //~ Line is less than 0
+      if (row < 0) { //~ Row is less than 0
          row = 0;
-      } else if (row > getHeight() - 1) { //~ Line is greater than height
+      } else if (row > getHeight() - 1) { //~ Row is greater than height
          row = getHeight() - 1;
       }
 
@@ -91,106 +93,93 @@ public:
 
    //^ Set image pixels
    void setPixels(Pixel* pixels_image) {
-      for (int i{ 0 }; i < getHeight(); i++) {   //~ Repeat "image height" times
-         for (int j{ 0 }; j < getWidth(); j++) { //? Repeat "image width" times
+      for (int i { 0 }; i < getHeight(); i++) { //~ Repeat "image height" times
+         for (int j { 0 }; j < getWidth(); j++) { //? Repeat "image width" times
             setPixel(pixels_image[i * getWidth() + j], i, j);
          }
       }
    }
 
    //^ Convert data to string
-   std::string to_string() const {
+   std::string toString() const {
       //~ Receive width, height and colors and convert to string
-      std::string width{ std::to_string(getWidth()) };
-      std::string height{ std::to_string(getHeight()) };
-      std::string colors{ std::to_string(getColors()) };
+      std::string width { std::to_string(getWidth()) };
+      std::string height { std::to_string(getHeight()) };
+      std::string colors { std::to_string(getColors()) };
 
-      std::string separator{ " " }; //~ Define separator of values
-      std::string endline{ "\n" };  //~ Define end line
+      std::string separator { " " }; //~ Define separator of values
+      std::string endline { "\n" };  //~ Define end line
 
       //~ Create a buffer string with data
-      std::string buff{ getType() + endline };
+      std::string buff { getType() + endline };
       buff += width + separator + height + endline;
       buff += colors + endline;
 
-      std::string buff_line{ "" }; //~ Buffer line with pixels
+      std::string buff_line { "" }; //~ Buffer line with pixels
 
-      for (int i{ 0 }; i < getHeight(); i++) {   //~ Repeat "image height" times
-         for (int j{ 0 }; j < getWidth(); j++) { //? Repeat "image width" times
+      int max_line_size { 70 }; //~ Max line size
+
+      for (int i { 0 }; i < getHeight(); i++) { //~ Repeat "image height" times
+         //? Repeat "image width" times
+         for (int j { 0 }; j < getWidth(); j++) {
             //? Length of buff line and pixel to string
-            int buff_line_length{ buff_line.length() };
-            int pixel_length{ getPixel(i, j).to_string().length() };
+            int buff_line_length { buff_line.length() };
+            int pixel_length { getPixel(i, j).toString().length() };
 
-            //? Sum is less than or equal that 70
-            if (buff_line_length + pixel_length <= 70) {
-               buff_line += getPixel(i, j).to_string() + separator;
-            } else { //? Sum is greater than 70
+            //? Buffer line length is accepted
+            if (buff_line_length + pixel_length <= max_line_size) {
+               buff_line += getPixel(i, j).toString() + separator;
+            } else { //? Buffer line length is not accepted
                buff += buff_line + endline;
-               buff_line = getPixel(i, j).to_string() + separator;
+               buff_line = getPixel(i, j).toString() + separator;
             }
          }
       }
+
+      buff += buff_line; //? Buffer gets the last line
 
       return buff;
    }
 
 //* Private elements
 private:
-   std::string type{ "" }; //^ Image type
-   int width{ 0 };         //^ Image width
-   int height{ 0 };        //^ Image height
-   int colors{ 0 };        //^ Number of colors in the image
-   Pixel* pixels;          //^ Pixel's pointer
-
-   //^ Set image type
-   void setType(std::string type_image) {
-      //~ Types accepted
-      std::string ascii_type{ "P3" };
-      std::string binary_type{ "P6" };
-
-      //~ Check if image type is accepted
-      if (type_image == ascii_type || type_image == binary_type) {
-         type = type_image;
-      } else { //~ Image type is not accepted
-         type = ascii_type;
-      }
-   }
+   std::string type { ASCII_TYPE }; //^ Image type
+   int width { 0 };                 //^ Image width
+   int height { 0 };                //^ Image height
+   int colors { 0 };                //^ Number of colors in the image
+   Pixel* pixels;                   //^ Pixel's pointer
 
    //^ Set image width
    void setWidth(int width_image) {
-      int min_width{ 1 }; //~ Minimum value accepted
-
-      //~ Check if image width is accepted
-      if (width_image >= min_width) {
+      //~ The image width is accepted
+      if (width_image >= MIN_WIDTH) {
          width = width_image;
-      } else { //~ Image width is not accepted
-         width = min_width;
+      } else { //~ The image width is not accepted
+         width = MIN_WIDTH;
       }
    }
 
    //^ Set image height
    void setHeight(int height_image) {
-      int min_height{ 1 }; //~ Minimum value accepted
-
-      //~ Check if image height is accepted
-      if (height_image >= min_height) {
+      //~ The image height is accepted
+      if (height_image >= MIN_HEIGHT) {
          height = height_image;
-      } else { //~ Image height is not accepted
-         height = min_height;
+      } else { //~ The image height is not accepted
+         height = MIN_HEIGHT;
       }
    }
 
    //^ Set image colors
    void setColors(int colors_image) {
-      int min_accepted{ 1 }; //~ Minimum value accepted
-
-      //~ Check if image colors is accepted
-      if (colors_image >= min_accepted) {
+      //~ Number of colors is accepted
+      if (colors_image >= MIN_AMOUNT_COLORS
+          && colors_image <= MAX_AMOUNT_COLORS) {
          colors = colors_image;
-      } else { //~ Image colors is not accepted
-         colors = min_accepted;
+         //~ Number of colors is less than accepted
+      } else if (colors_image < MIN_AMOUNT_COLORS) {
+         colors = MIN_AMOUNT_COLORS;
+      } else { //~ Number of colors is greater than accepted
+         colors = MAX_AMOUNT_COLORS;
       }
    }
-};
-
-//! End of image class
+}; //! End of image class
