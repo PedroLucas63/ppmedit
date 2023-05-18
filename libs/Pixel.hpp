@@ -53,13 +53,13 @@ public:
    void setRed(int red_intensity) {
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
-      //~ Is accepted
+      //~ Red intensity is accepted
       if (red_intensity >= MIN_AMOUNT_COLORS && red_intensity <= max_accepted) {
          red = red_intensity;
-      //~ It is less than accepted
+         //~ Red intensity is less than accepted
       } else if (red_intensity < MIN_AMOUNT_COLORS) {
          red = MIN_AMOUNT_COLORS;
-      } else { //~ It is greater than accepted
+      } else { //~ Red intensity is greater than accepted
          red = max_accepted;
       }
    }
@@ -71,14 +71,14 @@ public:
    void setGreen(int green_intensity) {
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
-      //~ Is accepted
+      //~ Green intensity is accepted
       if (green_intensity >= MIN_AMOUNT_COLORS
           && green_intensity <= max_accepted) {
          green = green_intensity;
-      //~ It is less than accepted
+         //~ Green intensity is less than accepted
       } else if (green_intensity < MIN_AMOUNT_COLORS) {
          green = MIN_AMOUNT_COLORS;
-      } else { //~ It is greater than accepted
+      } else { //~ Green intensity is greater than accepted
          green = max_accepted;
       }
    }
@@ -90,14 +90,14 @@ public:
    void setBlue(int blue_intensity) {
       int max_accepted { getMaxColors() }; //~ Maximum value accepted
 
-      //~ Is accepted
+      //~ Blue intensity is accepted
       if (blue_intensity >= MIN_AMOUNT_COLORS
           && blue_intensity <= max_accepted) {
          blue = blue_intensity;
-      //~ It is less than accepted
+         //~ Blue intensity is less than accepted
       } else if (blue_intensity < MIN_AMOUNT_COLORS) {
          blue = MIN_AMOUNT_COLORS;
-      } else { //~ It is greater than accepted
+      } else { //~ Blue intensity is greater than accepted
          blue = max_accepted;
       }
    }
@@ -130,14 +130,14 @@ private:
 
    //^ Set maximum colors
    void setMaxColors(int maximum_colors) {
-      //~ Is accepted
+      //~ Maximum colors is accepted
       if (maximum_colors >= MIN_AMOUNT_COLORS
           && maximum_colors <= MAX_AMOUNT_COLORS) {
          max_colors = maximum_colors;
-      //~ It is less than accepted
+         //~ Maximum colors is less than accepted
       } else if (maximum_colors < MIN_AMOUNT_COLORS) {
          max_colors = MIN_AMOUNT_COLORS;
-      } else { //~ It is greater than accepted
+      } else { //~ Maximum colors is greater than accepted
          max_colors = MAX_AMOUNT_COLORS;
       }
    }
