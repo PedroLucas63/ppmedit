@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Pixel.hpp" //! Include Pixel header
 
 #define ASCII_TYPE "P3" //! Set ascii type for a ppm image
@@ -11,6 +10,16 @@ class Image {
 public:
    //^ Image constructor without data
    Image() { }
+
+   //^ Image constructor without pixels
+   Image(int width, int height, int colors) {
+      //~ Set values in order
+      setWidth(width);
+      setHeight(height);
+      setColors(colors);
+
+      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+   }
 
    //^ Image constructor with data
    Image(int width, int height, int colors, Pixel* pixels_array) {
@@ -173,7 +182,7 @@ private:
    void setColors(int colors_image) {
       //~ Number of colors is accepted
       if (colors_image >= MIN_AMOUNT_COLORS
-          && colors_image <= MAX_AMOUNT_COLORS) {
+         && colors_image <= MAX_AMOUNT_COLORS) {
          colors = colors_image;
          //~ Number of colors is less than accepted
       } else if (colors_image < MIN_AMOUNT_COLORS) {
