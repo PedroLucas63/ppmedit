@@ -38,7 +38,7 @@ int main() {
    //* Create a editor with data
    Editor editor { width, height, colors, pixels };
 
-   editor.rotate('l'); //* Turn image to gray
+   editor.rotateImage(); //* Turn image to gray
 
    editor.exportData(); //* Save the image output
 } //! End of main function

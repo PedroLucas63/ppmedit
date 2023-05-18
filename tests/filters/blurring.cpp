@@ -38,7 +38,7 @@ int main() {
    //* Create a editor with data
    Editor editor { width, height, colors, pixels };
 
-   editor.putFilter('B'); //* Turn image to blurring
+   editor.applyImageEffects('B'); //* Turn image to blurring
 
    editor.exportData(); //* Export the image output
 } //! End of main function

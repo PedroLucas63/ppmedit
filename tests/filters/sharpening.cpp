@@ -38,7 +38,7 @@ int main() {
    //* Create a editor with data
    Editor editor { width, height, colors, pixels };
 
-   editor.putFilter('S'); //* Turn image to sharpening
+   editor.applyImageEffects(); //* Turn image to sharpening
 
    editor.exportData(); //* Save the image output
 } //! End of main function

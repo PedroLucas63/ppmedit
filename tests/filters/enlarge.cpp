@@ -38,7 +38,7 @@ int main() {
    //* Create a editor with data
    Editor editor { width, height, colors, pixels };
 
-   editor.enlarge(); //* Enlarge image
+   editor.enlargeImage(); //* Enlarge image
 
    editor.exportData(); //* Export the image output
 } //! End of main function

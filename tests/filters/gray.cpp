@@ -38,7 +38,7 @@ int main() {
    //* Create a editor with data
    Editor editor { width, height, colors, pixels };
 
-   editor.toGray(); //* Turn image to gray
+   editor.grayscaleImage(); //* Turn image to gray
 
    editor.exportData(); //* Export the image output
 } //! End of main function
