@@ -33,3 +33,6 @@
 
 # Solution
 solution.*
+
+# Test images
+/tests/imgs/
