@@ -68,7 +68,7 @@ public:
    void undoImageChange() { setImageOutput(getImageInput()); }
 
    //^ Turn to gray
-   void toGray() {
+   void grayscaleImage() {
       Image image { getImageOutput() }; //~ Get the output image to transform
 
       //~ Repeat "image height" times
@@ -95,7 +95,7 @@ public:
    }
 
    //^ Rotate the image
-   void rotate(char side = 'R') {
+   void rotateImage(char side = 'R') {
       side = std::toupper(side); //~ Convert side character to upper
 
       if (side == 'R') { //~ Check if side is "right"
@@ -151,8 +151,8 @@ public:
       setImageOutput(rotate_image); //~ Set image output to rotation image
    }
 
-   //^ Mirror image
-   void mirror() {
+   //^ Flip image
+   void flipImage() {
       Image image { getImageOutput() }; //~ Get the output image to auxiliary
 
       //~ Mirror image with image output
@@ -175,7 +175,7 @@ public:
    }
 
    //^ Enlarge image
-   void enlarge() {
+   void enlargeImage() {
       Image image { getImageOutput() }; //~ Get the output image to auxiliary
 
       //~ Get width and height from enlarged image
@@ -222,8 +222,8 @@ public:
       setImageOutput(enlarge_image); //~ Set image output to enlarge image
    }
 
-   //^ Reduce image
-   void reduce() {
+   //^ Shrink image
+   void shrinkImage() {
       Image image { getImageOutput() }; //~ Get the output image to auxiliary
 
       //~ Define width and height from reduce image
@@ -258,8 +258,8 @@ public:
       setImageOutput(reduce_image); //~ Set image output to reduce image
    }
 
-   //^ Put filter
-   void putFilter(char filter = 'S') {
+   //^ Apply image effects
+   void applyImageEffects(char filter = 'S') {
       filter = std::toupper(filter); //~ Convert filter character to upper
 
       float mask[MASK_SIZE][MASK_SIZE]; //~ Create a mask without data
@@ -270,14 +270,14 @@ public:
                  { 1.0 / 9, 1.0 / 9, 1.0 / 9 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
-      } else if (filter == 'E') { //~ Filter is embossing
-         float buff_mask[MASK_SIZE][MASK_SIZE]
-            = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
-         //? Copy buffer mask to mask
-         memcpy(mask, buff_mask, sizeof(mask));
       } else if (filter == 'D') { //~ Filter is edge enhancement
          float buff_mask[MASK_SIZE][MASK_SIZE]
             = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+         //? Copy buffer mask to mask
+         memcpy(mask, buff_mask, sizeof(mask));
+      } else if (filter == 'E') { //~ Filter is embossing
+         float buff_mask[MASK_SIZE][MASK_SIZE]
+            = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
       } else { //~ Filter is sharpening
@@ -292,6 +292,34 @@ public:
       //~ Set image input to output image without modifiers
       setImageInput(getImageOutput());
       setImageOutput(filter_image); //~ Set image output to filter image
+   }
+
+   //^ Negative image
+   void negativeImage() {
+      Image image { getImageOutput() }; //~ Get the output image to transform
+      int colors {image.getColors()}; //~ Get colors of the image
+
+      //~ Repeat "image height" times
+      for (int i { 0 }; i < image.getHeight(); i++) {
+         //? Repeat "image width" times
+         for (int j { 0 }; j < image.getWidth(); j++) {
+            Pixel pixel {image.getPixel(i, j)}; //? Get original pixel
+
+            //? Get negative channels  
+            int new_red {colors - pixel.getRed()};
+            int new_green {colors - pixel.getGreen()};
+            int new_blue {colors - pixel.getBlue()};
+
+            //?  Create a negative pixel and set in the image
+            Pixel new_pixel { new_red, new_green, new_blue,
+               colors };
+            image.setPixel(new_pixel, i, j);
+         }
+      }
+
+      //~ Set image input to output image without modifiers
+      setImageInput(getImageOutput());
+      setImageOutput(image); //~ Set image output to gray image
    }
 
 //* Private elements
