@@ -4,6 +4,7 @@
 #define MIN_AMOUNT_COLORS 1         //! Set minimum amount of colors
 #define MAX_AMOUNT_COLORS 65536     //! Set maximum amount of colors
 #define STANDARD_COLOR_QUANTIFY 255 //! Set standard color quantify
+#define CHANNELS_PER_PIXEL 3        //! Set the number of channels per pixel
 
 //! Pixel class start
 class Pixel {
@@ -14,7 +15,7 @@ public:
 
    //^ Pixel constructor with data
    Pixel(int red_intensity, int green_intensity, int blue_intensity,
-         int maximum_colors = STANDARD_COLOR_QUANTIFY) {
+      int maximum_colors = STANDARD_COLOR_QUANTIFY) {
       //~ Set values in order
       setMaxColors(maximum_colors);
       setRed(red_intensity);
@@ -73,7 +74,7 @@ public:
 
       //~ Green intensity is accepted
       if (green_intensity >= getMinColors()
-          && green_intensity <= max_accepted) {
+         && green_intensity <= max_accepted) {
          green = green_intensity;
          //~ Green intensity is less than accepted
       } else if (green_intensity < getMinColors()) {
@@ -131,7 +132,7 @@ private:
    void setMaxColors(int maximum_colors) {
       //~ Maximum colors is accepted
       if (maximum_colors >= MIN_AMOUNT_COLORS
-          && maximum_colors <= MAX_AMOUNT_COLORS) {
+         && maximum_colors <= MAX_AMOUNT_COLORS) {
          max_colors = maximum_colors;
          //~ Maximum colors is less than accepted
       } else if (maximum_colors < MIN_AMOUNT_COLORS) {
