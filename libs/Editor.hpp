@@ -151,6 +151,29 @@ public:
       setImageOutput(rotate_image); //~ Set image output to rotation image
    }
 
+   //^ Mirror image
+   void mirror() {
+      Image image { getImageOutput() }; //~ Get the output image to auxiliary
+
+      //~ Mirror image with image output
+      Image mirror_image(image.getWidth(), image.getHeight(),
+         image.getColors());
+
+      //~ Repeat "image height" times
+      for (int i { 0 }; i < image.getHeight(); i++) {
+         //? Repeat "image width" times
+         for (int j { 0 }; j < image.getWidth(); j++) {
+            //? Get and set current pixel mirror
+            Pixel pixel { image.getPixel(i, image.getWidth() - 1 - j) };
+            mirror_image.setPixel(pixel, i, j);
+         }
+      }
+
+      //~ Set image input to output image without modifiers
+      setImageInput(getImageOutput());
+      setImageOutput(mirror_image); //~ Set image output to enlarge image
+   }
+
    //^ Enlarge image
    void enlarge() {
       Image image { getImageOutput() }; //~ Get the output image to auxiliary
@@ -162,12 +185,10 @@ public:
       //~ Enlarge image with image output
       Image enlarge_image { width, height, image.getColors() };
 
-      //~ Repeat "height" times
-      for (int i { 0 }; i < height; i++) {
-         //? Repeat "width" times
-         for (int j { 0 }; j < width; j++) {
-            Pixel new_pixel;        //? Create the new pixel
-            int quant_pixels { 2 }; //? Quantify of pixels to average
+      for (int i { 0 }; i < height; i++) {   //~ Repeat "image height" times
+         for (int j { 0 }; j < width; j++) { //? Repeat "image width" times
+            Pixel new_pixel;                 //? Create the new pixel
+            int quant_pixels { 2 };          //? Quantify of pixels to average
 
             if (i == j && i % 2 == 0) { //? Make sure it's the original pixels
                new_pixel = image.getPixel(i / 2, j / 2);
@@ -214,8 +235,8 @@ public:
       //~ Reduce image with image output
       Image reduce_image { width, height, image.getColors() };
 
-      for (int i { 0 }; i < height; i++) {   //~ Repeat "height" times
-         for (int j { 0 }; j < width; j++) { //?  Repeat "width" times
+      for (int i { 0 }; i < height; i++) {   //~ Repeat "image height" times
+         for (int j { 0 }; j < width; j++) { //?  Repeat "image width" times
             int quant_pixels { 4 };          //? Quantify of pixels to average
 
             //?  Array of pixels to average
