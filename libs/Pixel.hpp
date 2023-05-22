@@ -44,6 +44,14 @@ public:
    //^ Pixel destructor
    ~Pixel() { }
 
+   bool operator==(Pixel const& rhs) {
+      if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed() && getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
    //^ Get minimum colors
    int getMinColors() const { return min_colors; }
 

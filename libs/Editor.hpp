@@ -322,6 +322,27 @@ public:
       setImageOutput(image); //~ Set image output to gray image
    }
 
+   void combineImages(Image const& foreground) {
+      Image image { getImageOutput() }; //~ Get the output image to transform
+
+      if (image.getWidth() == foreground.getWidth() && image.getHeight() == foreground.getHeight()) {
+         Pixel first_pixel {foreground.getPixel(0, 0)};
+
+         for (int i { 0 }; i < image.getHeight(); i++) {
+            for (int j { 0 }; i < image.getWidth(); i++) {
+               Pixel foreground_pixel {foreground.getPixel(i, j)};
+               if (!(foreground.getPixel(i, j) == first_pixel)) {
+                  image.setPixel(foreground_pixel, i, j);
+               }
+            }
+         }
+
+         //~ Set image input to output image without modifiers
+         setImageInput(getImageOutput());
+         setImageOutput(image); //~ Set image output to gray image
+      }
+   }
+
 //* Private elements
 private:
    Image image_in;  //^ Image input (without the latest edition)
