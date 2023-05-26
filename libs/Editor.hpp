@@ -78,8 +78,7 @@ public:
 
             //? Calculate the grayscale
             int grayscale { (pixel.getRed() + pixel.getGreen()
-                               + pixel.getBlue())
-               / CHANNELS_PER_PIXEL };
+               + pixel.getBlue()) / CHANNELS_PER_PIXEL };
 
             //?  Create a gray pixel and set in the image
             Pixel new_pixel { grayscale, grayscale, grayscale,
@@ -189,28 +188,40 @@ public:
             Pixel new_pixel;                 //? Create the new pixel
             int quant_pixels { 2 };          //? Quantify of pixels to average
 
-            if (i == j && i % 2 == 0) { //? Make sure it's the original pixels
+            //? Make sure it's the original pixels
+            if (i % 2 == 0 && j % 2 == 0) {
                new_pixel = image.getPixel(i / 2, j / 2);
-            } else if (i == j) { //? Checks if it's pixels diagonally
-               Pixel pixels[quant_pixels]
-                  = { image.getPixel((i - 1) / 2, (j - 1) / 2),
-                       image.getPixel((i + 1) / 2, (j + 1) / 2) };
-
-               new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
             } else if (i % 2 == 0) { //?  Checks if the pixels are horizontal
-               Pixel pixels[quant_pixels]
-                  = { image.getPixel(i / 2, (j - 1) / 2),
-                       image.getPixel(i / 2, (j + 1) / 2) };
+               Pixel pixels[quant_pixels] = { 
+                  image.getPixel(i / 2, (j - 1) / 2),
+                  image.getPixel(i / 2, (j + 1) / 2) };
 
                new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
-            } else { //? Are the pixels vertically
-               Pixel pixels[quant_pixels]
-                  = { image.getPixel((i - 1) / 2, j / 2),
-                       image.getPixel((i + 1) / 2, j / 2) };
+            } else if (j % 2 == 0) { //? Are the pixels vertically
+               Pixel pixels[quant_pixels] = { 
+                  image.getPixel((i - 1) / 2, j / 2),
+                  image.getPixel((i + 1) / 2, j / 2) };
 
                new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
             }
 
+            //? Define new pixel in enlarge image
+            enlarge_image.setPixel(new_pixel, i, j);
+         }
+      }
+
+      //~ Traverse the pixels of the 2x2 diagonals
+      for (int i { 1 }; i < height; i += 2) {
+         for (int j { 1 }; j < width; j += 2) {
+            Pixel new_pixel;                 //? Create the new pixel
+            int quant_pixels { 2 };          //? Quantify of pixels to average
+
+            Pixel pixels[quant_pixels] = { 
+               enlarge_image.getPixel(i - 1, j),
+               enlarge_image.getPixel(i + 1, j) };
+
+            new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
+            
             //? Define new pixel in enlarge image
             enlarge_image.setPixel(new_pixel, i, j);
          }
@@ -227,9 +238,9 @@ public:
 
       //~ Define width and height from reduce image
       int width { image.getWidth() % 2 == 0 ? image.getWidth() / 2
-                                            : (image.getWidth() - 1) / 2 };
+         : (image.getWidth() - 1) / 2 };
       int height { image.getHeight() % 2 == 0 ? image.getHeight() / 2
-                                              : (image.getHeight() - 1) / 2 };
+         : (image.getHeight() - 1) / 2 };
 
       //~ Reduce image with image output
       Image reduce_image { width, height, image.getColors() };
@@ -264,24 +275,24 @@ public:
       float mask[MASK_SIZE][MASK_SIZE]; //~ Create a mask without data
 
       if (filter == 'B') { //~ Filter is blurring
-         float buff_mask[MASK_SIZE][MASK_SIZE]
-            = { { 1.0 / 9, 1.0 / 9, 1.0 / 9 }, { 1.0 / 9, 1.0 / 9, 1.0 / 9 },
-                 { 1.0 / 9, 1.0 / 9, 1.0 / 9 } };
+         float buff_mask[MASK_SIZE][MASK_SIZE] = { 
+            { 1.0 / 9, 1.0 / 9, 1.0 / 9 }, { 1.0 / 9, 1.0 / 9, 1.0 / 9 },
+            { 1.0 / 9, 1.0 / 9, 1.0 / 9 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
       } else if (filter == 'D') { //~ Filter is edge enhancement
-         float buff_mask[MASK_SIZE][MASK_SIZE]
-            = { { -1, -1, -1 }, { -1, 9, -1 }, { -1, -1, -1 } };
+         float buff_mask[MASK_SIZE][MASK_SIZE] = { { -1, -1, -1 }, 
+            { -1, 9, -1 }, { -1, -1, -1 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
       } else if (filter == 'E') { //~ Filter is embossing
-         float buff_mask[MASK_SIZE][MASK_SIZE]
-            = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+         float buff_mask[MASK_SIZE][MASK_SIZE] = { { -2, -1, 0 },
+            { -1, 1, 1 }, { 0, 1, 2 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
       } else { //~ Filter is sharpening
-         float buff_mask[MASK_SIZE][MASK_SIZE]
-            = { { 0, -1, 0 }, { -1, 5, -1 }, { 0, -1, 0 } };
+         float buff_mask[MASK_SIZE][MASK_SIZE] = { { 0, -1, 0 }, 
+            { -1, 5, -1 }, { 0, -1, 0 } };
          //? Copy buffer mask to mask
          memcpy(mask, buff_mask, sizeof(mask));
       }
@@ -356,8 +367,8 @@ private:
    //^ Set image input with data
    void setImageInput(int width_image, int height_image, int colors_image,
       Pixel* pixels_image) {
-      image_in
-         = Image { width_image, height_image, colors_image, pixels_image };
+      image_in = Image { width_image, height_image, colors_image, 
+         pixels_image };
    }
 
    //^ Set image input with image
@@ -366,8 +377,8 @@ private:
    //^ Set image output with data
    void setImageOutput(int width_image, int height_image, int colors_image,
       Pixel* pixels_image) {
-      image_out
-         = Image { width_image, height_image, colors_image, pixels_image };
+      image_out = Image { width_image, height_image, colors_image, 
+         pixels_image };
    }
 
    //^ Set image output with image
@@ -436,19 +447,13 @@ private:
          //? Repeat "image width" times
          for (int j { 0 }; j < image.getWidth(); j++) {
             //? Grab adjacent pixels
-            Pixel pixels[MASK_SIZE][MASK_SIZE]
-               = { { image.getPixel(i - 1, j - 1), image.getPixel(i - 1, j),
-                      image.getPixel(i - 1, j + 1) },
-                    {
-                       image.getPixel(i, j - 1),
-                       image.getPixel(i, j),
-                       image.getPixel(i, j + 1),
-                    },
-                    {
-                       image.getPixel(i + 1, j - 1),
-                       image.getPixel(i + 1, j),
-                       image.getPixel(i + 1, j + 1),
-                    } };
+            Pixel pixels[MASK_SIZE][MASK_SIZE] = { 
+               { image.getPixel(i - 1, j - 1), image.getPixel(i - 1, j),
+               image.getPixel(i - 1, j + 1) },
+               { image.getPixel(i, j - 1), image.getPixel(i, j), 
+               image.getPixel(i, j + 1) }, 
+               { image.getPixel(i + 1, j - 1), image.getPixel(i + 1, j), 
+               image.getPixel(i + 1, j + 1) } };
 
             mask_image.setPixel(putFilterOnPixel(pixels, mask), i, j);
          }
