@@ -132,8 +132,8 @@ public:
          //? Repeat "image width" times
          for (int j { 0 }; j < getWidth(); j++) {
             //? Length of buff line and pixel to string
-            int buff_line_length { buff_line.length() };
-            int pixel_length { getPixel(i, j).toString().length() };
+            long unsigned int buff_line_length { buff_line.length() };
+            long unsigned int pixel_length { getPixel(i, j).toString().length() };
 
             //? Buffer line length is accepted
             if (buff_line_length + pixel_length <= max_line_size) {
