@@ -1,4 +1,3 @@
-#include <math.h>
 #include <string.h>
 #include "./Image.hpp" //! Include Image header
 
@@ -329,9 +328,9 @@ public:
          Pixel first_pixel {foreground.getPixel(0, 0)};
 
          for (int i { 0 }; i < image.getHeight(); i++) {
-            for (int j { 0 }; i < image.getWidth(); i++) {
+            for (int j { 0 }; j < image.getWidth(); j++) {
                Pixel foreground_pixel {foreground.getPixel(i, j)};
-               if (!(foreground.getPixel(i, j) == first_pixel)) {
+               if (foreground.getPixel(i, j) != first_pixel) {
                   image.setPixel(foreground_pixel, i, j);
                }
             }
@@ -412,7 +411,7 @@ private:
       }
 
       //~ Filter pixel with round results
-      Pixel filter_pixel { round(sum_red), round(sum_green), round(sum_blue),
+      Pixel filter_pixel { (int) round(sum_red), (int) round(sum_green), (int) round(sum_blue),
          pixels[0][0].getMaxColors() };
 
       return filter_pixel;
