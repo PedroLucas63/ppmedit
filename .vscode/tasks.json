@@ -8,7 +8,6 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"-Wno-narrowing",
 				"${file}",
 				"-o",
 				"${workspaceFolder}/bin/${fileBasenameNoExtension}.out"
