@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 #define MIN_COLOR 0                 //! Set minimum value for a color
 #define MIN_AMOUNT_COLORS 1         //! Set minimum amount of colors
@@ -44,12 +45,20 @@ public:
    //^ Pixel destructor
    ~Pixel() { }
 
+   //^ Equality operation
    bool operator==(Pixel const& rhs) {
-      if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed() && getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) {
+      //~ All information is same
+      if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed() &&
+         getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) {
          return true;
-      } else {
-         return false;
       }
+
+      return false;
+   }
+
+   //^ Inequality operation
+   bool operator!=(Pixel const& rhs) {
+      return !((*this) == rhs);
    }
 
    //^ Get minimum colors
