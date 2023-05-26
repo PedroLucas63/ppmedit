@@ -1,11 +1,13 @@
 #include <iostream>
+#include "../libs/Editor.hpp" //! Include Editor header
+
 using namespace std;
 
 /**
  * Imprime uma ajuda explicando como o programa deve ser usado.
  * @param program_name Nome do arquivo executável.
  */
-void print_usage(string program_name) {
+void printUsage(string program_name) {
   cerr << "Usage:" << endl;
   cerr << '\t' << program_name << " <operation>" << endl;
   cerr << "Where <operation> can be:" << endl;
@@ -16,8 +18,8 @@ void print_usage(string program_name) {
   cerr << '\t' << "sharp: for sharpening the image." << endl;
   cerr << '\t' << "blur: for blurring the image." << endl;
   cerr << endl;
-  cerr << "The original image is read from the standart input and the transformed";
-  cerr << "image is sent to the standart output." << endl;
+  cerr << "The original image is read from the standard input and the transformed";
+  cerr << "image is sent to the standard output." << endl;
 }
 
 /**
@@ -37,17 +39,43 @@ int main(int argc, char* argv[]) {
   if (argc != 2) {
     // se não houver 2 argumentos, então o programa está sendo usado incorretamente.
     // deve-se portanto imprimir como usá-lo.
-    print_usage(argv[0]);
+    printUsage(argv[0]);
   }
   else {
     string operation = argv[1]; // transforma o array de caracteres em string.
-    /*
-    A partir daqui, você deve:
-    1) ler a imagem da entrada-padrão;
-    2) criar uma nova imagem em função da operação informada;
-    3) enviar a imagem criada para a saída-padrão.
-    Obs: faça isso organizando as operações em funções.
-    */
+
+    string type { "" };
+    int width { 0 };
+    int height { 0 };
+    int colors { 0 };
+
+    cin >> type >> width >> height >> colors;
+
+    Image image { width, height, colors };
+
+    for (int row { 0 }; row < height; row++) {
+      for (int column { 0 }; column < width; column++) {
+        int red { 0 };
+        int green { 0 };
+        int blue { 0 };
+
+        cin >> red >> green >> blue;
+
+        Pixel pixel { red, green, blue, colors };
+
+        image.setPixel(pixel, row, column);
+      }
+    }
+
+    Editor editor { image };
+
+    if (operation == "gray") {
+      editor.grayscaleImage();
+    } else if (operation == "enlarge") {
+      editor.enlargeImage();
+    }
+
+    editor.exportData();
   }
 
   return 0;
