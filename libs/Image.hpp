@@ -34,27 +34,57 @@ public:
    }
 
    //^ Image constructor with other image
-   Image(Image const& image) {
+   Image(Image const& rhs) {
       //~ Set values in order
-      setWidth(image.getWidth());
-      setHeight(image.getHeight());
-      setColors(image.getColors());
+      setWidth(rhs.getWidth());
+      setHeight(rhs.getHeight());
+      setColors(rhs.getColors());
 
       pixels = new Pixel[getSize()]; //? Defines array of pixels with size
 
-      setPixels(image.getPixels());
+      setPixels(rhs.getPixels());
    }
 
    //^ Receipt operator
-   void operator=(Image const& image) {
+   void operator=(Image const& rhs) {
       //~ Set values in order
-      setWidth(image.getWidth());
-      setHeight(image.getHeight());
-      setColors(image.getColors());
+      setWidth(rhs.getWidth());
+      setHeight(rhs.getHeight());
+      setColors(rhs.getColors());
 
       pixels = new Pixel[getSize()]; //? Defines array of pixels with size
 
-      setPixels(image.getPixels());
+      setPixels(rhs.getPixels());
+   }
+
+   //^ Equality operation
+   bool operator==(Image const& rhs) {
+      bool equal { true };
+
+      //~ The information (minus the pixels) is the same
+      if (getType() == rhs.getType() && getWidth() == rhs.getWidth() &&
+         getHeight() == rhs.getHeight() && getColors() == rhs.getColors()) {
+         //? Scroll through the pixels
+         for (int row { 0 }; row < getHeight(); row++) {
+            for (int column { 0 }; column < getWidth(); column++) {
+               Pixel lhs_pixel { getPixel(row, column) };
+               Pixel rhs_pixel { rhs.getPixel(row, column) };
+               //? Pixels are different
+               if (lhs_pixel != rhs_pixel) {
+                  equal = false;
+               }
+            }
+         }
+      } else { //~ It's not the same
+         equal = false;
+      }
+
+      return equal;
+   }
+
+   //^ Inequality operation
+   bool operator==(Image const& rhs) {
+      return !((*this) == rhs);
    }
 
    //^ Image destructor
