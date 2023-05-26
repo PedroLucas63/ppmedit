@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "../../libs/Editor.hpp" //! Include Editor header
+#include "../libs/Editor.hpp" //! Include Editor header
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main() {
    int blue { 0 };
 
    //^ Not edited image
-   ifstream not_edited("../../docs/imgs/galinhos.ppm"); //~ Open image
+   ifstream not_edited("../docs/imgs/galinhos.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    not_edited >> type;
@@ -48,7 +48,7 @@ int main() {
    not_edited.close(); 
 
    //^ Edited image
-   ifstream edited("../../docs/imgs/reduce.ppm"); //~ Open image
+   ifstream edited("../docs/imgs/reduce.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    edited >> type;
