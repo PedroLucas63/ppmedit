@@ -321,15 +321,21 @@ public:
       setImageOutput(image); //~ Set image output to gray image
    }
 
+   //^ Combine two images
    void combineImages(Image const& foreground) {
       Image image { getImageOutput() }; //~ Get the output image to transform
 
+      //~ Images are the same size
       if (image.getWidth() == foreground.getWidth() && image.getHeight() == foreground.getHeight()) {
-         Pixel first_pixel {foreground.getPixel(0, 0)};
+         Pixel first_pixel {foreground.getPixel(0, 0)}; //? get the first pixel
 
+         //? Scroll through the pixels
          for (int i { 0 }; i < image.getHeight(); i++) {
             for (int j { 0 }; j < image.getWidth(); j++) {
                Pixel foreground_pixel {foreground.getPixel(i, j)};
+
+               //? Foreground pixel is added to background image when it is 
+               //? different
                if (foreground.getPixel(i, j) != first_pixel) {
                   image.setPixel(foreground_pixel, i, j);
                }
@@ -338,7 +344,7 @@ public:
 
          //~ Set image input to output image without modifiers
          setImageInput(getImageOutput());
-         setImageOutput(image); //~ Set image output to gray image
+         setImageOutput(image); //~ Set image output to combine image
       }
    }
 
