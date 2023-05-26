@@ -158,24 +158,13 @@ public:
 
       int max_line_size { 70 }; //~ Max line size
 
-      for (int i { 0 }; i < getHeight(); i++) { //~ Repeat "image height" times
-         //? Repeat "image width" times
-         for (int j { 0 }; j < getWidth(); j++) {
-            //? Length of buff line and pixel to string
-            long unsigned int buff_line_length { buff_line.length() };
-            long unsigned int pixel_length { getPixel(i, j).toString().length() };
-
-            //? Buffer line length is accepted
-            if (buff_line_length + pixel_length <= max_line_size) {
-               buff_line += getPixel(i, j).toString() + separator;
-            } else { //? Buffer line length is not accepted
-               buff += buff_line + endline;
-               buff_line = getPixel(i, j).toString() + separator;
-            }
+      //~ Cycles through all pixels in the image
+      for (int row { 0 }; row < getHeight(); row++) {
+         for (int column { 0 }; column < getWidth(); column++) {
+            buff += getPixel(row, column).toString() + separator;
          }
+         buff += endline;
       }
-
-      buff += buff_line; //? Buffer gets the last line
 
       return buff;
    }
