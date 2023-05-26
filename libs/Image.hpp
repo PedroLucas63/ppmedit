@@ -83,7 +83,7 @@ public:
    }
 
    //^ Inequality operation
-   bool operator==(Image const& rhs) {
+   bool operator!=(Image const& rhs) {
       return !((*this) == rhs);
    }
 
