@@ -18,6 +18,6 @@ int main() {
    if (real == expected) {
       cout << "✔ Test success!" << endl;
    } else {
-      cout << " ✕ Test error!" << endl;
+      cout << "✕ Test error!" << endl;
    }
 } //! End of main function

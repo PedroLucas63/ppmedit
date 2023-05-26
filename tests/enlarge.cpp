@@ -83,6 +83,6 @@ int main() {
    if (real_editor.getImageOutput() == expected_image) {
       cout << "✔ Test success!" << endl;
    } else {
-      cout << " ✕ Test error!" << endl;
+      cout << "✕ Test error!" << endl;
    }
 } //! End of main function
