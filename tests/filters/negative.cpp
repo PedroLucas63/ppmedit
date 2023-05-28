@@ -1,44 +1,96 @@
 #include <iostream>
+#include <fstream>
 #include "../../libs/Editor.hpp" //! Include Editor header
 
 using namespace std;
 
 //! Main function start
-int main() {
-   //* Definition of variables to create a editor object
-   //? The type is set automatically, however it is still received on input
+int main(int argc, char* argv[]) {
+   //^ Created all the variables to create an image
    string type { "" };
    int width { 0 };
    int height { 0 };
    int colors { 0 };
+   int red { 0 };
+   int green { 0 };
+   int blue { 0 };
 
-   //* Get user data
-   cin >> type;
-   cin >> width >> height;
-   cin >> colors;
+   //^ Not edited image
+   ifstream not_edited("../../docs/imgs/galinhos.ppm"); //~ Open image
 
-   //* Calculate image size and create array with "image size" pixels
-   int size { width * height };
-   Pixel pixels[size];
+   //~ Get information (without pixels)
+   not_edited >> type;
+   not_edited >> width;
+   not_edited >> height;
+   not_edited >> colors;
 
-   for (int i { 0 }; i < size; i++) { //* Repeat "image size" times
-      //^ Definition of variables to create a pixel's objects
-      int red { 0 };
-      int green { 0 };
-      int blue { 0 };
+   //~ Create a real image
+   Image real_image { width, height, colors };
 
-      //^ Get user data
-      cin >> red >> green >> blue;
+   //~ Scroll through the pixels
+   for (int row { 0 }; row < height; row++) {
+      for (int column { 0 }; column < width; column++) {
+         //? Get pixels informations
+         not_edited >> red;
+         not_edited >> green;
+         not_edited >> blue;
 
-      //^ Create a pixel and insert it into the array
-      Pixel pixel { red, green, blue, colors };
-      pixels[i] = pixel;
+         //?  Create a pixel and set in the image
+         Pixel pixel { red, green, blue, colors };
+         real_image.setPixel(pixel, row, column);
+      }
    }
 
-   //* Create a editor with data
-   Editor editor { width, height, colors, pixels };
+   //~ Create a real editor
+   Editor real_editor { real_image };
 
-   editor.negativeImage(); //* Turn image to gray
+   //~ Close image
+   not_edited.close(); 
 
-   editor.exportData(); //* Export the image output
+   //^ Edited image
+   ifstream edited("../../docs/imgs/sharp.ppm"); //~ Open image
+
+   //~ Get information (without pixels)
+   edited >> type;
+   edited >> width;
+   edited >> height;
+   edited >> colors;
+
+   //~ Create a expected image
+   Image expected_image { width, height, colors };
+   
+   //~ Scroll through the pixels
+
+   for (int row { 0 }; row < height; row++) {
+      for (int column { 0 }; column < width; column++) {
+         //? Get pixels informations
+         edited >> red;
+         edited >> green;
+         edited >> blue;
+
+         //?  Create a pixel and set in the image
+         Pixel pixel { red, green, blue, colors };
+         expected_image.setPixel(pixel, row, column);
+      }
+   }
+   
+   //~ Close image
+   edited.close();
+
+   real_editor.negativeImage(); //^ Negative image
+
+   //^ Get the name of the test
+   string full_name { argv[0] };
+   std::size_t last_separator { full_name.find_last_of("/\\") };
+   string program_name { full_name.substr(last_separator) };
+
+   //^ Write program name
+   cout << "." << program_name << " - ";
+
+   //^ Check equality
+   if (real_editor.getImageOutput() == expected_image) {
+      cout << "✔ Test success!" << endl;
+   } else {
+      cout << "✕ Test error!" << endl;
+   }
 } //! End of main function

@@ -5,7 +5,7 @@
 using namespace std;
 
 //! Main function start
-int main() {
+int main(int argc, char* argv[]) {
    //^ Created all the variables to create an image
    string type { "" };
    int width { 0 };
@@ -78,6 +78,14 @@ int main() {
    edited.close();
 
    real_editor.shrinkImage(); //^ Shrink image
+
+   //^ Get the name of the test
+   string full_name { argv[0] };
+   std::size_t last_separator { full_name.find_last_of("/\\") };
+   string program_name { full_name.substr(last_separator) };
+
+   //^ Write program name
+   cout << "." << program_name << " - ";
 
    //^ Check equality
    if (real_editor.getImageOutput() == expected_image) {
