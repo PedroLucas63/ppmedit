@@ -1,5 +1,4 @@
 #include <iostream>
-#include <math.h>
 
 #define MIN_COLOR 0                 //! Set minimum value for a color
 #define MIN_AMOUNT_COLORS 1         //! Set minimum amount of colors

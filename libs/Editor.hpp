@@ -428,7 +428,7 @@ private:
       }
 
       //~ Filter pixel with round results
-      Pixel filter_pixel { (int) round(sum_red), (int) round(sum_green), (int) round(sum_blue),
+      Pixel filter_pixel { (int) sum_red, (int) sum_green, (int) sum_blue,
          pixels[0][0].getMaxColors() };
 
       return filter_pixel;
