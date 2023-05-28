@@ -34,5 +34,5 @@
 # Solution
 solution.*
 
-# Test images
-/tests/imgs/
+# Test executables
+/bin
