@@ -73,6 +73,22 @@ int main(int argc, char* argv[]) {
       editor.grayscaleImage();
     } else if (operation == "enlarge") {
       editor.enlargeImage();
+    } else if (operation == "reduce") {
+      editor.shrinkImage();
+    } else if (operation == "rotate") {
+      editor.rotateImage();
+    } else if (operation == "rotate-left") {
+      editor.rotateImage('L');
+    } else if (operation == "sharp") {
+      editor.applyImageEffects();
+    } else if (operation == "blur") {
+      editor.applyImageEffects('B');
+    } else if (operation == "mirror") {
+      editor.flipImage();
+    } else if (operation == "negative") {
+      editor.negativeImage();
+    } else {
+      printUsage(argv[0]);
     }
 
     editor.exportData();
