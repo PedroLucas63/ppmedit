@@ -1,160 +1,243 @@
+/**
+ * @file Pixel.hpp
+ * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
+ * @brief Pixels settings.
+ * @version 1.0
+ * @date 2023-05-31
+ *
+ * Pixel settings for portable pixmap images (ppm) with rules and functions for
+ * figure construction and comparisons.
+ *
+ * @copyright Copyright (c) 2023
+ */
+
 #include <iostream>
 
-#define MIN_COLOR 0                 //! Set minimum value for a color
-#define MIN_AMOUNT_COLORS 1         //! Set minimum amount of colors
-#define MAX_AMOUNT_COLORS 65536     //! Set maximum amount of colors
-#define STANDARD_COLOR_QUANTIFY 255 //! Set standard color quantify
-#define CHANNELS_PER_PIXEL 3        //! Set the number of channels per pixel
+#define MIN_COLOR 0                 /**< Minimum value for a color */
+#define MIN_AMOUNT_COLORS 1         /**< Minimum number of colors */
+#define MAX_AMOUNT_COLORS 65536     /**< Maximum number of colors */
+#define STANDARD_COLOR_QUANTIFY 255 /**< Standard number of colors */
+#define CHANNELS_PER_PIXEL 3        /**< Number of color channels per pixel */
 
-//! Pixel class start
+/**
+ * @class Pixel class.
+ * @brief Pixel definition with attributes and methods.
+ */
 class Pixel {
-//* Public elements
 public:
-   //^ Pixel constructor without data
+   /**
+    * @brief Construct a new Pixel object with no data.
+    */
    Pixel() { }
 
-   //^ Pixel constructor with data
+   /**
+    * @brief Construct a new Pixel object with data.
+    *
+    * @param red_intensity Red intensity in the pixel.
+    * @param green_intensity Green intensity in the pixel.
+    * @param blue_intensity Blue intensity in the pixel.
+    * @param maximum_colors Maximum of colors per channel in a pixel.
+    * Default is #STANDARD_COLOR_QUANTIFY.
+    * @see setMaxColors()
+    * @see setRed()
+    * @see setGreen()
+    * @see setBlue()
+    */
    Pixel(int red_intensity, int green_intensity, int blue_intensity,
       int maximum_colors = STANDARD_COLOR_QUANTIFY) {
-      //~ Set values in order
       setMaxColors(maximum_colors);
       setRed(red_intensity);
       setGreen(green_intensity);
       setBlue(blue_intensity);
    }
 
-   //^ Pixel constructor with other pixel (copy constructor)
-   Pixel(Pixel const& pixel) {
-      //~ Set values in order
-      setMaxColors(pixel.getMaxColors());
-      setRed(pixel.getRed());
-      setGreen(pixel.getGreen());
-      setBlue(pixel.getBlue());
+   /**
+    * @brief Construct a new Pixel object with another pixel (copy).
+    *
+    * @param rhs A pixel to copy.
+    * @see setMaxColors()
+    * @see setRed()
+    * @see setGreen()
+    * @see setBlue()
+    */
+   Pixel(Pixel const& rhs) {
+      setMaxColors(rhs.getMaxColors());
+      setRed(rhs.getRed());
+      setGreen(rhs.getGreen());
+      setBlue(rhs.getBlue());
    }
 
-   //^ Receipt operator
-   void operator=(Pixel const& pixel) {
-      //~ Set values in order
-      setMaxColors(pixel.getMaxColors());
-      setRed(pixel.getRed());
-      setGreen(pixel.getGreen());
-      setBlue(pixel.getBlue());
+   /**
+    * @brief Operator to receive a pixel (copy).
+    *
+    * @param rhs A pixel to receive.
+    * @see setMaxColors()
+    * @see setRed()
+    * @see setGreen()
+    * @see setBlue()
+    */
+   void operator=(Pixel const& rhs) {
+      setMaxColors(rhs.getMaxColors());
+      setRed(rhs.getRed());
+      setGreen(rhs.getGreen());
+      setBlue(rhs.getBlue());
    }
 
-   //^ Pixel destructor
+   /**
+    * @brief Destroy the Pixel object.
+    */
    ~Pixel() { }
 
-   //^ Equality operation
+   /**
+    * @brief Operator to check the equality of two pixels.
+    *
+    * @param rhs A pixel to check equality.
+    * @return True if the pixels are equal or false if they are not equal.
+    */
    bool operator==(Pixel const& rhs) {
-      //~ All information is same
-      if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed() &&
-         getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) {
+      if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed()
+         && getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) {
          return true;
       }
 
       return false;
    }
 
-   //^ Inequality operation
-   bool operator!=(Pixel const& rhs) {
-      return !((*this) == rhs);
-   }
+   /**
+    * @brief Operator to check the inequality of two pixels.
+    *
+    * @param rhs A pixel to check inequality.
+    * @return True if the pixels are different or false if they are not
+    * different.
+    * @see operator==()
+    */
+   bool operator!=(Pixel const& rhs) { return !((*this) == rhs); }
 
-   //^ Get minimum colors
+   /**
+    * @brief Get the minimum number of colors.
+    *
+    * @return An integer.
+    */
    int getMinColors() const { return min_colors; }
 
-   //^ Get maximum colors
+   /**
+    * @brief Get the maximum number of colors.
+    *
+    * @return An integer.
+    */
    int getMaxColors() const { return max_colors; }
 
-   //^ Set intensity of red pixel
+   /**
+    * @brief This sets the red intensity in the pixel.
+    *
+    * @param red_intensity Red intensity in the pixel.
+    */
    void setRed(int red_intensity) {
-      int max_accepted { getMaxColors() }; //~ Maximum value accepted
+      int max_accepted { getMaxColors() };
 
-      //~ Red intensity is accepted
       if (red_intensity >= getMinColors() && red_intensity <= max_accepted) {
          red = red_intensity;
-         //~ Red intensity is less than accepted
       } else if (red_intensity < getMinColors()) {
          red = getMinColors();
-      } else { //~ Red intensity is greater than accepted
+      } else {
          red = max_accepted;
       }
    }
 
-   //^ Get intensity of red pixel
+   /**
+    * @brief Get the red intensity of the pixel.
+    *
+    * @return An integer.
+    */
    int getRed() const { return red; }
 
-   //^ Set intensity of green pixel
+   /**
+    * @brief This sets the green intensity in the pixel.
+    *
+    * @param green_intensity Green intensity in the pixel.
+    */
    void setGreen(int green_intensity) {
-      int max_accepted { getMaxColors() }; //~ Maximum value accepted
+      int max_accepted { getMaxColors() };
 
-      //~ Green intensity is accepted
       if (green_intensity >= getMinColors()
          && green_intensity <= max_accepted) {
          green = green_intensity;
-         //~ Green intensity is less than accepted
       } else if (green_intensity < getMinColors()) {
          green = getMinColors();
-      } else { //~ Green intensity is greater than accepted
+      } else {
          green = max_accepted;
       }
    }
 
-   //^ Get intensity of green pixel
+   /**
+    * @brief Get the green intensity of the pixel.
+    *
+    * @return An integer.
+    */
    int getGreen() const { return green; }
 
-   //^ Set intensity of blue pixel
+   /**
+    * @brief This sets the blue intensity in the pixel.
+    *
+    * @param blue_intensity Blue intensity in the pixel.
+    */
    void setBlue(int blue_intensity) {
-      int max_accepted { getMaxColors() }; //~ Maximum value accepted
+      int max_accepted { getMaxColors() };
 
-      //~ Blue intensity is accepted
       if (blue_intensity >= getMinColors() && blue_intensity <= max_accepted) {
          blue = blue_intensity;
-         //~ Blue intensity is less than accepted
       } else if (blue_intensity < getMinColors()) {
          blue = getMinColors();
-      } else { //~ Blue intensity is greater than accepted
+      } else {
          blue = max_accepted;
       }
    }
 
-   //^ Get intensity of blue pixel
+   /**
+    * @brief Get the blue intensity of the pixel.
+    *
+    * @return An integer.
+    */
    int getBlue() const { return blue; }
 
-   //^ Convert data to string
+   /**
+    * @brief Transform the pixel data into a string.
+    *
+    * @return A string with separated pixel informations.
+    */
    std::string toString() const {
-      //~ Receive intensity of colors and convert to string
       std::string red { std::to_string(getRed()) };
       std::string green { std::to_string(getGreen()) };
       std::string blue { std::to_string(getBlue()) };
 
-      std::string separator { " " }; //~ Define separator of values
+      std::string separator { " " };
 
-      //~ Create a buffer string with data
       std::string buff { red + separator + green + separator + blue };
 
       return buff;
    }
 
-//* Private elements
 private:
-   int min_colors { MIN_COLOR }; //^ Minimum number of colors (included)
-   int max_colors { 0 };         //^ Maximum number of colors (included)
-   int red { 0 };                //^ Intensity of red in pixel
-   int green { 0 };              //^ Intensity of green in pixel
-   int blue { 0 };               //^ Intensity of blue in pixel
+   int min_colors { MIN_COLOR }; /**< Minimum number of colors (included) */
+   int max_colors { 0 };         /**< Maximum number of colors (included) */
+   int red { 0 };                /**< Intensity of red in the pixel */
+   int green { 0 };              /**< Intensity of green in the pixel */
+   int blue { 0 };               /**< Intensity of blue in the pixel */
 
-   //^ Set maximum colors
+   /**
+    * @public
+    * @brief Sets the maximum colors for the pixel channels.
+    * 
+    * @param maximum_colors Maximum of colors per channel in a pixel.
+    */
    void setMaxColors(int maximum_colors) {
-      //~ Maximum colors is accepted
       if (maximum_colors >= MIN_AMOUNT_COLORS
          && maximum_colors <= MAX_AMOUNT_COLORS) {
          max_colors = maximum_colors;
-         //~ Maximum colors is less than accepted
       } else if (maximum_colors < MIN_AMOUNT_COLORS) {
          max_colors = MIN_AMOUNT_COLORS;
-      } else { //~ Maximum colors is greater than accepted
+      } else {
          max_colors = MAX_AMOUNT_COLORS;
       }
    }
-}; //! End of pixel class
+};

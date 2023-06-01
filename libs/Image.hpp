@@ -1,166 +1,317 @@
-#include "Pixel.hpp" //! Include Pixel header
+/**
+ * @file Image.hpp
+ * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
+ * @brief Images settings.
+ * @version 1.0
+ * @date 2023-05-31
+ *
+ * Portable pixmap image (ppm) definition with rules and functions for
+ * comparisons and editing the data in an editor.
+ *
+ * @copyright Copyright (c) 2023
+ */
 
-#define ASCII_TYPE "P3" //! Set ascii type for a ppm image
-#define MIN_WIDTH 1     //! Set minimum width for a ppm image
-#define MIN_HEIGHT 1    //! Set minimum height for a ppm image
+#include "Pixel.hpp"
 
-//! Image class start
+#define ASCII_TYPE "P3" /**< Ascii type for the ppm image */
+#define MIN_WIDTH 1     /**< Minimum width for a ppm image */
+#define MIN_HEIGHT 1    /**< Minimum height for a ppm image */
+
+/**
+ * @class Image class.
+ * @brief Image definition with attributes and methods.
+ */
 class Image {
-//* Public elements
 public:
-   //^ Image constructor without data
+   /**
+    * @brief Construct a new Image object with no data.
+    */
    Image() { }
 
-   //^ Image constructor without pixels
+   /**
+    * @brief Construct a new Image object with data but not with pixels.
+    *
+    * @param width Image width.
+    * @param height Image height.
+    * @param colors Maximum of colors per pixel channel.
+    * @see setWidth()
+    * @see setHeight()
+    * @see setColors()
+    * @see getSize()
+    */
    Image(int width, int height, int colors) {
-      //~ Set values in order
       setWidth(width);
       setHeight(height);
       setColors(colors);
 
-      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+      /*
+       * Set the pixel array to the image size.
+       */
+      pixels = new Pixel[getSize()];
    }
 
-   //^ Image constructor with data
+   /**
+    * @brief Construct a new Image object with full data.
+    *
+    * @param width Image width.
+    * @param height Image height.
+    * @param colors Maximum of colors per pixel channel.
+    * @param pixels_array Image pixels.
+    * @see setWidth()
+    * @see setHeight()
+    * @see setColors()
+    * @see getSize()
+    * @see setPixels()
+    */
    Image(int width, int height, int colors, Pixel* pixels_array) {
-      //~ Set values in order
       setWidth(width);
       setHeight(height);
       setColors(colors);
 
-      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+      /*
+       * Set the pixel array to the image size.
+       */
+      pixels = new Pixel[getSize()];
 
       setPixels(pixels_array);
    }
 
-   //^ Image constructor with other image
+   /**
+    * @brief Construct a new Image object with another image (copy).
+    *
+    * @param rhs A image to copy.
+    * @see getWidth()
+    * @see setWidth()
+    * @see getHeight()
+    * @see setHeight()
+    * @see getColors()
+    * @see setColors()
+    * @see getSize()
+    * @see getPixels()
+    * @see setPixels()
+    */
    Image(Image const& rhs) {
-      //~ Set values in order
       setWidth(rhs.getWidth());
       setHeight(rhs.getHeight());
       setColors(rhs.getColors());
 
-      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+      /**
+       * @brief Set the pixel array to the image size.
+       */
+      pixels = new Pixel[getSize()];
 
       setPixels(rhs.getPixels());
    }
 
-   //^ Receipt operator
+   /**
+    * @brief Operator to receive a image (copy).
+    *
+    * @param rhs A image to receive.
+    * @see getWidth()
+    * @see setWidth()
+    * @see getHeight()
+    * @see setHeight()
+    * @see getColors()
+    * @see setColors()
+    * @see getSize()
+    * @see getPixels()
+    * @see setPixels()
+    */
    void operator=(Image const& rhs) {
-      //~ Set values in order
       setWidth(rhs.getWidth());
       setHeight(rhs.getHeight());
       setColors(rhs.getColors());
 
-      pixels = new Pixel[getSize()]; //? Defines array of pixels with size
+      /*
+       * Set the pixel array to the image size.
+       */
+      pixels = new Pixel[getSize()];
 
       setPixels(rhs.getPixels());
    }
 
-   //^ Equality operation
+   /**
+    * @brief Destroy the Image object.
+    */
+   ~Image() { }
+
+   /**
+    * @brief Operator to check equality of two images.
+    *
+    * @param rhs A image to check equality.
+    * @return True if the images are equal or false if they are not equal.
+    */
    bool operator==(Image const& rhs) {
       bool equal { true };
+      
+      if (getType() == rhs.getType() && getWidth() == rhs.getWidth()
+         && getHeight() == rhs.getHeight() && getColors() == rhs.getColors()) {
+         int width { getWidth() };
+         int height { getHeight() };
 
-      //~ The information (minus the pixels) is the same
-      if (getType() == rhs.getType() && getWidth() == rhs.getWidth() &&
-         getHeight() == rhs.getHeight() && getColors() == rhs.getColors()) {
-         //? Scroll through the pixels
-         for (int row { 0 }; row < getHeight(); row++) {
-            for (int column { 0 }; column < getWidth(); column++) {
+         for (int row { 0 }; row < height; row++) {
+            for (int column { 0 }; column < width; column++) {
                Pixel lhs_pixel { getPixel(row, column) };
                Pixel rhs_pixel { rhs.getPixel(row, column) };
-               //? Pixels are different
+
                if (lhs_pixel != rhs_pixel) {
                   equal = false;
                }
             }
          }
-      } else { //~ It's not the same
+      } else {
          equal = false;
       }
 
       return equal;
    }
 
-   //^ Inequality operation
-   bool operator!=(Image const& rhs) {
-      return !((*this) == rhs);
-   }
+   /**
+    * @brief Operator to check inequality of two images.
+    *
+    * @param rhs A image to check inequality.
+    * @return True if the images are different or false if they are not
+    * different.
+    * @see operator==()
+    */
+   bool operator!=(Image const& rhs) { return !((*this) == rhs); }
 
-   //^ Image destructor
-   ~Image() { }
-
-   //^ Get image type
+   /**
+    * @brief Get the image type.
+    *
+    * @return A string.
+    */
    std::string getType() const { return type; }
 
-   //^ Get image width
+   /**
+    * @brief Get the image width.
+    *
+    * @return An integer.
+    */
    int getWidth() const { return width; }
 
-   //^ Get image height
+   /**
+    * @brief Get the image height.
+    *
+    * @return An integer.
+    */
    int getHeight() const { return height; }
 
-   //^ Gey image size
+   /**
+    * @brief Get the image size.
+    *
+    * @return An integer.
+    * @see getWidth()
+    * @see getHeight()
+    */
    int getSize() const { return getWidth() * getHeight(); }
 
-   //^ Get image colors
+   /**
+    * @brief Get the maximum colors per pixel channel.
+    *
+    * @return An integer.
+    */
    int getColors() const { return colors; }
 
-   //^ Get image pixels
-   Pixel* getPixels() const { return pixels; }
-
-   //^ Set an image pixel
+   /**
+    * @brief Defines a pixel in the image.
+    *
+    * @param pixel Pixel to define in the image.
+    * @param row Row of the pixel to define in the image.
+    * @param column Column of the pixel to define in the image.
+    * @see getWidth()
+    */
    void setPixel(Pixel pixel, int row, int column) {
+      /*
+       * The image of set size has a one-dimensional matrix in which the rows
+       * are followed one after the other. Thus, the reference of a pixel is
+       * given by the row number multiplied by the image width plus its column
+       * number.
+       * It was implemented on the recommendation of Microsoft's artificial
+       * intelligence.
+       */
       pixels[row * getWidth() + column] = pixel;
    }
 
-   //^ Get an image pixel
+   /**
+    * @brief Get an image pixel.
+    *
+    * @param row Row of the pixel.
+    * @param column Column of the pixel.
+    * @return An pixel.
+    * @see getHeight()
+    * @see getWidth()
+    * @see getPixels()
+    */
    Pixel getPixel(int row, int column) const {
-      if (row < 0) { //~ Row is less than 0
+      int width { getWidth() };
+      int height { getHeight() };
+
+      if (row < 0) {
          row = 0;
-      } else if (row > getHeight() - 1) { //~ Row is greater than height
-         row = getHeight() - 1;
+      } else if (row > height - 1) {
+         row = height - 1;
       }
 
-      if (column < 0) { //~ Column is less than 0
+      if (column < 0) {
          column = 0;
-      } else if (column > getWidth() - 1) { //~ Column is greater than width
-         column = getWidth() - 1;
+      } else if (column > width - 1) {
+         column = width - 1;
       }
 
-      return getPixels()[row * getWidth() + column];
+      return getPixels()[row * width + column];
    }
 
-   //^ Set image pixels
+   /**
+    * @brief Get all image pixels.
+    *
+    * @return All pixels.
+    */
+   Pixel* getPixels() const { return pixels; }
+
+   /**
+    * @brief Set multiple pixels on the image.
+    *
+    * @param pixels_image Image pixels to define in the image.
+    * @see getHeight()
+    * @see getWidth()
+    * @see setPixel()
+    */
    void setPixels(Pixel* pixels_image) {
-      for (int i { 0 }; i < getHeight(); i++) { //~ Repeat "image height" times
-         for (int j { 0 }; j < getWidth(); j++) { //? Repeat "image width" times
-            setPixel(pixels_image[i * getWidth() + j], i, j);
+      int width { getWidth() };
+      int height { getHeight() };
+
+      for (int row { 0 }; row < height; row++) {
+         for (int column { 0 }; column < width; column++) {
+            setPixel(pixels_image[row * width + column], row, column);
          }
       }
    }
 
-   //^ Convert data to string
+   /**
+    * @brief Transform the image data into a string.
+    *
+    * @return A string with separated image informations.
+    */
    std::string toString() const {
-      //~ Receive width, height and colors and convert to string
-      std::string width { std::to_string(getWidth()) };
-      std::string height { std::to_string(getHeight()) };
+      int width { getWidth() };
+      int height { getHeight() };
+
+      std::string width_str { std::to_string(width) };
+      std::string height_str { std::to_string(height) };
       std::string colors { std::to_string(getColors()) };
 
-      std::string separator { " " }; //~ Define separator of values
-      std::string endline { "\n" };  //~ Define end line
+      std::string separator { " " };
+      std::string endline { "\n" };
 
-      //~ Create a buffer string with data
       std::string buff { getType() + endline };
-      buff += width + separator + height + endline;
+      buff += width_str + separator + height_str + endline;
       buff += colors + endline;
 
-      std::string buff_line { "" }; //~ Buffer line with pixels
+      std::string buff_line { "" };
 
-      int max_line_size { 70 }; //~ Max line size
-
-      //~ Cycles through all pixels in the image
-      for (int row { 0 }; row < getHeight(); row++) {
-         for (int column { 0 }; column < getWidth(); column++) {
+      for (int row { 0 }; row < height; row++) {
+         for (int column { 0 }; column < width; column++) {
             buff += getPixel(row, column).toString() + separator;
          }
          buff += endline;
@@ -169,45 +320,55 @@ public:
       return buff;
    }
 
-//* Private elements
 private:
-   std::string type { ASCII_TYPE }; //^ Image type
-   int width { 0 };                 //^ Image width
-   int height { 0 };                //^ Image height
-   int colors { 0 };                //^ Number of colors in the image
-   Pixel* pixels;                   //^ Pixel's pointer
+   std::string type { ASCII_TYPE }; /**< Image type */
+   int width { 0 };                 /**< Image width */
+   int height { 0 };                /**< Image height */
+   int colors { 0 };                /**< Number of colors in the image */
+   Pixel* pixels;                   /**< Pixels pointer */
 
-   //^ Set image width
+   /**
+    * @public
+    * @brief Set the image width.
+    * 
+    * @param width_image Image width.
+    */
    void setWidth(int width_image) {
-      //~ The image width is accepted
       if (width_image >= MIN_WIDTH) {
          width = width_image;
-      } else { //~ The image width is not accepted
+      } else {
          width = MIN_WIDTH;
       }
    }
 
-   //^ Set image height
+   /**
+    * @public
+    * @brief Set the image height.
+    * 
+    * @param height_image Image height.
+    */
    void setHeight(int height_image) {
-      //~ The image height is accepted
       if (height_image >= MIN_HEIGHT) {
          height = height_image;
-      } else { //~ The image height is not accepted
+      } else {
          height = MIN_HEIGHT;
       }
    }
-
-   //^ Set image colors
+   
+   /**
+    * @public
+    * @brief Set the number of colors in the image.
+    * 
+    * @param colors_image Maximum of colors per pixel channel.
+    */
    void setColors(int colors_image) {
-      //~ Number of colors is accepted
       if (colors_image >= MIN_AMOUNT_COLORS
          && colors_image <= MAX_AMOUNT_COLORS) {
          colors = colors_image;
-         //~ Number of colors is less than accepted
       } else if (colors_image < MIN_AMOUNT_COLORS) {
          colors = MIN_AMOUNT_COLORS;
-      } else { //~ Number of colors is greater than accepted
+      } else {
          colors = MAX_AMOUNT_COLORS;
       }
    }
-}; //! End of image class
+};
