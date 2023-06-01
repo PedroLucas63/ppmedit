@@ -1,98 +1,178 @@
+/**
+ * @file main.cpp
+ * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
+ * @brief ppm file manipulation program.
+ * @version 1.0
+ * @date 2023-05-31
+ * 
+ * Execution of various methods for the transformation of ppm (portable pixmap)
+ * images with guaranteed execution according to the expected parameters.
+ * 
+ * @copyright Copyright (c) 2023
+ */
+
 #include <iostream>
-#include "../libs/Editor.hpp" //! Include Editor header
+#include "../libs/Editor.hpp"
+
+#define MIN_ARGUMENTS 2 /**< Minimum arguments when executed */
 
 using namespace std;
 
 /**
- * Imprime uma ajuda explicando como o programa deve ser usado.
- * @param program_name Nome do arquivo executável.
+ * @brief Format the program name to the last name in the local file.
+ * 
+ * @param program_name Full program name (argv[0]).
+ * @return A string. 
  */
-void printUsage(string program_name) {
-  cerr << "Usage:" << endl;
-  cerr << '\t' << program_name << " <operation>" << endl;
-  cerr << "Where <operation> can be:" << endl;
-  cerr << '\t' << "gray: for creating a grayscale version of the original image." << endl;
-  cerr << '\t' << "enlarge: for enlarging the original image 2x." << endl;
-  cerr << '\t' << "reduce: for reducing the original image 2x." << endl;
-  cerr << '\t' << "rotate: for rotating the image 90 degrees clockwise." << endl;
-  cerr << '\t' << "sharp: for sharpening the image." << endl;
-  cerr << '\t' << "blur: for blurring the image." << endl;
-  cerr << endl;
-  cerr << "The original image is read from the standard input and the transformed";
-  cerr << "image is sent to the standard output." << endl;
-}
+string formatProgramName(string program_name);
 
 /**
- * Função principal: ponto de partida do programa.
+ * @brief Print the tutorial on how to use the program.
+ * 
+ * @param program_name Program name.
+ */
+void printUsage(string program_name);
+
+/**
+ * @brief Main function of the program (starting point). 
+ * 
+ * @param argc Number of arguments.
+ * @param argv Arguments.
+ * @return An integer. 
  */
 int main(int argc, char* argv[]) {
-  /*
-    argc e argv são parâmetros padrões na função main(). Enquanto argc indica quantos
-    argumentos foram passados para o programa, argv contém esses argumentos na ordem
-    em que eles foram passados. argc será sempre >= 1, pois argv[0] terá o nome do programa.
-    Por exemplo, se um programa com `meu_prog` for chamado assim:
-    $ ./meu_prog abc def ghi
-    argc terá o valor 4, indicando que há 4 argumentos, sendo o 1º (argv[0]) o nome do
-    próprio programa ("./meu_prog"), o 2º (argv[1]) será "abc", o 3º (argv[2]) será "def"
-    e, por fim, o 4º (argv[3]) será "ghi."
-  */
-  if (argc != 2) {
-    // se não houver 2 argumentos, então o programa está sendo usado incorretamente.
-    // deve-se portanto imprimir como usá-lo.
-    printUsage(argv[0]);
-  }
-  else {
-    string operation = argv[1]; // transforma o array de caracteres em string.
+   string program_name { formatProgramName(argv[0]) };
 
-    string type { "" };
-    int width { 0 };
-    int height { 0 };
-    int colors { 0 };
+   /*
+    * Checks that the program was executed with at least 2 arguments.
+    */
+   if (argc < 2) {
+      printUsage(program_name);
+      return 1;
+   }
 
-    cin >> type >> width >> height >> colors;
+   /*
+    * Receives the data from the input image.
+    */
+   string type { "" };
+   int width { 0 };
+   int height { 0 };
+   int colors { 0 };
 
-    Image image { width, height, colors };
+   cin >> type;
+   cin >> width;
+   cin >> height;
+   cin >> colors;
 
-    for (int row { 0 }; row < height; row++) {
+   Image image { width, height, colors };
+
+   for (int row { 0 }; row < height; row++) {
       for (int column { 0 }; column < width; column++) {
-        int red { 0 };
-        int green { 0 };
-        int blue { 0 };
+         int red { 0 };
+         int green { 0 };
+         int blue { 0 };
 
-        cin >> red >> green >> blue;
+         cin >> red >> green >> blue;
+         Pixel pixel { red, green, blue, colors };
 
-        Pixel pixel { red, green, blue, colors };
-
-        image.setPixel(pixel, row, column);
+         image.setPixel(pixel, row, column);
       }
-    }
+   }
 
-    Editor editor { image };
+   Editor editor { image };
+   
+   /*
+    * Perform the functions.
+    */
+   for (int index { 1 }; index < argc; index++) {
+      string operation { argv[index] };
+      if (operation == "gray") {
+         editor.grayscaleImage();
+      } else if (operation == "negative") {
+         editor.negativeImage();
+      } else if (operation == "rotate") {
+         editor.rotateImage();
+      } else if (operation == "rotate-l") {
+         editor.rotateImage("left");
+      } else if (operation == "invert") {
+         editor.rotateImage("invert");
+      } else if (operation == "enlarge") {
+         editor.enlargeImage();
+      } else if (operation == "reduce") {
+         editor.reduceImage();
+      } else if (operation == "sharp") {
+         editor.applyImageEffects();
+      } else if (operation == "sharp-e") {
+         editor.applyImageEffects("edge-sharpening");
+      } else if (operation == "blur") {
+         editor.applyImageEffects("blurring");
+      } else if (operation == "embossing") {
+         editor.applyImageEffects("embossing");
+      } else if (operation == "combine") {
+         cin >> type;
+         cin >> width;
+         cin >> height;
+         cin >> colors;
 
-    if (operation == "gray") {
-      editor.grayscaleImage();
-    } else if (operation == "enlarge") {
-      editor.enlargeImage();
-    } else if (operation == "reduce") {
-      editor.shrinkImage();
-    } else if (operation == "rotate") {
-      editor.rotateImage();
-    } else if (operation == "rotate-left") {
-      editor.rotateImage('L');
-    } else if (operation == "sharp") {
-      editor.applyImageEffects();
-    } else if (operation == "blur") {
-      editor.applyImageEffects('B');
-    } else if (operation == "mirror") {
-      editor.flipImage();
-    } else if (operation == "negative") {
-      editor.negativeImage();
-    } else {
-      printUsage(argv[0]);
-    }
+         Image foreground { width, height, colors };
 
-    editor.exportData();
-  }
+         for (int row { 0 }; row < height; row++) {
+            for (int column { 0 }; column < width; column++) {
+               int red { 0 };
+               int green { 0 };
+               int blue { 0 };
 
-  return 0;
+               cin >> red >> green >> blue;
+               Pixel pixel { red, green, blue, colors };
+
+               foreground.setPixel(pixel, row, column);
+            }
+         }
+
+         editor.combineImages(foreground);
+      }
+   }
+
+   editor.exportData();
+
+   return 0;
+}
+
+string formatProgramName(string program_name) {
+   /*
+    * Gets the position of the last separator and creates a substring from this
+    * found position concatenated with a dot at the beginning.
+    */
+   std::size_t last_separator { program_name.find_last_of("/\\") };
+   string name { "." + program_name.substr(last_separator) };
+
+   return name;
+}
+
+void printUsage(string program_name) {
+   cerr << "Usage:" << endl;
+   cerr << "\t" << program_name << " [operations]" << endl;
+   cerr << "Where each <operation> should be:" << endl;
+   cerr << "\t" << "gray: to transform the image into grayscale." << endl;
+   cerr << "\t" << "negative: to transform the image into negative." << endl;
+   cerr << "\t" << "rotate: to rotate the image 90 degrees to the right." << 
+      endl;
+   cerr << "\t" << "rotate-l: to rotate the image 90 degrees to the left." << 
+      endl;
+   cerr << "\t" << "invert: to invert the image." << endl;
+   cerr << "\t" << "enlarge: to enlarge the image by 2x." << endl;
+   cerr << "\t" << "reduce: to reduce the image by 2x." << endl;
+   cerr << "\t" << "sharp: to apply the sharpening filter to the image." << 
+      endl;
+   cerr << "\t" << "sharp-e: to apply the edge sharpening filter to the" <<
+      " image." << endl;
+   cerr << "\t" << "blur: to apply the blurring filter to the image." << endl;
+   cerr << "\t" << "embossing: to apply the embossing filter to the image." <<
+      endl;
+   cerr << "\t" << "combine: combine first image (background) with the" << 
+      " secund image (foreground). (*)" << endl;
+   cerr << "The original image is read from the standard input and the" <<
+      "transformed image is sent to the standard output." << endl;
+   cerr << "(*) Operations marked by this pointer cannot be concatenated." <<
+      endl;
 }
