@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
    not_edited.close(); 
 
    //^ Edited image
-   ifstream edited("../docs/imgs/reduce.ppm"); //~ Open image
+   ifstream edited("../docs/imgs/negative.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    edited >> type;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
    //~ Close image
    edited.close();
 
-   real_editor.reduceImage(); //^ Reduce image
+   real_editor.negativeImage(); //^ Convert to negative
 
    //^ Get the name of the test
    string full_name { argv[0] };

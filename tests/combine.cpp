@@ -15,40 +15,69 @@ int main(int argc, char* argv[]) {
    int green { 0 };
    int blue { 0 };
 
-   //^ Not edited image
-   ifstream not_edited("../docs/imgs/galinhos.ppm"); //~ Open image
+   //^ Background image
+   ifstream background("../docs/imgs/flowers.ppm"); //~ Open image
 
    //~ Get information (without pixels)
-   not_edited >> type;
-   not_edited >> width;
-   not_edited >> height;
-   not_edited >> colors;
+   background >> type;
+   background >> width;
+   background >> height;
+   background >> colors;
 
-   //~ Create a real image
-   Image real_image { width, height, colors };
+   //~ Create a background image
+   Image background_image { width, height, colors };
 
    //~ Scroll through the pixels
    for (int row { 0 }; row < height; row++) {
       for (int column { 0 }; column < width; column++) {
          //? Get pixels informations
-         not_edited >> red;
-         not_edited >> green;
-         not_edited >> blue;
+         background >> red;
+         background >> green;
+         background >> blue;
 
          //?  Create a pixel and set in the image
          Pixel pixel { red, green, blue, colors };
-         real_image.setPixel(pixel, row, column);
+         background_image.setPixel(pixel, row, column);
       }
    }
 
    //~ Create a real editor
-   Editor real_editor { real_image };
+   Editor real_editor { background_image };
 
    //~ Close image
-   not_edited.close(); 
+   background.close(); 
+
+   //^ Foreground image
+   ifstream foreground("../docs/imgs/bill.ppm"); //~ Open image
+
+   //~ Get information (without pixels)
+   foreground >> type;
+   foreground >> width;
+   foreground >> height;
+   foreground >> colors;
+
+   //~ Create a foreground image
+   Image foreground_image { width, height, colors };
+
+   //~ Scroll through the pixels
+   for (int row { 0 }; row < height; row++) {
+      for (int column { 0 }; column < width; column++) {
+         //? Get pixels informations
+         foreground >> red;
+         foreground >> green;
+         foreground >> blue;
+
+         //?  Create a pixel and set in the image
+         Pixel pixel { red, green, blue, colors };
+         foreground_image.setPixel(pixel, row, column);
+      }
+   }
+
+   //~ Close image
+   foreground.close(); 
 
    //^ Edited image
-   ifstream edited("../docs/imgs/reduce.ppm"); //~ Open image
+   ifstream edited("../docs/imgs/combine.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    edited >> type;
@@ -77,7 +106,7 @@ int main(int argc, char* argv[]) {
    //~ Close image
    edited.close();
 
-   real_editor.reduceImage(); //^ Reduce image
+   real_editor.combineImages(foreground_image); //^ Blurring filter int the image
 
    //^ Get the name of the test
    string full_name { argv[0] };

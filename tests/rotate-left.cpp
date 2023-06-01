@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
    not_edited.close(); 
 
    //^ Edited image
-   ifstream edited("../docs/imgs/reduce.ppm"); //~ Open image
+   ifstream edited("../docs/imgs/rotate-left.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    edited >> type;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
    //~ Close image
    edited.close();
 
-   real_editor.reduceImage(); //^ Reduce image
+   real_editor.rotateImage("left"); //^ Rotate image to left
 
    //^ Get the name of the test
    string full_name { argv[0] };
@@ -86,6 +86,7 @@ int main(int argc, char* argv[]) {
 
    //^ Write program name
    cout << "." << program_name << " - ";
+
 
    //^ Check equality
    if (real_editor.getImageOutput() == expected_image) {

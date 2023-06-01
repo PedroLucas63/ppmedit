@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "../../libs/Editor.hpp" //! Include Editor header
+#include "../libs/Editor.hpp" //! Include Editor header
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
    int blue { 0 };
 
    //^ Not edited image
-   ifstream not_edited("../../docs/imgs/galinhos.ppm"); //~ Open image
+   ifstream not_edited("../docs/imgs/galinhos.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    not_edited >> type;
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
    not_edited.close(); 
 
    //^ Edited image
-   ifstream edited("../../docs/imgs/blur.ppm"); //~ Open image
+   ifstream edited("../docs/imgs/blur.ppm"); //~ Open image
 
    //~ Get information (without pixels)
    edited >> type;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
    //~ Close image
    edited.close();
 
-   real_editor.applyImageEffects('B'); //^ Blurring filter int the image
+   real_editor.applyImageEffects("blurring"); //^ Blurring filter int the image
 
    //^ Get the name of the test
    string full_name { argv[0] };
