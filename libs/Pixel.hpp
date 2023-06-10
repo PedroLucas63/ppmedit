@@ -92,7 +92,7 @@ public:
     * @see getGreen()
     * @see getBlue()
     */
-   bool operator==(Pixel const& rhs) {
+   bool operator==(Pixel const& rhs) const {
       if (getMaxColors() == rhs.getMaxColors() && getRed() == rhs.getRed() &&
          getGreen() == rhs.getGreen() && getBlue() == rhs.getBlue()) 
       {
@@ -110,7 +110,7 @@ public:
     * different.
     * @see operator==()
     */
-   bool operator!=(Pixel const& rhs) { return !((*this) == rhs); }
+   bool operator!=(Pixel const& rhs) const { return !((*this) == rhs); }
 
    /**
     * @brief Get the minimum number of colors.
