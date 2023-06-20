@@ -20,7 +20,7 @@ ppmedit offers the following features:
 To use ppmedit, open a command prompt or terminal and navigate to the directory where the program executable is located. Then, use the following syntax:
 
 ```
-ppmedit [options] input_file output_file
+ppmedit [options] input_file [additional_input_file] output_file
 ```
 
 ### Options
