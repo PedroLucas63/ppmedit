@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Images settings.
  * @version 1.1
- * @date 2023-06-10
+ * @date 2023-06-20
  *
  * Portable pixmap image (ppm) definition with rules and functions for
  * comparisons and editing the data in an editor.
@@ -36,13 +36,11 @@ public:
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
-    * @see setWidth()
-    * @see setHeight()
+    * @see setSize()
     * @see setColors()
     */
    Image(int width, int height, int colors) {
-      setWidth(width);
-      setHeight(height);
+      setSize(width, height);
       setColors(colors);
    }
 
@@ -53,16 +51,14 @@ public:
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @param pixels Image pixels.
-    * @see setWidth()
-    * @see setHeight()
+    * @see setSize()
     * @see setColors()
     * @see setPixels()
     */
    Image(int width, int height, int colors, 
       std::vector<std::vector<Pixel>> pixels) 
    {
-      setWidth(width);
-      setHeight(height);
+      setSize(width, height);
       setColors(colors);
       setPixels(pixels);
    }
@@ -72,17 +68,15 @@ public:
     *
     * @param rhs A image to copy.
     * @see getWidth()
-    * @see setWidth()
     * @see getHeight()
-    * @see setHeight()
+    * @see setSize()
     * @see getColors()
     * @see setColors()
     * @see getPixels()
     * @see setPixels()
     */
    Image(Image const& rhs) {
-      setWidth(rhs.getWidth());
-      setHeight(rhs.getHeight());
+      setSize(rhs.getWidth(), rhs.getHeight());
       setColors(rhs.getColors());
       setPixels(rhs.getPixels());
    }
@@ -92,17 +86,15 @@ public:
     *
     * @param rhs A image to receive.
     * @see getWidth()
-    * @see setWidth()
     * @see getHeight()
-    * @see setHeight()
+    * @see setSize()
     * @see getColors()
     * @see setColors()
     * @see getPixels()
     * @see setPixels()
     */
    void operator=(Image const& rhs) {
-      setWidth(rhs.getWidth());
-      setHeight(rhs.getHeight());
+      setSize(rhs.getWidth(), rhs.getHeight());
       setColors(rhs.getColors());
       setPixels(rhs.getPixels());
    }
@@ -159,19 +151,6 @@ public:
    std::string getType() const { return type; }
 
    /**
-    * @brief Set the image width.
-    * 
-    * @param width_image Image width.
-    */
-   void setWidth(int width_image) {
-      if (width_image >= MIN_WIDTH) {
-         width = width_image;
-      } else {
-         width = MIN_WIDTH;
-      }
-   }
-
-   /**
     * @brief Get the image width.
     *
     * @return An integer.
@@ -179,24 +158,23 @@ public:
    int getWidth() const { return width; }
 
    /**
-    * @brief Set the image height.
-    * 
-    * @param height_image Image height.
-    */
-   void setHeight(int height_image) {
-      if (height_image >= MIN_HEIGHT) {
-         height = height_image;
-      } else {
-         height = MIN_HEIGHT;
-      }
-   }
-
-   /**
     * @brief Get the image height.
     *
     * @return An integer.
     */
    int getHeight() const { return height; }
+
+   /**
+    * @brief Set the image size.
+    * 
+    * @param width Image width
+    * @param height Image height.
+    */
+   void setSize(int width, int height) {
+      setWidth(width);
+      setHeight(height);
+      pixels.resize(height, std::vector<Pixel>(width));
+   }
 
    /**
     * @brief Get the image size.
@@ -240,7 +218,19 @@ public:
       row--;
       column--;
 
-      pixels[row][column] = pixel;
+      if (row < 0) {
+         row = 0;
+      } else if (row > height - 1) {
+         row = height - 1;
+      }
+
+      if (column < 0) {
+         column = 0;
+      } else if (column > width - 1) {
+         column = width - 1;
+      }
+
+      pixels.at(row).at(column) = pixel;
    }
 
    /**
@@ -269,7 +259,7 @@ public:
          column = width - 1;
       }
 
-      return pixels[row][column];
+      return pixels.at(row).at(column);
    }
 
    /**
@@ -333,4 +323,31 @@ private:
    int height { 0 };                       /**< Image height */
    int colors { 0 };                       /**< Number of colors in image */
    std::vector<std::vector<Pixel>> pixels; /**< Pixels vector */
+
+   /**
+    * @public
+    * @brief Set the image width.
+    * 
+    * @param width_image Image width.
+    */
+   void setWidth(int width_image) {
+      if (width_image >= MIN_WIDTH) {
+         width = width_image;
+      } else {
+         width = MIN_WIDTH;
+      }
+   }
+   /**
+    * @public
+    * @brief Set the image height.
+    * 
+    * @param height_image Image height.
+    */
+   void setHeight(int height_image) {
+      if (height_image >= MIN_HEIGHT) {
+         height = height_image;
+      } else {
+         height = MIN_HEIGHT;
+      }
+   }
 };
