@@ -2,8 +2,8 @@
  * @file Editor.hpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Editor settings.
- * @version 1.0
- * @date 2023-05-31
+ * @version 1.1
+ * @date 2023-06-20
  *
  * Portable pixmap image editor (ppm) with several methods to modify images.
  *
@@ -33,42 +33,42 @@ public:
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @param pixels Image pixels.
-    * @see importData()
+    * @see setImage()
     */
-   Editor(int width, int height, int colors, Pixel* pixels) {
-      importData(width, height, colors, pixels);
+   Editor(int width, int height, int colors, 
+      std::vector<std::vector<Pixel>> pixels) 
+   {
+      setImage(width, height, colors, pixels);
    }
 
    /**
     * @brief Construct a new Editor object with an image.
     *
     * @param image An image.
-    * @see importData()
+    * @see setImage()
     */
-   Editor(Image const& image) { importData(image); }
+   Editor(Image const& image) { setImage(image); }
 
    /**
     * @brief Construct a new Editor object with another editor (copy).
     *
     * @param rhs A editor to copy.
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @see setImage()
+    * @see getImage()
     */
    Editor(Editor const& rhs) {
-      setImageInput(rhs.getImageInput());
-      setImageOutput(rhs.getImageOutput());
+      setImage(rhs.getImage());
    }
 
    /**
     * @brief Operator to receive a editor (copy).
     *
     * @param rhs A editor to receive.
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @see setImage()
+    * @see getImage()
     */
    void operator=(Editor const& rhs) {
-      setImageInput(rhs.getImageInput());
-      setImageOutput(rhs.getImageOutput());
+      setImage(rhs.getImage());
    }
 
    /**
@@ -77,75 +77,47 @@ public:
    ~Editor() { }
 
    /**
-    * @brief Get image input.
-    *
-    * @return An image without the last modification.
-    */
-   Image getImageInput() const { return image_in; }
-
-   /**
-    * @brief Get image output.
-    *
-    * @return An image with the last modification.
-    */
-   Image getImageOutput() const { return image_out; }
-
-   /**
-    * @brief Import the image input data.
-    *
+    * @brief Set image with full data.
+    * 
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @param pixels Image pixels.
-    * @see setImageInput()
-    * @see setImageOutput()
     */
-   void importData(int width, int height, int colors, Pixel* pixels) {
-      setImageInput(width, height, colors, pixels);
-      setImageOutput(width, height, colors, pixels);
+   void setImage(int width, int height, int colors, 
+      std::vector<std::vector<Pixel>> pixels) 
+   {
+      image = Image{ width, height, colors, pixels };
    }
 
    /**
-    * @brief Import the input image.
+    * @brief Set image with other image.
+    * 
+    * @param image An image.
+    */
+   void setImage(Image const& copy_image) 
+   {
+      image = copy_image ;
+   }
+
+   /**
+    * @brief Get image.
     *
-    * @param image import image.
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @return An image with the last modification.
     */
-   void importData(Image const& image) {
-      setImageInput(image);
-      setImageOutput(image);
-   }
-
-   /**
-    * @brief Export the image output data.
-    * @see getImageOutput()
-    */
-   void exportData() const { std::cout << getImageOutput().toString(); }
-
-   /**
-    * @brief Undoes the last change made to the output image.
-    * @see getImageInput()
-    * @see setImageOutput()
-    */
-   void undoImageChange() { setImageOutput(getImageInput()); }
+   Image getImage() const { return image; }
 
    /**
     * @brief Transform the image into grayscale.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput()
     */
    void grayscaleImage() {
-      Image grayscale { getImageOutput() };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
+      int colors { image.getColors() };
 
-      int width { grayscale.getWidth() };
-      int height { grayscale.getHeight() };
-      int colors { grayscale.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
-            Pixel pixel = grayscale.getPixel(row, column);
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
+            Pixel pixel = image.getPixel(row, column);
 
             /*
              * Calculate the average of the channels in the pixel.
@@ -154,30 +126,22 @@ public:
                + pixel.getBlue()) / CHANNELS_PER_PIXEL };
 
             Pixel grayscale_pixel { average, average, average, colors };
-            grayscale.setPixel(grayscale_pixel, row, column);
+            image.setPixel(grayscale_pixel, row, column);
          }
       }
-
-      setImageInput(getImageOutput());
-      setImageOutput(grayscale);
    }
 
    /**
     * @brief Transform the image into negative.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput()
     */
    void negativeImage() {
-      Image negative { getImageOutput() };
-      
-      int width { negative.getWidth() };
-      int height {negative.getHeight() };
-      int colors { negative.getColors() };
+      int width { image.getWidth() };
+      int height {image.getHeight() };
+      int colors { image.getColors() };
 
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
-            Pixel pixel { negative.getPixel(row, column) };
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
+            Pixel pixel { image.getPixel(row, column) };
 
             /*
              * It subtracts the maximum number of colors per channel by the
@@ -188,105 +152,87 @@ public:
             int new_blue { colors - pixel.getBlue() };
 
             Pixel negative_pixel { new_red, new_green, new_blue, colors };
-            negative.setPixel(negative_pixel, row, column);
+            image.setPixel(negative_pixel, row, column);
          }
       }
-
-      setImageInput(getImageOutput());
-      setImageOutput(negative);
    }
 
    /**
     * @brief Rotate image to the right.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput
+    * @see setImage()
     */
    void rotateRight() {
-      Image buff { getImageOutput() };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
 
-      int width { buff.getWidth() };
-      int height { buff.getHeight() };
+      Image rotate { height, width, image.getColors() };
 
-      Image rotate { height, width, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
             /*
              * Sets the pixel of the rotation image with the pixel of the
              * buffer image, in the defined row and column, to the position
-             * determined by (column, height - row - 1).
+             * determined by (column, height - row + 1).
              * Relationship obtained from the observations.
              */
-            rotate.setPixel(buff.getPixel(row, column), column, 
-               height - row - 1);
+            rotate.setPixel(image.getPixel(row, column), column, 
+               height - row + 1);
          }
       }
 
-      setImageInput(buff);
-      setImageOutput(rotate);
+      setImage(rotate);
    }
 
    /**
     * @brief Rotate image to the left.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput
+    * @see setImage()
     */
    void rotateLeft() {
-      Image buff { getImageOutput() };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
 
-      int width { buff.getWidth() };
-      int height { buff.getHeight() };
+      Image rotate { height, width, image.getColors() };
 
-      Image rotate { height, width, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
             /*
              * Sets the pixel of the rotation image with the pixel of the
              * buffer image, in the defined row and column, to the position
-             * determined by (width - column - 1, row).
+             * determined by (width - column + 1, row).
              * Relationship obtained from the observations.
              */
             rotate.setPixel(
-               buff.getPixel(row, column), 
-               width - column - 1, 
+               image.getPixel(row, column), 
+               width - column + 1, 
                row
             );
          }
       }
 
-      setImageInput(buff);
-      setImageOutput(rotate);
+      setImage(rotate);
    }
 
    /**
     * @brief Invert the image.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput
+    * @see setImage()
     */
    void invertImage() {
-      Image buff { getImageOutput() };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
 
-      int width { buff.getWidth() };
-      int height { buff.getHeight() };
+      Image invert { width, height, image.getColors() };
 
-      Image invert { width, height, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
             /*
              * Get the invert pixel of the buffer image.
              */
-            Pixel pixel { buff.getPixel(row, width - column - 1) };
+            Pixel pixel { image.getPixel(row, width - column + 1) };
             invert.setPixel(pixel, row, column);
          }
       }
 
-      setImageInput(buff);
-      setImageOutput(invert);
+      setImage(invert);
    }
 
    /**
@@ -310,103 +256,89 @@ public:
 
    /**
     * @brief Enlarge image.
-    * @see getImageOutput()
     * @see getAveragePixelIntensity()
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @see setImage()
     */
    void enlargeImage() {
-      Image buff { getImageOutput() };
+      int width { 2 * image.getWidth() - 1 };
+      int height { 2 * image.getHeight() - 1 };
 
-      int width { 2 * buff.getWidth() - 1 };
-      int height { 2 * buff.getHeight() - 1 };
-
-      Image enlarge { width, height, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
-            Pixel new_pixel;
-            int quant_pixels { 2 };
-
-            /*
-             * Checks whether the pixel under analysis will be a pixel from the
-             * original image, or a horizontally or vertically generated pixel.
-             */
-            if (row % 2 == 0 && column % 2 == 0) {
-               new_pixel = buff.getPixel(row / 2, column / 2);
-            } else if (row % 2 == 0) {
-               Pixel pixels[quant_pixels] = { 
-                  buff.getPixel(row / 2, (column - 1) / 2),
-                  buff.getPixel(row / 2, (column + 1) / 2) 
-               };
-
-               new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
-            } else if (column % 2 == 0) {
-               Pixel pixels[quant_pixels] = {
-                  buff.getPixel((row - 1) / 2, column / 2),
-                  buff.getPixel((row + 1) / 2, column / 2) 
-               };
-
-               new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
-            }
-
-            enlarge.setPixel(new_pixel, row, column);
-         }
-      }
+      Image enlarge { width, height, image.getColors() };
 
       /*
-       * Scrolls through the pixels generated by two vertical pixels of the
-       * previous repetition system
+       * Fills in the original pixels, the pixels immediately below and the 
+       * pixels immediately to the sides of the original
        */
-      for (int row { 1 }; row < height; row += 2) {
-         for (int column { 1 }; column < width; column += 2) {
-            Pixel new_pixel;
-            int quant_pixels { 2 };
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
+            Pixel enlarge_pixel;
 
-            Pixel pixels[quant_pixels] = { 
+            if (row % 2 == 1 && column % 2 == 1) {
+               enlarge_pixel = image.getPixel((row / 2) + 1, (column / 2) + 1);
+            } else if (row % 2 == 1) {
+               Pixel pixels_auxiliary[2] = {
+                  image.getPixel((row / 2) + 1, column / 2),
+                  image.getPixel((row / 2) + 1, (column / 2) + 1)
+               };
+               enlarge_pixel = getAveragePixelIntensity(pixels_auxiliary, 2);
+            } else if (column % 2 == 1) {
+               Pixel pixels_auxiliary[2] = {
+                  image.getPixel(row / 2, (column / 2) + 1),
+                  image.getPixel((row / 2) + 1, (column / 2) + 1)
+               };
+               enlarge_pixel = getAveragePixelIntensity(pixels_auxiliary, 2);
+            }
+
+            enlarge.setPixel(enlarge_pixel, row, column);
+         }
+      }
+      
+      /*
+       * Fills in the pixels on the diagonals of the original pixels based on
+       * the pixels below and above them generated in the previous loop.
+       */
+      for (int row { 2 }; row <= height; row += 2) {
+         for (int column { 2 }; column <= width; column += 2) {
+            Pixel enlarge_pixel;
+
+            Pixel pixels_auxiliary[2] = {
                enlarge.getPixel(row - 1, column),
-               enlarge.getPixel(row + 1, column) 
+               enlarge.getPixel(row + 1, column)
             };
+            enlarge_pixel = getAveragePixelIntensity(pixels_auxiliary, 2);
 
-            new_pixel = getAveragePixelIntensity(pixels, quant_pixels);
-
-            enlarge.setPixel(new_pixel, row, column);
+            enlarge.setPixel(enlarge_pixel, row, column);
          }
       }
 
-      setImageInput(buff);
-      setImageOutput(enlarge);
+      setImage(enlarge);
    }
 
    /**
     * @brief Reduce image.
-    * @see getImageOutput()
     * @see getAveragePixelIntensity()
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @see setImage()
     */
    void reduceImage() {
-      Image buff { getImageOutput() };
+      int width { image.getWidth() % 2 == 0 ? image.getWidth() / 2
+         : (image.getWidth() - 1) / 2 };
+      int height { image.getHeight() % 2 == 0 ? image.getHeight() / 2
+         : (image.getHeight() - 1) / 2 };
 
-      int width { buff.getWidth() % 2 == 0 ? buff.getWidth() / 2
-         : (buff.getWidth() - 1) / 2 };
-      int height { buff.getHeight() % 2 == 0 ? buff.getHeight() / 2
-         : (buff.getHeight() - 1) / 2 };
+      Image reduce { width, height, image.getColors() };
 
-      Image reduce { width, height, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
             /*
              * Calculate the average of the pixel and the three adjacent 
              * pixels.
              */
             int quant_pixels { 4 };
             Pixel pixels[quant_pixels] = { 
-               buff.getPixel(row * 2, column * 2),
-               buff.getPixel(row * 2, column * 2 + 1),
-               buff.getPixel(row * 2 + 1, column * 2),
-               buff.getPixel(row * 2 + 1, column * 2 + 1) 
+               image.getPixel((row * 2) - 1, (column * 2) - 1),
+               image.getPixel((row * 2) - 1, column * 2),
+               image.getPixel((row * 2), (column * 2) - 1),
+               image.getPixel((row * 2), column * 2) 
             };
 
             Pixel pixel_average { 
@@ -417,8 +349,7 @@ public:
          }
       }
 
-      setImageInput(buff);
-      setImageOutput(reduce);
+      setImage(reduce);
    }
 
    /**
@@ -426,15 +357,16 @@ public:
     * 
     * @param filter Filter to be apply. Accepts "sharpening", "blurring",
     * "edge-sharpening" and "embossing". Default is "sharpening".
+    * @see putOnMask()
     */
    void applyImageEffects(std::string filter = "sharpening") {
       float mask[MASK_SIZE][MASK_SIZE];
 
       if (filter == "sharpening") {
          float buff_mask[MASK_SIZE][MASK_SIZE] = { 
-            { 0, -1, 0 }, 
+            { 0, -1,  0 }, 
             { -1, 5, -1 }, 
-            { 0, -1, 0 } 
+            { 0, -1,  0 } 
          };
 
          memcpy(mask, buff_mask, sizeof(mask));
@@ -449,7 +381,7 @@ public:
       } else if (filter == "edge-sharpening") {
          float buff_mask[MASK_SIZE][MASK_SIZE] = { 
             { -1, -1, -1 },
-            { -1, 9, -1 },
+            { -1,  9, -1 },
             { -1, -1, -1 } 
          };
 
@@ -457,38 +389,32 @@ public:
       } else if (filter == "embossing") {
          float buff_mask[MASK_SIZE][MASK_SIZE] = { 
             { -2, -1, 0 }, 
-            { -1, 1, 1 }, 
-            { 0, 1, 2 } 
+            { -1,  1, 1 }, 
+            {  0,  1, 2 } 
          };
 
          memcpy(mask, buff_mask, sizeof(mask));
       }
 
-      Image filtered { putOnMask(mask) };
-
-      setImageInput(getImageOutput());
-      setImageOutput(filtered);
+      putOnMask(mask);
    }
 
    /**
     * @brief Combine an image with a foreground image of equal size.
     * 
     * @param foreground foreground image.
-    * @see getImageOutput()
-    * @see setImageInput()
-    * @see setImageOutput()
+    * @see getImage()
+    * @see setImage()
     */
    void combineImages(Image const& foreground) {
-      Image image { getImageOutput() };
-
       int width { image.getWidth() };
       int height { image.getHeight() };
 
       if (width == foreground.getWidth() && height == foreground.getHeight()) {
          Pixel first_pixel { foreground.getPixel(0, 0) }; /* Pixel to ignore */
 
-         for (int row { 0 }; row < height; row++) {
-            for (int column { 0 }; column < width; column++) {
+         for (int row { 1 }; row <= height; row++) {
+            for (int column { 1 }; column <= width; column++) {
                /*
                 * Set all pixels in the image other than the ignore pixel.
                 */
@@ -498,69 +424,11 @@ public:
                }
             }
          }
-
-         setImageInput(getImageOutput());
-         setImageOutput(image);
       }
    }
 
 private:
-   Image image_in; /**< Image input (without the last edition) */
-   Image image_out; /**< Image output (with the last edition) */ 
-
-   /**
-    * @public
-    * @brief Set image input with all data. 
-    *
-    * @param width_image Image width.
-    * @param height_image Image height.
-    * @param colors_image Maximum of colors per pixel channel.
-    * @param pixels_image Image pixels.
-    */
-   void setImageInput(int width_image, int height_image, int colors_image,
-      Pixel* pixels_image) {
-      image_in = Image { 
-         width_image, 
-         height_image, 
-         colors_image, 
-         pixels_image 
-      };
-   }
-
-   /**
-    * @public
-    * @brief Set the image input with an image.
-    * 
-    * @param image An image.
-    */
-   void setImageInput(Image const& image) { image_in = image; }
-
-   /**
-    * @public
-    * @brief Set image output with all data. 
-    *
-    * @param width_image Image width.
-    * @param height_image Image height.
-    * @param colors_image Maximum of colors per pixel channel.
-    * @param pixels_image Image pixels.
-    */
-   void setImageOutput(int width_image, int height_image, int colors_image,
-      Pixel* pixels_image) {
-      image_out = Image { 
-         width_image, 
-         height_image, 
-         colors_image, 
-         pixels_image
-      };
-   }
-
-   /**
-    * @public
-    * @brief Set the image output with an image.
-    * 
-    * @param image An image.
-    */
-   void setImageOutput(Image const& image) { image_out = image; }
+   Image image; /**< Image */
 
    /**
     * @public
@@ -638,37 +506,35 @@ private:
     * @brief Put a defined filter on the whole image.
     * 
     * @param mask Filter mask with the size defined by #MASK_SIZE x #MASK_SIZE.
-    * @return A image. 
+    * @see setImage() 
     */
-   Image putOnMask(float mask[MASK_SIZE][MASK_SIZE]) {
-      Image buff { getImageOutput() };
+   void putOnMask(float mask[MASK_SIZE][MASK_SIZE]) {
+      int width { image.getWidth() };
+      int height { image.getHeight() };
 
-      int width { buff.getWidth() };
-      int height { buff.getHeight() };
+      Image mask_image { width, height, image.getColors() };
 
-      Image mask_image { width, height, buff.getColors() };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
             /*
              * Put the filter on all pixels of the image through it with its 
              * neighbors.
              */
             Pixel pixels[MASK_SIZE][MASK_SIZE] = { 
                { 
-                  buff.getPixel(row - 1, column - 1), 
-                  buff.getPixel(row - 1, column),
-                  buff.getPixel(row - 1, column + 1) 
+                  image.getPixel(row - 1, column - 1), 
+                  image.getPixel(row - 1, column),
+                  image.getPixel(row - 1, column + 1) 
                },
                { 
-                  buff.getPixel(row, column - 1), 
-                  buff.getPixel(row, column),
-                  buff.getPixel(row, column + 1) 
+                  image.getPixel(row, column - 1), 
+                  image.getPixel(row, column),
+                  image.getPixel(row, column + 1) 
                },
                { 
-                  buff.getPixel(row + 1, column - 1), 
-                  buff.getPixel(row + 1, column),
-                  buff.getPixel(row + 1, column + 1) 
+                  image.getPixel(row + 1, column - 1), 
+                  image.getPixel(row + 1, column),
+                  image.getPixel(row + 1, column + 1) 
                } 
             };
 
@@ -676,6 +542,6 @@ private:
          }
       }
 
-      return mask_image;
+      setImage(mask_image);
    }
 };
