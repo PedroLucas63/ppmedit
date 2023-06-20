@@ -2,8 +2,8 @@
  * @file main.cpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief ppm file manipulation program.
- * @version 1.0
- * @date 2023-05-31
+ * @version 1.1
+ * @date 2023-06-20
  * 
  * Execution of various methods for the transformation of ppm (portable pixmap)
  * images with guaranteed execution according to the expected parameters.
@@ -12,7 +12,7 @@
  */
 
 #include <iostream>
-#include "../libs/Editor.hpp"
+#include "./libs/Editor.hpp"
 
 #define MIN_ARGUMENTS 2 /**< Minimum arguments when executed */
 
@@ -34,6 +34,20 @@ string formatProgramName(string program_name);
 void printUsage(string program_name);
 
 /**
+ * @brief Get image informations.
+ * 
+ * @param[out] image Image memory position.
+ */
+void getImage(Image &image);
+
+/**
+ * @brief Export image to program output.
+ * 
+ * @param editor Editor memory position.
+ */
+void exportImage(Editor &editor);
+
+/**
  * @brief Main function of the program (starting point). 
  * 
  * @param argc Number of arguments.
@@ -51,34 +65,8 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 
-   /*
-    * Receives the data from the input image.
-    */
-   string type { "" };
-   int width { 0 };
-   int height { 0 };
-   int colors { 0 };
-
-   cin >> type;
-   cin >> width;
-   cin >> height;
-   cin >> colors;
-
-   Image image { width, height, colors };
-
-   for (int row { 0 }; row < height; row++) {
-      for (int column { 0 }; column < width; column++) {
-         int red { 0 };
-         int green { 0 };
-         int blue { 0 };
-
-         cin >> red >> green >> blue;
-         Pixel pixel { red, green, blue, colors };
-
-         image.setPixel(pixel, row, column);
-      }
-   }
-
+   Image image;
+   getImage(image);
    Editor editor { image };
    
    /*
@@ -109,31 +97,14 @@ int main(int argc, char* argv[]) {
       } else if (operation == "embossing") {
          editor.applyImageEffects("embossing");
       } else if (operation == "combine") {
-         cin >> type;
-         cin >> width;
-         cin >> height;
-         cin >> colors;
-
-         Image foreground { width, height, colors };
-
-         for (int row { 0 }; row < height; row++) {
-            for (int column { 0 }; column < width; column++) {
-               int red { 0 };
-               int green { 0 };
-               int blue { 0 };
-
-               cin >> red >> green >> blue;
-               Pixel pixel { red, green, blue, colors };
-
-               foreground.setPixel(pixel, row, column);
-            }
-         }
+         Image foreground;
+         getImage(foreground);
 
          editor.combineImages(foreground);
       }
    }
 
-   editor.exportData();
+   exportImage(editor);
 
    return 0;
 }
@@ -175,4 +146,36 @@ void printUsage(string program_name) {
       "transformed image is sent to the standard output." << endl;
    cerr << "(*) Operations marked by this pointer cannot be concatenated." <<
       endl;
+}
+
+void getImage(Image& image) {
+   string type { "" };
+   int width { 0 };
+   int height { 0 };
+   int colors { 0 };
+
+   cin >> type;
+   cin >> width;
+   cin >> height;
+   cin >> colors;
+
+   image.setSize(width, height);
+   image.setColors(colors);
+
+   for (int row { 1 }; row <= height; row++) {
+      for (int column { 1 }; column <= width; column++) {
+         int red { 0 };
+         int green { 0 };
+         int blue { 0 };
+
+         cin >> red >> green >> blue;
+         Pixel pixel { red, green, blue, colors };
+
+         image.setPixel(pixel, row, column);
+      }
+   }
+}
+
+void exportImage(Editor& editor) {
+   cout << editor.getImage().toString() << endl;
 }
