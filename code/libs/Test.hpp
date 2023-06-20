@@ -94,6 +94,8 @@ public:
          }
       }
 
+      file.close();
+
       return image;
    }
 
