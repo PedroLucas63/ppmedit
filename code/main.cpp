@@ -12,7 +12,8 @@
  */
 
 #include <iostream>
-#include "./libs/Editor.hpp"
+#include <fstream>
+#include "libs/Editor.hpp"
 
 #define MIN_ARGUMENTS 2 /**< Minimum arguments when executed */
 
@@ -36,16 +37,17 @@ void printUsage(string program_name);
 /**
  * @brief Get image informations.
  * 
+ * @param local Image Location.
  * @param[out] image Image memory position.
  */
-void getImage(Image &image);
+void getImage(string local, Image &image);
 
 /**
  * @brief Export image to program output.
- * 
+ * @param local Image location.
  * @param editor Editor memory position.
  */
-void exportImage(Editor &editor);
+void exportImage(string local, Editor &editor);
 
 /**
  * @brief Main function of the program (starting point). 
@@ -56,23 +58,41 @@ void exportImage(Editor &editor);
  */
 int main(int argc, char* argv[]) {
    string program_name { formatProgramName(argv[0]) };
+   int minimum_args { 4 };
+
+   for (int index { 0 }; index < argc; index++) {
+      if (strcmp(argv[index], "combine") == 0) {
+         minimum_args++;
+         break;
+      }
+   }
 
    /*
-    * Checks that the program was executed with at least 2 arguments.
+    * Checks that the program was executed with at least the required number
+    * of arguments.
     */
-   if (argc < 2) {
+   if (argc < minimum_args) {
       printUsage(program_name);
       return 1;
    }
 
+   int options { 0 };
+
+   if (minimum_args == 4) {
+      options = argc - 2;
+   } else {
+      options = argc - 3;
+   }
+
    Image image;
-   getImage(image);
+   getImage(argv[options], image);
+
    Editor editor { image };
-   
+      
    /*
-    * Perform the functions.
-    */
-   for (int index { 1 }; index < argc; index++) {
+   * Perform the functions.
+   */
+   for (int index { 1 }; index < options; index++) {
       string operation { argv[index] };
       if (operation == "gray") {
          editor.grayscaleImage();
@@ -98,14 +118,14 @@ int main(int argc, char* argv[]) {
          editor.applyImageEffects("embossing");
       } else if (operation == "combine") {
          Image foreground;
-         getImage(foreground);
-
+         getImage(argv[argc - 2], foreground);
+         
          editor.combineImages(foreground);
       }
    }
 
-   exportImage(editor);
-
+   exportImage(argv[argc - 1], editor);
+   
    return 0;
 }
 
@@ -122,8 +142,9 @@ string formatProgramName(string program_name) {
 
 void printUsage(string program_name) {
    cerr << "Usage:" << endl;
-   cerr << "\t" << program_name << " [operations]" << endl;
-   cerr << "Where each <operation> should be:" << endl;
+   cerr << "\t" << program_name << " [options] input_file " <<
+      "[additional_input_file] output_file" << endl;
+   cerr << "Where each <options> should be:" << endl;
    cerr << "\t" << "gray: to transform the image into grayscale." << endl;
    cerr << "\t" << "negative: to transform the image into negative." << endl;
    cerr << "\t" << "rotate: to rotate the image 90 degrees to the right." << 
@@ -141,23 +162,26 @@ void printUsage(string program_name) {
    cerr << "\t" << "embossing: to apply the embossing filter to the image." <<
       endl;
    cerr << "\t" << "combine: combine first image (background) with the" << 
-      " secund image (foreground). (*)" << endl;
+      " secund image (foreground). (*) (**)" << endl;
    cerr << "The original image is read from the standard input and the" <<
       "transformed image is sent to the standard output." << endl;
-   cerr << "(*) Operations marked by this pointer cannot be concatenated." <<
-      endl;
+   cerr << "(*) Operations marked by this pointer cannot have concatenated" <<
+      " options to their right and are the only ones that must receive an" <<
+      " additional input image." << endl;
 }
 
-void getImage(Image& image) {
+void getImage(string local, Image &image) {
    string type { "" };
    int width { 0 };
    int height { 0 };
    int colors { 0 };
 
-   cin >> type;
-   cin >> width;
-   cin >> height;
-   cin >> colors;
+   ifstream file(local);
+
+   file >> type;
+   file >> width;
+   file >> height;
+   file >> colors;
 
    image.setSize(width, height);
    image.setColors(colors);
@@ -168,7 +192,7 @@ void getImage(Image& image) {
          int green { 0 };
          int blue { 0 };
 
-         cin >> red >> green >> blue;
+         file >> red >> green >> blue;
          Pixel pixel { red, green, blue, colors };
 
          image.setPixel(pixel, row, column);
@@ -176,6 +200,7 @@ void getImage(Image& image) {
    }
 }
 
-void exportImage(Editor& editor) {
-   cout << editor.getImage().toString() << endl;
+void exportImage(string local, Editor& editor) {
+   ofstream file(local);
+   file << editor.getImage().toString() << endl;
 }
