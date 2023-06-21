@@ -11,7 +11,7 @@
  */
 
 #include <string.h>
-#include "./Image.hpp"
+#include "Image.hpp"
 
 #define MASK_SIZE 3 /**< Mask width and height */
 
@@ -29,16 +29,17 @@ public:
    /**
     * @brief Construct a new Editor object with full data.
     *
+    * @param type Type image.
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @param pixels Image pixels.
     * @see setImage()
     */
-   Editor(int width, int height, int colors, 
+   Editor(std::string type, int width, int height, int colors, 
       std::vector<std::vector<Pixel>> pixels) 
    {
-      setImage(width, height, colors, pixels);
+      setImage(type, width, height, colors, pixels);
    }
 
    /**
@@ -79,15 +80,16 @@ public:
    /**
     * @brief Set image with full data.
     * 
+    * @param type Type image.
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @param pixels Image pixels.
     */
-   void setImage(int width, int height, int colors, 
+   void setImage(std::string type, int width, int height, int colors, 
       std::vector<std::vector<Pixel>> pixels) 
    {
-      image = Image{ width, height, colors, pixels };
+      image = Image{ type, width, height, colors, pixels };
    }
 
    /**
@@ -165,7 +167,7 @@ public:
       int width { image.getWidth() };
       int height { image.getHeight() };
 
-      Image rotate { height, width, image.getColors() };
+      Image rotate { image.getType(), height, width, image.getColors() };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
@@ -191,7 +193,7 @@ public:
       int width { image.getWidth() };
       int height { image.getHeight() };
 
-      Image rotate { height, width, image.getColors() };
+      Image rotate { image.getType(), height, width, image.getColors() };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
@@ -220,7 +222,7 @@ public:
       int width { image.getWidth() };
       int height { image.getHeight() };
 
-      Image invert { width, height, image.getColors() };
+      Image invert { image.getType(), width, height, image.getColors() };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
@@ -263,7 +265,7 @@ public:
       int width { 2 * image.getWidth() - 1 };
       int height { 2 * image.getHeight() - 1 };
 
-      Image enlarge { width, height, image.getColors() };
+      Image enlarge { image.getType(), width, height, image.getColors() };
 
       /*
        * Fills in the original pixels, the pixels immediately below and the 
@@ -325,7 +327,7 @@ public:
       int height { image.getHeight() % 2 == 0 ? image.getHeight() / 2
          : (image.getHeight() - 1) / 2 };
 
-      Image reduce { width, height, image.getColors() };
+      Image reduce { image.getType(), width, height, image.getColors() };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
@@ -427,6 +429,17 @@ public:
       }
    }
 
+   /**
+    * @brief Convert an image to the other type.
+    */
+   void convert() {
+      if (image.getType() == ASCII_TYPE) {
+         image.setType(BINARY_TYPE);
+      } else {
+         image.setType(ASCII_TYPE);
+      }
+   }
+
 private:
    Image image; /**< Image */
 
@@ -512,7 +525,7 @@ private:
       int width { image.getWidth() };
       int height { image.getHeight() };
 
-      Image mask_image { width, height, image.getColors() };
+      Image mask_image { image.getType(), width, height, image.getColors() };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {

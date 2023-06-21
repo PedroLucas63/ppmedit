@@ -15,6 +15,7 @@
 #include "Pixel.hpp"
 
 #define ASCII_TYPE "P3"         /**< Ascii type for the ppm image */
+#define BINARY_TYPE "P6"        /**< Binary type for the ppm image */
 #define MIN_WIDTH 1             /**< Minimum width for a ppm image */
 #define MIN_HEIGHT 1            /**< Minimum height for a ppm image */
 #define MAX_COLUMNS_PER_LINE 70 /**< Maximum columns per line */
@@ -33,13 +34,15 @@ public:
    /**
     * @brief Construct a new Image object with data but not with pixels.
     *
+    * @param type Type image.
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
     * @see setSize()
     * @see setColors()
     */
-   Image(int width, int height, int colors) {
+   Image(std::string type, int width, int height, int colors) {
+      setType(type);
       setSize(width, height);
       setColors(colors);
    }
@@ -47,6 +50,7 @@ public:
    /**
     * @brief Construct a new Image object with full data.
     *
+    * @param type Type image.
     * @param width Image width.
     * @param height Image height.
     * @param colors Maximum of colors per pixel channel.
@@ -55,9 +59,10 @@ public:
     * @see setColors()
     * @see setPixels()
     */
-   Image(int width, int height, int colors, 
+   Image(std::string type, int width, int height, int colors, 
       std::vector<std::vector<Pixel>> pixels) 
    {
+      setType(type);
       setSize(width, height);
       setColors(colors);
       setPixels(pixels);
@@ -67,6 +72,8 @@ public:
     * @brief Construct a new Image object with another image (copy).
     *
     * @param rhs A image to copy.
+    * @see getType()
+    * @see setType()
     * @see getWidth()
     * @see getHeight()
     * @see setSize()
@@ -76,6 +83,7 @@ public:
     * @see setPixels()
     */
    Image(Image const& rhs) {
+      setType(rhs.getType());
       setSize(rhs.getWidth(), rhs.getHeight());
       setColors(rhs.getColors());
       setPixels(rhs.getPixels());
@@ -85,6 +93,8 @@ public:
     * @brief Operator to receive a image (copy).
     *
     * @param rhs A image to receive.
+    * @see getType()
+    * @see setType()
     * @see getWidth()
     * @see getHeight()
     * @see setSize()
@@ -94,6 +104,7 @@ public:
     * @see setPixels()
     */
    void operator=(Image const& rhs) {
+      setType(rhs.getType());
       setSize(rhs.getWidth(), rhs.getHeight());
       setColors(rhs.getColors());
       setPixels(rhs.getPixels());
@@ -144,6 +155,18 @@ public:
    bool operator!=(Image const& rhs) const { return !((*this) == rhs); }
 
    /**
+    * @brief Set the image type.
+    *
+    * @param type_image Type image.
+    */
+   void setType(std::string type_image) {
+      if (type_image == ASCII_TYPE || type_image == BINARY_TYPE) {
+         type = type_image;
+      } else {
+         type = ASCII_TYPE;
+      }
+   }
+   /**
     * @brief Get the image type.
     *
     * @return A string.
@@ -189,14 +212,22 @@ public:
     * @param colors_image Maximum of colors per pixel channel.
     */
    void setColors(int colors_image) {
+      int max_colors { 0 };
+
+      if (type == ASCII_TYPE) {
+         max_colors = MAX_AMOUNT_COLORS;
+      } else {
+         max_colors = STANDARD_COLOR_QUANTIFY;
+      }
+
       if (colors_image >= MIN_AMOUNT_COLORS &&
-         colors_image <= MAX_AMOUNT_COLORS) 
+         colors_image <= max_colors) 
       {
          colors = colors_image;
       } else if (colors_image < MIN_AMOUNT_COLORS) {
          colors = MIN_AMOUNT_COLORS;
       } else {
-         colors = MAX_AMOUNT_COLORS;
+         colors = max_colors;
       }
    }
 
@@ -299,11 +330,19 @@ public:
 
       for (auto row : pixels) {
          for (auto pixel : row) {
-            std::string pixel_str { std::to_string(pixel.getRed()) +
-               separator + std::to_string(pixel.getGreen()) + separator +
-               std::to_string(pixel.getBlue()) + separator };
+            std::string pixel_str { };
 
-            if (size(buff_line + pixel_str) <= MAX_COLUMNS_PER_LINE) {
+            if (type == BINARY_TYPE) {
+               pixel_str = (char) pixel.getRed() + 
+                  (char) pixel.getGreen()+
+                  (char) pixel.getBlue();
+            } else {
+               pixel_str = std::to_string(pixel.getRed()) + separator +
+                  std::to_string(pixel.getGreen()) + separator +
+                  std::to_string(pixel.getBlue()) + separator;
+            }
+
+            if ((buff_line + pixel_str).size() <= MAX_COLUMNS_PER_LINE) {
                buff_line += pixel_str;
             } else {
                buff += buff_line + endline;
@@ -318,7 +357,7 @@ public:
    }
 
 private:
-   std::string type { ASCII_TYPE };        /**< Image type */
+   std::string type;                       /**< Image type */
    int width { 0 };                        /**< Image width */
    int height { 0 };                       /**< Image height */
    int colors { 0 };                       /**< Number of colors in image */
