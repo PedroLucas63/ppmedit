@@ -333,9 +333,9 @@ public:
             std::string pixel_str { };
 
             if (type == BINARY_TYPE) {
-               pixel_str = (char) pixel.getRed() + 
-                  (char) pixel.getGreen()+
-                  (char) pixel.getBlue();
+               pixel_str += (char) pixel.getRed();
+               pixel_str += (char) pixel.getGreen();
+               pixel_str += (char) pixel.getBlue();
             } else {
                pixel_str = std::to_string(pixel.getRed()) + separator +
                   std::to_string(pixel.getGreen()) + separator +
