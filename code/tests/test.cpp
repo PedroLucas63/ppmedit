@@ -18,4 +18,6 @@ int main() {
    galinhos.test("./imgs/rotate-l.ppm", Rotate_Left);
    galinhos.test("./imgs/rotate.ppm", Rotate_Right);
    galinhos.test("./imgs/sharp.ppm", Sharpening);
+   galinhos.test("./imgs/border-solid.ppm", Border_Solid);
+   galinhos.test("./imgs/border-polaroid.ppm", Border_Polaroid);
 }

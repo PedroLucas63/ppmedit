@@ -30,7 +30,9 @@ enum Methods {
    Reduce,
    Rotate_Left,
    Rotate_Right,
-   Sharpening
+   Sharpening,
+   Border_Solid,
+   Border_Polaroid
 };
 
 /**
@@ -81,7 +83,7 @@ public:
       file >> height;
       file >> colors;
 
-      Image image { width, height, colors };
+      Image image { type, width, height, colors };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
@@ -165,6 +167,16 @@ public:
          case Sharpening:
             std::cout << "Sharpening:\n\t";
             editor.applyImageEffects("sharpening");
+            passed = editor.getImage() == expected;
+            break;
+         case Border_Solid:
+            std::cout << "Border Solid:\n\t";
+            editor.applyBorder();
+            passed = editor.getImage() == expected;
+            break;
+         case Border_Polaroid:
+            std::cout << "Border Polaroid:\n\t";
+            editor.applyBorder(1, "polaroid");
             passed = editor.getImage() == expected;
             break;
       }
