@@ -116,6 +116,10 @@ int main(int argc, char* argv[]) {
          editor.applyImageEffects("blurring");
       } else if (operation == "embossing") {
          editor.applyImageEffects("embossing");
+      } else if (operation == "b-solid") {
+         editor.applyBorder();
+      } else if (operation == "b-polaroid") {
+         editor.applyBorder(1, "polaroid");
       } else if (operation == "combine") {
          Image foreground;
          getImage(argv[argc - 2], foreground);
@@ -161,6 +165,10 @@ void printUsage(string program_name) {
    cerr << "\t" << "blur: to apply the blurring filter to the image." << endl;
    cerr << "\t" << "embossing: to apply the embossing filter to the image." <<
       endl;
+   cerr << "\t" << "b-solid: to apply the solid border to the image." <<
+      endl;
+   cerr << "\t" << "b-polaroid: to apply the polaroid border to the image." <<
+      endl;
    cerr << "\t" << "combine: combine first image (background) with the" << 
       " secund image (foreground). (*) (**)" << endl;
    cerr << "The original image is read from the standard input and the" <<
@@ -170,30 +178,55 @@ void printUsage(string program_name) {
       " additional input image." << endl;
 }
 
-void getImage(string local, Image &image) {
+void getImage(string local, Image& image) {
    string type { "" };
    int width { 0 };
    int height { 0 };
    int colors { 0 };
 
-   ifstream file(local);
+   ifstream file(local, ios::binary);
 
    file >> type;
    file >> width;
    file >> height;
    file >> colors;
 
+   image.setType(type);
    image.setSize(width, height);
    image.setColors(colors);
+
+   if (type == BINARY_TYPE) {
+      colors = image.getColors();
+   }
 
    for (int row { 1 }; row <= height; row++) {
       for (int column { 1 }; column <= width; column++) {
          int red { 0 };
          int green { 0 };
          int blue { 0 };
+         Pixel pixel;
+         pixel.setColors(colors);
 
-         file >> red >> green >> blue;
-         Pixel pixel { red, green, blue, colors };
+         if (type == ASCII_TYPE) {
+            file >> red >> green >> blue;
+
+            pixel.setRed(red);
+            pixel.setGreen(green);
+            pixel.setBlue(blue);
+         } else {
+            /* TODO
+             * The present code has a failure to read special characters.
+             * Please correct this fault.
+             */
+            char color;
+
+            file >> color;
+            pixel.setRed(color);
+            file >> color;
+            pixel.setGreen(color);
+            file >> color;
+            pixel.setBlue(color);
+         }
 
          image.setPixel(pixel, row, column);
       }
