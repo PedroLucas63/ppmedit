@@ -430,12 +430,150 @@ public:
    }
 
    /**
-    * @brief Convert an image to the other type.
+    * @brief Defines a solid border in the image.
+    * 
+    * @param pixel An Pixel on the border.
+    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
+    * Default is 1.
+    * @see setImage()
     */
-   void convert() {
-      if (image.getType() == ASCII_TYPE) {
-         image.setType(BINARY_TYPE);
+   void applySolidBorder(Pixel pixel, int intensity = 1) {
+      int size { 0 };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
+      int colors { image.getColors() };
+
+      if (intensity == 1) {
+         size = width > height ? height / 10 : width / 10;
+      } else if (intensity == 2) {
+         size = width > height ? height / 7 : width / 7;
+      } else if (intensity == 3) {
+         size = width > height ? height / 5 : width / 5;
+      } else if (intensity == 4) {
+         size = width > height ? height / 4 : width / 4;
+      } else if (intensity == 5) {
+         size = width > height ? height / 2 : width / 2;
+      }
+
+      width += 2 * size;
+      height += 2 * size;
+
+      Image border { image.getType(), width, height, colors };
+
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
+            if (row > size && row < height - size &&
+               column > size && column < width - size) 
+            {
+               border.setPixel(image.getPixel(row - size, column - size), row,
+                  column);
+            } else {
+               border.setPixel(pixel, row, column);
+            }
+         }
+      }
+
+      setImage(border);
+   }
+
+   /**
+    * @brief Defines a Polaroid border in the image.
+    * 
+    * @param pixel An Pixel on the border. 
+    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
+    * Default is 1.
+    * @see setImage()
+    */
+   void applyPolaroidBorder(Pixel pixel, int intensity = 1) {
+      int size { 0 };
+      int width { image.getWidth() };
+      int height { image.getHeight() };
+      int colors { image.getColors() };
+
+      if (intensity == 1) {
+         size = width > height ? height / 10 : width / 10;
+      } else if (intensity == 2) {
+         size = width > height ? height / 7 : width / 7;
+      } else if (intensity == 3) {
+         size = width > height ? height / 5 : width / 5;
+      } else if (intensity == 4) {
+         size = width > height ? height / 4 : width / 4;
+      } else if (intensity == 5) {
+         size = width > height ? height / 2 : width / 2;
+      }
+
+      width += 2 * size;
+      height += 4 * size;
+
+      Image polaroid { image.getType(), width, height, colors };
+
+      for (int row { 1 }; row <= height; row++) {
+         for (int column { 1 }; column <= width; column++) {
+            if ((row > size && row < height - (3 * size)) &&
+               (column > size && column < width - size)) 
+            {
+               polaroid.setPixel(image.getPixel(row - size, column - size), row,
+                  column);
+            } else {
+               polaroid.setPixel(pixel, row, column);
+            }
+         }
+      }
+
+      setImage(polaroid);
+   }
+
+   /**
+    * @brief Defines an outline in the image with color, size and type.
+    * 
+    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
+    * Default is 1.
+    * @param type Border type. Accepts "solid" and "polaroid".
+    * Default is "solid".
+    * @param color Color of the border. Accepts "white", "black", "red", 
+    * "green" and "blue". Default is "white".
+    * @see applySolidBorder()
+    * @see applyPolaroidBorder()
+    */
+   void applyBorder(int intensity = 1, std::string type = "solid",
+      std::string color = "white") 
+   {  
+      int colors { image.getColors() };
+      Pixel pixel;
+
+      if (color == "white") {
+         pixel = { colors, colors, colors, colors };
+      } else if (color == "black") {
+         pixel = { 0, 0, 0, colors };
+      } else if (color == "red") {
+         pixel = { colors, 0, 0, colors };
+      } else if (color == "green") {
+         pixel = { 0, colors, 0, colors };
       } else {
+         pixel = { 0, 0, colors, colors };
+      }
+
+      if (type == "solid") {
+         applySolidBorder(pixel, intensity);
+      } else {
+         applyPolaroidBorder(pixel, intensity);
+      }
+   }
+
+   /**
+    * @brief Convert an image to the other type.
+    * 
+    * @param to_type Type to convert. Accepts #ASCII_TYPE, #BINARY_TYPE and
+    * "invert". Default is "invert".
+    */
+   void convert(std::string to_type = "invert") {
+      if (to_type == ASCII_TYPE) {
+         image.setType(ASCII_TYPE);
+      } else if (to_type == BINARY_TYPE) {
+         image.setType(BINARY_TYPE);
+      } else if (to_type == "invert" && image.getType() == ASCII_TYPE) {
+         image.setType(BINARY_TYPE);
+      } else if (to_type == "invert" && image.getType() == BINARY_TYPE) {
          image.setType(ASCII_TYPE);
       }
    }
