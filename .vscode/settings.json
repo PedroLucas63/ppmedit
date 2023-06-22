@@ -44,7 +44,8 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "fstream": "cpp"
+    "fstream": "cpp",
+    "ctime": "cpp"
   },
   "cmake.sourceDirectory": "/home/pedrolcs/github-classroom/dimap-ufrn/processamento-de-imagens---p1-team-1/src",
   "editor.tokenColorCustomizations": {
@@ -140,6 +141,9 @@
   },
   "cSpell.words": [
     "galinhos",
-    "pixmap"
+    "grayscale",
+    "pixmap",
+    "polaroid",
+    "ppmedit"
   ]
 }
