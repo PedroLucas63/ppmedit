@@ -218,7 +218,7 @@ void getImage(string local, Image& image) {
              * The present code has a failure to read special characters.
              * Please correct this fault.
              */
-            char color;
+            unsigned char color;
 
             file >> color;
             pixel.setRed(color);
