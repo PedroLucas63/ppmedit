@@ -197,6 +197,7 @@ void getImage(string local, Image& image) {
 
    if (type == BINARY_TYPE) {
       colors = image.getColors();
+      file.ignore();
    }
 
    for (int row { 1 }; row <= height; row++) {
@@ -218,14 +219,14 @@ void getImage(string local, Image& image) {
              * The present code has a failure to read special characters.
              * Please correct this fault.
              */
-            unsigned char color;
+            char color;
 
-            file >> color;
-            pixel.setRed(color);
-            file >> color;
-            pixel.setGreen(color);
-            file >> color;
-            pixel.setBlue(color);
+            file.get(color);
+            pixel.setRed((unsigned char) color);
+            file.get(color);
+            pixel.setGreen((unsigned char) color);
+            file.get(color);
+            pixel.setBlue((unsigned char) color);
          }
 
          image.setPixel(pixel, row, column);

@@ -336,17 +336,19 @@ public:
                pixel_str += (char) pixel.getRed();
                pixel_str += (char) pixel.getGreen();
                pixel_str += (char) pixel.getBlue();
+
+               buff_line += pixel_str;
             } else {
                pixel_str = std::to_string(pixel.getRed()) + separator +
                   std::to_string(pixel.getGreen()) + separator +
                   std::to_string(pixel.getBlue()) + separator;
-            }
 
-            if ((buff_line + pixel_str).size() <= MAX_COLUMNS_PER_LINE) {
-               buff_line += pixel_str;
-            } else {
-               buff += buff_line + endline;
-               buff_line = pixel_str;
+               if ((buff_line + pixel_str).size() <= MAX_COLUMNS_PER_LINE) {
+                  buff_line += pixel_str;
+               } else {
+                  buff += buff_line + endline;
+                  buff_line = pixel_str;
+               }
             }
          }
       }
