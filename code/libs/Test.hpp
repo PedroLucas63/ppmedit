@@ -10,6 +10,9 @@
  * @copyright Copyright (c) 2023
  */
 
+#ifndef TEST_H
+#define TEST_H
+
 #include <iostream>
 #include <fstream>
 #include "Editor.hpp"
@@ -171,12 +174,12 @@ public:
             break;
          case Border_Solid:
             std::cout << "Border Solid:\n\t";
-            editor.applyBorder();
+            editor.applyBorder("normal");
             passed = editor.getImage() == expected;
             break;
          case Border_Polaroid:
             std::cout << "Border Polaroid:\n\t";
-            editor.applyBorder(1, "polaroid");
+            editor.applyBorder("normal", "polaroid");
             passed = editor.getImage() == expected;
             break;
       }
@@ -222,3 +225,5 @@ public:
 private:
    Image image; /**< Image */
 };
+
+#endif
