@@ -2,14 +2,17 @@
  * @file Pixel.hpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Pixels settings.
- * @version 1.1
- * @date 2023-06-10
+ * @version 2.0
+ * @date 2023-06-25
  *
  * Pixel settings for portable pixmap images (ppm) with rules and functions for
  * figure construction and comparisons.
  *
  * @copyright Copyright (c) 2023
  */
+
+#ifndef PIXEL_H
+#define PIXEL_H
 
 #include <iostream>
 
@@ -39,42 +42,57 @@ public:
     * @param maximum_colors Maximum of colors per channel in a pixel.
     * Default is #STANDARD_COLOR_QUANTIFY.
     * @see setColors()
+    * @see setRed()
+    * @see setGreen()
+    * @see setBlue()
     */
    Pixel(int red_intensity, int green_intensity, int blue_intensity,
       int maximum_colors = STANDARD_COLOR_QUANTIFY) 
    {
-      setColors(maximum_colors, red_intensity, green_intensity, 
-         blue_intensity);
+      setColors(maximum_colors);
+      setRed(red_intensity);
+      setGreen(green_intensity);
+      setBlue(blue_intensity);
    }
 
    /**
     * @brief Construct a new Pixel object with another pixel (copy).
     *
     * @param rhs A pixel to copy.
-    * @see setColors()
     * @see getMaxColors()
+    * @see setColors()
     * @see getRed()
+    * @see setRed()
     * @see getGreen()
+    * @see setGreen()
     * @see getBlue()
+    * @see setBlue()
     */
    Pixel(Pixel const& rhs) {
-      setColors(rhs.getMaxColors(), rhs.getRed(), rhs.getGreen(), 
-         rhs.getBlue());
+      setColors(rhs.getMaxColors());
+      setRed(rhs.getRed());
+      setGreen(rhs.getGreen());
+      setBlue(rhs.getBlue());
    }
 
    /**
     * @brief Operator to receive a pixel (copy).
     *
     * @param rhs A pixel to receive.
-    * @see setColors()
     * @see getMaxColors()
+    * @see setColors()
     * @see getRed()
+    * @see setRed()
     * @see getGreen()
+    * @see setGreen()
     * @see getBlue()
+    * @see setBlue()
     */
    void operator=(Pixel const& rhs) {
-      setColors(rhs.getMaxColors(), rhs.getRed(), rhs.getGreen(), 
-         rhs.getBlue());
+      setColors(rhs.getMaxColors());
+      setRed(rhs.getRed());
+      setGreen(rhs.getGreen());
+      setBlue(rhs.getBlue());
    }
 
    /**
@@ -216,8 +234,7 @@ public:
     * @param green_intensity Green intensity in the pixel. Default is 0.
     * @param blue_intensity Blue intensity in the pixel. Default is 0.
     */
-   void setColors(int maximum_colors, int red_intensity = 0, 
-      int green_intensity = 0, int blue_intensity = 0) 
+   void setColors(int maximum_colors) 
    {
       if (maximum_colors >= MIN_AMOUNT_COLORS
          && maximum_colors <= MAX_AMOUNT_COLORS) {
@@ -228,9 +245,9 @@ public:
          max_colors = MAX_AMOUNT_COLORS;
       }
 
-      setRed(red_intensity);
-      setGreen(green_intensity);
-      setBlue(blue_intensity);
+      setRed(red);
+      setGreen(green);
+      setBlue(blue);
    }
 
    /**
@@ -262,3 +279,5 @@ private:
    int green { 0 };              /**< Intensity of green in the pixel */
    int blue { 0 };               /**< Intensity of blue in the pixel */
 };
+
+#endif
