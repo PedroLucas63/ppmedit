@@ -2,16 +2,20 @@
  * @file Editor.hpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Editor settings.
- * @version 1.1
- * @date 2023-06-20
+ * @version 2.0
+ * @date 2023-06-25
  *
  * Portable pixmap image editor (ppm) with several methods to modify images.
  *
  * @copyright Copyright (c) 2023
  */
 
+#ifndef EDITOR_H
+#define EDITOR_H
+
 #include <string.h>
 #include "Image.hpp"
+#include "Colors.hpp"
 
 #define MASK_SIZE 3 /**< Mask width and height */
 
@@ -430,43 +434,33 @@ public:
    }
 
    /**
-    * @brief Defines a solid border in the image.
+    * @brief Defines an outline in the image with pixel, size and extra size.
     * 
-    * @param pixel An Pixel on the border.
-    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
-    * Default is 1.
+    * @param pixel An Pixel on the border. 
+    * @param size Border size.
+    * @param additional_size Additional size for the bottom border.
     * @see setImage()
     */
-   void applySolidBorder(Pixel pixel, int intensity = 1) {
-      int size { 0 };
+   void applyBorder(Pixel pixel, int size, int additional_size) {
       int width { image.getWidth() };
       int height { image.getHeight() };
       int colors { image.getColors() };
 
-      if (intensity == 1) {
-         size = width > height ? height / 10 : width / 10;
-      } else if (intensity == 2) {
-         size = width > height ? height / 7 : width / 7;
-      } else if (intensity == 3) {
-         size = width > height ? height / 5 : width / 5;
-      } else if (intensity == 4) {
-         size = width > height ? height / 4 : width / 4;
-      } else if (intensity == 5) {
-         size = width > height ? height / 2 : width / 2;
-      }
-
       width += 2 * size;
-      height += 2 * size;
+      height += 2 * size + additional_size;
 
       Image border { image.getType(), width, height, colors };
 
       for (int row { 1 }; row <= height; row++) {
          for (int column { 1 }; column <= width; column++) {
-            if (row > size && row < height - size &&
-               column > size && column < width - size) 
+            if ((row > size && row < height - (size + additional_size)) &&
+               (column > size && column < width - size)) 
             {
-               border.setPixel(image.getPixel(row - size, column - size), row,
-                  column);
+               border.setPixel(
+                  image.getPixel(row - size, column - size), 
+                  row, 
+                  column
+               );
             } else {
                border.setPixel(pixel, row, column);
             }
@@ -477,86 +471,69 @@ public:
    }
 
    /**
-    * @brief Defines a Polaroid border in the image.
+    * @brief Defines an outline in the image with intensity, type and color.
     * 
-    * @param pixel An Pixel on the border. 
-    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
-    * Default is 1.
-    * @see setImage()
+    * @param intensity Border intensity (size). Accepts "slim", "normal" and 
+    * "large". Default is "normal".
+    * @param type Border type. Accepts "solid" and "polaroid".
+    * Default is "solid".
+    * @param color Color of the border. Accepts "white", "black", "red", 
+    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
+    * and "gray". Default is "white".
+    * @see getColorPixel()
+    * @see applySolidBorder()
+    * @see applyPolaroidBorder()
     */
-   void applyPolaroidBorder(Pixel pixel, int intensity = 1) {
+   void applyBorder(std::string intensity = "normal", std::string type = "solid",
+      std::string color = "white") 
+   {  
       int size { 0 };
       int width { image.getWidth() };
       int height { image.getHeight() };
       int colors { image.getColors() };
+      Pixel pixel { getColorPixel(color) };
 
-      if (intensity == 1) {
+      if (intensity == "slim") {
          size = width > height ? height / 10 : width / 10;
-      } else if (intensity == 2) {
-         size = width > height ? height / 7 : width / 7;
-      } else if (intensity == 3) {
-         size = width > height ? height / 5 : width / 5;
-      } else if (intensity == 4) {
-         size = width > height ? height / 4 : width / 4;
-      } else if (intensity == 5) {
+      } else if (intensity == "large") {
          size = width > height ? height / 2 : width / 2;
+      } else {
+         size = width > height ? height / 5 : width / 5;
+      } 
+
+      if (type == "polaroid") {
+         applyBorder(pixel, size, size * 2);
+      } else {
+         applyBorder(pixel, size, 0);
       }
-
-      width += 2 * size;
-      height += 4 * size;
-
-      Image polaroid { image.getType(), width, height, colors };
-
-      for (int row { 1 }; row <= height; row++) {
-         for (int column { 1 }; column <= width; column++) {
-            if ((row > size && row < height - (3 * size)) &&
-               (column > size && column < width - size)) 
-            {
-               polaroid.setPixel(image.getPixel(row - size, column - size), row,
-                  column);
-            } else {
-               polaroid.setPixel(pixel, row, column);
-            }
-         }
-      }
-
-      setImage(polaroid);
    }
 
-   /**
-    * @brief Defines an outline in the image with color, size and type.
+      /**
+    * @brief Defines an outline in the image with sizes, type and color.
     * 
-    * @param intensity Border intensity (size). Accepts 1, 2, 3, 4 and 5. 
-    * Default is 1.
+    * @param size Border size in pixels. Default is 25(px).
+    * @param additional_size Additional size for the bottom border. 
+    * Default is 0(px).
     * @param type Border type. Accepts "solid" and "polaroid".
     * Default is "solid".
     * @param color Color of the border. Accepts "white", "black", "red", 
-    * "green" and "blue". Default is "white".
-    * @see applySolidBorder()
-    * @see applyPolaroidBorder()
+    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
+    * and "gray". Default is "white".
+    * @see getColorPixel()
+    * @see applyBorder()
     */
-   void applyBorder(int intensity = 1, std::string type = "solid",
-      std::string color = "white") 
+   void applyBorder(int size = 25, int additional_size = 0, 
+      std::string type = "solid", std::string color = "white") 
    {  
+      int width { image.getWidth() };
+      int height { image.getHeight() };
       int colors { image.getColors() };
-      Pixel pixel;
+      Pixel pixel { getColorPixel(color) };
 
-      if (color == "white") {
-         pixel = { colors, colors, colors, colors };
-      } else if (color == "black") {
-         pixel = { 0, 0, 0, colors };
-      } else if (color == "red") {
-         pixel = { colors, 0, 0, colors };
-      } else if (color == "green") {
-         pixel = { 0, colors, 0, colors };
+      if (type == "polaroid") {
+         applyBorder(pixel, size, additional_size);
       } else {
-         pixel = { 0, 0, colors, colors };
-      }
-
-      if (type == "solid") {
-         applySolidBorder(pixel, intensity);
-      } else {
-         applyPolaroidBorder(pixel, intensity);
+         applyBorder(pixel, size, 0);
       }
    }
 
@@ -566,7 +543,7 @@ public:
     * @param to_type Type to convert. Accepts #ASCII_TYPE, #BINARY_TYPE and
     * "invert". Default is "invert".
     */
-   void convert(std::string to_type = "invert") {
+   void convertImage(std::string to_type = "invert") {
       if (to_type == ASCII_TYPE) {
          image.setType(ASCII_TYPE);
       } else if (to_type == BINARY_TYPE) {
@@ -695,4 +672,49 @@ private:
 
       setImage(mask_image);
    }
+
+   /**
+    * @brief Get the Color Pixel object.
+    * 
+    * @param color Color of the pixel. Accepts "white", "black", "red", 
+    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
+    * and "gray". Default is "white".
+    * @return An pixel. 
+    */
+   Pixel getColorPixel(std::string color = "white") {
+      int colors { image.getColors() };
+      Pixel pixel;
+
+      if (color == "black") {
+         pixel = COLOR_BLACK;
+      } else if (color == "red") {
+         pixel = COLOR_RED;
+      } else if (color == "green") {
+         pixel = COLOR_GREEN;
+      } else if (color == "blue") {
+         pixel = COLOR_BLUE;
+      } else if (color == "yellow") {
+         pixel = COLOR_YELLOW;
+      } else if (color == "purple") {
+         pixel = COLOR_PURPLE;
+      } else if (color == "cyan") {
+         pixel = COLOR_CYAN;
+      } else if (color == "pink") {
+         pixel = { colors, colors / 2, colors / 2, colors };
+      } else if (color == "orange") {
+         pixel = { colors, colors / 2, 0, colors };
+      } else if (color == "brown") {
+         pixel = { colors / 2, colors / 4, 0, colors };
+      } else if (color == "gray") {
+         pixel = { colors / 2, colors / 2, colors / 2, colors };
+      } else {
+         pixel = { colors, colors, colors, colors };
+      }
+
+      pixel.setColors(colors);
+
+      return pixel;
+   }
 };
+
+#endif
