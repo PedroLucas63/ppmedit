@@ -2,14 +2,17 @@
  * @file Image.hpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Images settings.
- * @version 1.1
- * @date 2023-06-20
+ * @version 2.0
+ * @date 2023-06-25
  *
  * Portable pixmap image (ppm) definition with rules and functions for
  * comparisons and editing the data in an editor.
  *
  * @copyright Copyright (c) 2023
  */
+
+#ifndef IMAGE_H
+#define IMAGE_H
 
 #include <vector>
 #include "Pixel.hpp"
@@ -392,3 +395,5 @@ private:
       }
    }
 };
+
+#endif
