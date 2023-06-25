@@ -2,8 +2,8 @@
  * @file main.cpp
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief ppm file manipulation program.
- * @version 1.1
- * @date 2023-06-20
+ * @version 2.0
+ * @date 2023-06-25
  * 
  * Execution of various methods for the transformation of ppm (portable pixmap)
  * images with guaranteed execution according to the expected parameters.
@@ -13,26 +13,12 @@
 
 #include <iostream>
 #include <fstream>
+#include "libs/Helpers.hpp"
 #include "libs/Editor.hpp"
 
-#define MIN_ARGUMENTS 2 /**< Minimum arguments when executed */
+#define MIN_ARGUMENTS 4 /**< Minimum arguments when executed */
 
 using namespace std;
-
-/**
- * @brief Format the program name to the last name in the local file.
- * 
- * @param program_name Full program name (argv[0]).
- * @return A string. 
- */
-string formatProgramName(string program_name);
-
-/**
- * @brief Print the tutorial on how to use the program.
- * 
- * @param program_name Program name.
- */
-void printUsage(string program_name);
 
 /**
  * @brief Get image informations.
@@ -57,8 +43,9 @@ void exportImage(string local, Editor &editor);
  * @return An integer. 
  */
 int main(int argc, char* argv[]) {
-   string program_name { formatProgramName(argv[0]) };
-   int minimum_args { 4 };
+   int minimum_args { MIN_ARGUMENTS };
+
+   /* TODO: Define the new program usage pattern. */
 
    for (int index { 0 }; index < argc; index++) {
       if (strcmp(argv[index], "combine") == 0) {
@@ -72,7 +59,7 @@ int main(int argc, char* argv[]) {
     * of arguments.
     */
    if (argc < minimum_args) {
-      printUsage(program_name);
+      printHelp();
       return 1;
    }
 
@@ -117,9 +104,9 @@ int main(int argc, char* argv[]) {
       } else if (operation == "embossing") {
          editor.applyImageEffects("embossing");
       } else if (operation == "b-solid") {
-         editor.applyBorder();
+         editor.applyBorder("normal");
       } else if (operation == "b-polaroid") {
-         editor.applyBorder(1, "polaroid");
+         editor.applyBorder("normal", "polaroid");
       } else if (operation == "combine") {
          Image foreground;
          getImage(argv[argc - 2], foreground);
@@ -131,51 +118,6 @@ int main(int argc, char* argv[]) {
    exportImage(argv[argc - 1], editor);
    
    return 0;
-}
-
-string formatProgramName(string program_name) {
-   /*
-    * Gets the position of the last separator and creates a substring from this
-    * found position concatenated with a dot at the beginning.
-    */
-   std::size_t last_separator { program_name.find_last_of("/\\") };
-   string name { "." + program_name.substr(last_separator) };
-
-   return name;
-}
-
-void printUsage(string program_name) {
-   cerr << "Usage:" << endl;
-   cerr << "\t" << program_name << " [options] input_file " <<
-      "[additional_input_file] output_file" << endl;
-   cerr << "Where each <options> should be:" << endl;
-   cerr << "\t" << "gray: to transform the image into grayscale." << endl;
-   cerr << "\t" << "negative: to transform the image into negative." << endl;
-   cerr << "\t" << "rotate: to rotate the image 90 degrees to the right." << 
-      endl;
-   cerr << "\t" << "rotate-l: to rotate the image 90 degrees to the left." << 
-      endl;
-   cerr << "\t" << "invert: to invert the image." << endl;
-   cerr << "\t" << "enlarge: to enlarge the image by 2x." << endl;
-   cerr << "\t" << "reduce: to reduce the image by 2x." << endl;
-   cerr << "\t" << "sharp: to apply the sharpening filter to the image." << 
-      endl;
-   cerr << "\t" << "sharp-e: to apply the edge sharpening filter to the" <<
-      " image." << endl;
-   cerr << "\t" << "blur: to apply the blurring filter to the image." << endl;
-   cerr << "\t" << "embossing: to apply the embossing filter to the image." <<
-      endl;
-   cerr << "\t" << "b-solid: to apply the solid border to the image." <<
-      endl;
-   cerr << "\t" << "b-polaroid: to apply the polaroid border to the image." <<
-      endl;
-   cerr << "\t" << "combine: combine first image (background) with the" << 
-      " secund image (foreground). (*) (**)" << endl;
-   cerr << "The original image is read from the standard input and the" <<
-      "transformed image is sent to the standard output." << endl;
-   cerr << "(*) Operations marked by this pointer cannot have concatenated" <<
-      " options to their right and are the only ones that must receive an" <<
-      " additional input image." << endl;
 }
 
 void getImage(string local, Image& image) {
@@ -215,10 +157,6 @@ void getImage(string local, Image& image) {
             pixel.setGreen(green);
             pixel.setBlue(blue);
          } else {
-            /* TODO
-             * The present code has a failure to read special characters.
-             * Please correct this fault.
-             */
             char color;
 
             file.get(color);
