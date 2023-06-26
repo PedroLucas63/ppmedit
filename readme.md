@@ -1,3 +1,4 @@
+[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=11386956&assignment_repo_type=AssignmentRepo)
 # Polaroid
 
 Nossa sociedade é em parte definida pelas ferramentas que usamos. Isso porque as informações que consumimos (e as que geramos) são criadas pelas ferramentas (tecnologias) que temos à disposição. As câmeras embutidas nos nossos celulares certamente fazem parte desse rol de ferramentas que ajudaram a transformar nossa sociedade, seja pela divulgação viral de um momento espontâneo "fofo", seja pela denúncia de atrocidades ocorrendo, ali "ao vivo".
