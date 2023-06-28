@@ -3,21 +3,21 @@
 using namespace std;
 
 int main() {
-   Test galinhos { "./imgs/galinhos.ppm" };
-   Test flowers { "./imgs/flowers.ppm" };
+   Test galinhos { "../assets/imgs/galinhos.ppm" };
+   Test flowers { "../assets/imgs/flowers.ppm" };
 
-   galinhos.test("./imgs/blur.ppm", Blurring);
-   flowers.test("./imgs/bill.ppm", "./imgs/combine.ppm", Combine);
-   galinhos.test("./imgs/sharp-e.ppm", Edge_Sharpening);
-   galinhos.test("./imgs/embossing.ppm", Embossing);
-   galinhos.test("./imgs/enlarge.ppm", Enlarge);
-   galinhos.test("./imgs/gray.ppm", Gray);
-   galinhos.test("./imgs/invert.ppm", Invert);
-   galinhos.test("./imgs/negative.ppm", Negative);
-   galinhos.test("./imgs/reduce.ppm", Reduce);
-   galinhos.test("./imgs/rotate-l.ppm", Rotate_Left);
-   galinhos.test("./imgs/rotate.ppm", Rotate_Right);
-   galinhos.test("./imgs/sharp.ppm", Sharpening);
-   galinhos.test("./imgs/solid.ppm", Border_Solid);
-   galinhos.test("./imgs/polaroid.ppm", Border_Polaroid);
+   galinhos.test("../assets/imgs/blur.ppm", Blurring);
+   flowers.test("../assets/imgs/bill.ppm", "../assets/imgs/combine.ppm", Combine);
+   galinhos.test("../assets/imgs/sharp-e.ppm", Edge_Sharpening);
+   galinhos.test("../assets/imgs/embossing.ppm", Embossing);
+   galinhos.test("../assets/imgs/enlarge.ppm", Enlarge);
+   galinhos.test("../assets/imgs/gray.ppm", Gray);
+   galinhos.test("../assets/imgs/invert.ppm", Invert);
+   galinhos.test("../assets/imgs/negative.ppm", Negative);
+   galinhos.test("../assets/imgs/reduce.ppm", Reduce);
+   galinhos.test("../assets/imgs/rotate-l.ppm", Rotate_Left);
+   galinhos.test("../assets/imgs/rotate.ppm", Rotate_Right);
+   galinhos.test("../assets/imgs/sharp.ppm", Sharpening);
+   galinhos.test("../assets/imgs/solid.ppm", Border_Solid);
+   galinhos.test("../assets/imgs/polaroid.ppm", Border_Polaroid);
 }
