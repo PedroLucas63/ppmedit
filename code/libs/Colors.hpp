@@ -11,8 +11,8 @@
  * @copyright Copyright (c) 2023
  */
 
-#ifndef COLORS_H
-#define COLORS_H
+#ifndef COLORS_HPP
+#define COLORS_HPP
 
 #include "Pixel.hpp"
 
@@ -96,4 +96,44 @@ extern const Pixel COLOR_CYAN {
    MAX_AMOUNT_COLORS 
 };
 
-#endif
+/**
+ * @brief Global pink pixel.
+ */
+extern const Pixel COLOR_PINK { 
+   MAX_AMOUNT_COLORS,
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS 
+};
+
+/**
+ * @brief Global orange pixel.
+ */
+extern const Pixel COLOR_ORANGE { 
+   MAX_AMOUNT_COLORS,
+   MAX_AMOUNT_COLORS / 2,
+   MIN_COLOR,
+   MAX_AMOUNT_COLORS 
+};
+
+/**
+ * @brief Global brown pixel.
+ */
+extern const Pixel COLOR_BROWN { 
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS / 4,
+   MIN_COLOR,
+   MAX_AMOUNT_COLORS 
+};
+
+/**
+ * @brief Global gray pixel.
+ */
+extern const Pixel COLOR_GRAY { 
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS / 2,
+   MAX_AMOUNT_COLORS 
+};
+
+#endif // COLORS_HPP
