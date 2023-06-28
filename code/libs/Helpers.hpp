@@ -81,7 +81,7 @@ void printBorderHelp() {
 
    std::cout << "Examples:" << std::endl;
    std::cout << "\tppmedit -e b-solid -b 50 -i i.ppm\t\t\tadd a solid border "
-    << "to the image with size 50(px)." << std::endl;
+      << "to the image with size 50(px)." << std::endl;
 }
 
 /**
