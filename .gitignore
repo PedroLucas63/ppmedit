@@ -34,8 +34,8 @@
 # Solution
 solution.*
 
-# Test executables
-/bin
+# Executables
+/out
 
 # Documentation
 /docs/html

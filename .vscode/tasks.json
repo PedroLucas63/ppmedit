@@ -10,7 +10,7 @@
 				"-g",
 				"${file}",
 				"-o",
-				"${workspaceFolder}/bin/${fileBasenameNoExtension}"
+				"${workspaceFolder}/out/${fileBasenameNoExtension}"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
