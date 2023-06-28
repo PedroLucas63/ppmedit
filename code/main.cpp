@@ -170,9 +170,12 @@ void getImage(string local, Image& image) {
          image.setPixel(pixel, row, column);
       }
    }
+
+   file.close();
 }
 
 void exportImage(string local, Editor& editor) {
    ofstream file(local);
    file << editor.getImage().toString() << endl;
+   file.close();
 }
