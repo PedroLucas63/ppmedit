@@ -11,10 +11,11 @@
  * @copyright Copyright (c) 2023
  */
 
-#ifndef PIXEL_H
-#define PIXEL_H
+#ifndef PIXEL_HPP
+#define PIXEL_HPP
 
 #include <iostream>
+#include <math.h>
 
 #define MIN_COLOR 0                 /**< Minimum value for a color */
 #define MIN_AMOUNT_COLORS 1         /**< Minimum number of colors */
@@ -234,8 +235,23 @@ public:
     * @param green_intensity Green intensity in the pixel. Default is 0.
     * @param blue_intensity Blue intensity in the pixel. Default is 0.
     */
-   void setColors(int maximum_colors) 
-   {
+   void setColors(int maximum_colors) {
+      int new_red { 
+         (int) round(
+            ((float) red /  max_colors) * maximum_colors
+         ) 
+      };
+      int new_green { 
+         (int) round(
+            ((float) green /  max_colors) * maximum_colors
+         ) 
+      };
+      int new_blue { 
+         (int) round(
+            ((float) blue /  max_colors) * maximum_colors
+         ) 
+      };
+
       if (maximum_colors >= MIN_AMOUNT_COLORS
          && maximum_colors <= MAX_AMOUNT_COLORS) {
          max_colors = maximum_colors;
@@ -245,9 +261,11 @@ public:
          max_colors = MAX_AMOUNT_COLORS;
       }
 
-      setRed(red);
-      setGreen(green);
-      setBlue(blue);
+      
+
+      setRed(new_red);
+      setGreen(new_green);
+      setBlue(new_blue);
    }
 
    /**
@@ -280,4 +298,4 @@ private:
    int blue { 0 };               /**< Intensity of blue in the pixel */
 };
 
-#endif
+#endif // PIXEL_HPP
