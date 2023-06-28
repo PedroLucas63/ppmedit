@@ -10,8 +10,8 @@
  * @copyright Copyright (c) 2023
  */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef TEST_HPP
+#define TEST_HPP
 
 #include <iostream>
 #include <fstream>
@@ -226,4 +226,4 @@ private:
    Image image; /**< Image */
 };
 
-#endif
+#endif // TEST_HPP

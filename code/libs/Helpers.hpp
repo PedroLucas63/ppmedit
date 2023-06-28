@@ -11,8 +11,8 @@
  * @copyright Copyright (c) 2023
  */
 
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef HELPERS_HPP
+#define HELPERS_HPP
 
 #include <iostream>
 
@@ -140,4 +140,4 @@ void printTextHelp() {
    /* TODO: Set the help information for the text option. */
 }
 
-#endif
+#endif // HELPERS_HPP
