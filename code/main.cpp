@@ -128,6 +128,11 @@ void getImage(string local, Image& image) {
 
    ifstream file(local, ios::binary);
 
+   if (!file.is_open()) {
+      cerr << "Reading error!" << endl;
+      abort();
+   }
+
    file >> type;
    file >> width;
    file >> height;
@@ -176,6 +181,12 @@ void getImage(string local, Image& image) {
 
 void exportImage(string local, Editor& editor) {
    ofstream file(local);
+
+   if (!file.is_open()) {
+      cerr << "Writing error!" << endl;
+      abort();
+   }
+
    file << editor.getImage().toString() << endl;
    file.close();
 }

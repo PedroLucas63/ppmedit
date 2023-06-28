@@ -81,6 +81,11 @@ public:
 
       std::ifstream file(local);
 
+      if (!file.is_open()) {
+         std::cerr << "Reading error!" << std::endl;
+         abort();
+      }
+
       file >> type;
       file >> width;
       file >> height;
