@@ -10,8 +10,8 @@
  * @copyright Copyright (c) 2023
  */
 
-#ifndef EDITOR_H
-#define EDITOR_H
+#ifndef EDITOR_HPP
+#define EDITOR_HPP
 
 #include <string.h>
 #include "Image.hpp"
@@ -700,15 +700,15 @@ private:
       } else if (color == "cyan") {
          pixel = COLOR_CYAN;
       } else if (color == "pink") {
-         pixel = { colors, colors / 2, colors / 2, colors };
+         pixel = COLOR_PINK;
       } else if (color == "orange") {
-         pixel = { colors, colors / 2, 0, colors };
+         pixel = COLOR_ORANGE;
       } else if (color == "brown") {
-         pixel = { colors / 2, colors / 4, 0, colors };
+         pixel = COLOR_BROWN;
       } else if (color == "gray") {
-         pixel = { colors / 2, colors / 2, colors / 2, colors };
+         pixel = COLOR_GRAY;
       } else {
-         pixel = { colors, colors, colors, colors };
+         pixel = COLOR_WHITE;
       }
 
       pixel.setColors(colors);
@@ -717,4 +717,4 @@ private:
    }
 };
 
-#endif
+#endif // EDITOR_HPP
