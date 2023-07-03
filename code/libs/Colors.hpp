@@ -19,7 +19,7 @@
 /**
  * @brief Global white pixel.
  */
-extern const Pixel COLOR_WHITE { 
+extern Pixel const WHITE { 
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS,
@@ -29,7 +29,7 @@ extern const Pixel COLOR_WHITE {
 /**
  * @brief Global black pixel.
  */
-extern const Pixel COLOR_BLACK { 
+extern Pixel const BLACK { 
    MIN_COLOR,
    MIN_COLOR,
    MIN_COLOR,
@@ -39,7 +39,7 @@ extern const Pixel COLOR_BLACK {
 /**
  * @brief Global red pixel.
  */
-extern const Pixel COLOR_RED { 
+extern Pixel const RED { 
    MAX_AMOUNT_COLORS,
    MIN_COLOR,
    MIN_COLOR,
@@ -49,7 +49,7 @@ extern const Pixel COLOR_RED {
 /**
  * @brief Global green pixel.
  */
-extern const Pixel COLOR_GREEN { 
+extern Pixel const GREEN { 
    MIN_COLOR,
    MAX_AMOUNT_COLORS,
    MIN_COLOR,
@@ -59,7 +59,7 @@ extern const Pixel COLOR_GREEN {
 /**
  * @brief Global blue pixel.
  */
-extern const Pixel COLOR_BLUE { 
+extern Pixel const BLUE { 
    MIN_COLOR,
    MIN_COLOR,
    MAX_AMOUNT_COLORS,
@@ -69,7 +69,7 @@ extern const Pixel COLOR_BLUE {
 /**
  * @brief Global yellow pixel.
  */
-extern const Pixel COLOR_YELLOW { 
+extern Pixel const YELLOW { 
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS,
    MIN_COLOR,
@@ -79,7 +79,7 @@ extern const Pixel COLOR_YELLOW {
 /**
  * @brief Global purple pixel.
  */
-extern const Pixel COLOR_PURPLE { 
+extern Pixel const PURPLE { 
    MAX_AMOUNT_COLORS,
    MIN_COLOR,
    MAX_AMOUNT_COLORS,
@@ -89,7 +89,7 @@ extern const Pixel COLOR_PURPLE {
 /**
  * @brief Global cyan pixel.
  */
-extern const Pixel COLOR_CYAN { 
+extern Pixel const CYAN { 
    MIN_COLOR,
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS,
@@ -99,7 +99,7 @@ extern const Pixel COLOR_CYAN {
 /**
  * @brief Global pink pixel.
  */
-extern const Pixel COLOR_PINK { 
+extern Pixel const PINK { 
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS / 2,
    MAX_AMOUNT_COLORS / 2,
@@ -109,7 +109,7 @@ extern const Pixel COLOR_PINK {
 /**
  * @brief Global orange pixel.
  */
-extern const Pixel COLOR_ORANGE { 
+extern Pixel const ORANGE { 
    MAX_AMOUNT_COLORS,
    MAX_AMOUNT_COLORS / 2,
    MIN_COLOR,
@@ -119,7 +119,7 @@ extern const Pixel COLOR_ORANGE {
 /**
  * @brief Global brown pixel.
  */
-extern const Pixel COLOR_BROWN { 
+extern Pixel const BROWN { 
    MAX_AMOUNT_COLORS / 2,
    MAX_AMOUNT_COLORS / 4,
    MIN_COLOR,
@@ -129,11 +129,45 @@ extern const Pixel COLOR_BROWN {
 /**
  * @brief Global gray pixel.
  */
-extern const Pixel COLOR_GRAY { 
+extern Pixel const GRAY { 
    MAX_AMOUNT_COLORS / 2,
    MAX_AMOUNT_COLORS / 2,
    MAX_AMOUNT_COLORS / 2,
    MAX_AMOUNT_COLORS 
 };
+
+/**
+ * @brief Get the global pixel color by color name.
+ * 
+ * @param color_name Color name.
+ * @return An global pixel color.
+ */
+Pixel const getColorByName(std::string color_name) {
+   if (color_name == "white") {
+      return WHITE;
+   } else if (color_name == "red") {
+      return RED;
+   } else if (color_name == "green") {
+      return GREEN;
+   } else if (color_name == "blue") {
+      return BLUE;
+   } else if (color_name == "yellow") {
+      return YELLOW;
+   } else if (color_name == "purple") {
+      return PURPLE;
+   } else if (color_name == "cyan") {
+      return CYAN;
+   } else if (color_name == "pink") {
+      return PINK;
+   } else if (color_name == "orange") {
+      return ORANGE;
+   } else if (color_name == "brown") {
+      return BROWN;
+   } else if (color_name == "gray") {
+      return GRAY;
+   }
+
+   return BLACK;
+}
 
 #endif // COLORS_HPP
