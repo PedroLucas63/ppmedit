@@ -491,7 +491,7 @@ public:
       int width { image.getWidth() };
       int height { image.getHeight() };
       int colors { image.getColors() };
-      Pixel pixel { getColorPixel(color) };
+      Pixel pixel { getColorByName(color) };
 
       if (intensity == "slim") {
          size = width > height ? height / 10 : width / 10;
@@ -528,7 +528,7 @@ public:
       int width { image.getWidth() };
       int height { image.getHeight() };
       int colors { image.getColors() };
-      Pixel pixel { getColorPixel(color) };
+      Pixel pixel { getColorByName(color) };
 
       if (type == "polaroid") {
          applyBorder(pixel, size, additional_size);
@@ -671,49 +671,6 @@ private:
       }
 
       setImage(mask_image);
-   }
-
-   /**
-    * @brief Get the Color Pixel object.
-    * 
-    * @param color Color of the pixel. Accepts "white", "black", "red", 
-    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
-    * and "gray". Default is "white".
-    * @return An pixel. 
-    */
-   Pixel getColorPixel(std::string color = "white") {
-      int colors { image.getColors() };
-      Pixel pixel;
-
-      if (color == "black") {
-         pixel = COLOR_BLACK;
-      } else if (color == "red") {
-         pixel = COLOR_RED;
-      } else if (color == "green") {
-         pixel = COLOR_GREEN;
-      } else if (color == "blue") {
-         pixel = COLOR_BLUE;
-      } else if (color == "yellow") {
-         pixel = COLOR_YELLOW;
-      } else if (color == "purple") {
-         pixel = COLOR_PURPLE;
-      } else if (color == "cyan") {
-         pixel = COLOR_CYAN;
-      } else if (color == "pink") {
-         pixel = COLOR_PINK;
-      } else if (color == "orange") {
-         pixel = COLOR_ORANGE;
-      } else if (color == "brown") {
-         pixel = COLOR_BROWN;
-      } else if (color == "gray") {
-         pixel = COLOR_GRAY;
-      } else {
-         pixel = COLOR_WHITE;
-      }
-
-      pixel.setColors(colors);
-
-      return pixel;
    }
 };
 
