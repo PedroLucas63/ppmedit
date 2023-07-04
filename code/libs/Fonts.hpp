@@ -16,32 +16,32 @@
 /**
  * @brief Global Highlander font.
  */
-export Font const HIGHLANDER { "../assets/fonts/highlander_std.bdf" };
+Font const HIGHLANDER { "../assets/fonts/highlander_std.bdf" };
 
 /**
  * @brief Global IBM Bios 16x16 font.
  */
-export Font const IBM_BIOS { "../assets/fonts/ib16x16u.bdf" };
+Font const IBM_BIOS { "../assets/fonts/ib16x16u.bdf" };
 
 /**
  * @brief Global Satisfy font.
  */
-export Font const SATISFY { "../assets/fonts/satisfy16.bdf" };
+Font const SATISFY { "../assets/fonts/satisfy16.bdf" };
 
 /**
  * @brief Global DS Net Child font.
  */
-export Font const NETCHILD { "../assets/fonts/DSnetChild.bdf" };
+Font const NETCHILD { "../assets/fonts/DSnetChild.bdf" };
 
 /**
  * @brief Global Love Script font.
  */
-export Font const LOVESCRIPT { "../assets/fonts/LoveScript.bdf" };
+Font const LOVESCRIPT { "../assets/fonts/LoveScript.bdf" };
 
 /**
  * @brief Global Pixel Icons Compilation font.
  */
-export Font const PIXELICONS { "../assets/fonts/PixelIconsCompilation.bdf" };
+Font const PIXELICONS { "../assets/fonts/PixelIconsCompilation.bdf" };
 
 /**
  * @brief Get the global font by font name.
@@ -49,7 +49,7 @@ export Font const PIXELICONS { "../assets/fonts/PixelIconsCompilation.bdf" };
  * @param font_name Font name.
  * @return An global font.
  */
-Font const getFontByName(std::string font_name) {
+Font const& getFontByName(std::string font_name) {
    if (font_name == "highlander") {
       return HIGHLANDER;
    } else if (font_name == "satisfy") {
@@ -197,4 +197,4 @@ Glyph const* getEmojiByCode(std::string emoji_code) {
    return PIXELICONS.getGlyph(encoding);
 }
 
-#endif FONTS_HPP // FONTS_HPP
+#endif // FONTS_HPP
