@@ -83,7 +83,7 @@ public:
     * @param encoding Encoding to search.
     * @return Pointer to glyph.
     */
-   Glyph const* getGlyph(int encoding) {
+   Glyph const* getGlyph(int encoding) const {
       for (int i = 0; i < num_glyphs; i++) {
       if (glyphs[i].getEncoding() == encoding) {
          return &glyphs[i];
