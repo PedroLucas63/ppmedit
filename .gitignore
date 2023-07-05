@@ -34,8 +34,11 @@
 # Solution
 solution.*
 
+# Visual Studio Code
+/.vscode
+
 # Executables
-/out
+/bin
 
 # Documentation
-/docs/html
+/doc
