@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "Helpers.hpp"
+#include "Manual.hpp"
 #include "Editor.hpp"
 
 #define MIN_ARGUMENTS 4 /**< Minimum arguments when executed */
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     * of arguments.
     */
    if (argc < minimum_args) {
-      printHelp();
+      printManual();
       return 1;
    }
 
