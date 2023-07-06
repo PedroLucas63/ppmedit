@@ -1,6 +1,8 @@
 # Makefile
 
-# Variáveis
+# This file was created by ChatGPT.
+
+# Variables
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 SRC_DIR = src
@@ -8,42 +10,45 @@ BIN_DIR = bin
 TEST_DIR = $(SRC_DIR)/tests
 DOC_DIR = doc
 
-# Arquivos fonte
+# Source files
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BIN_DIR)/%.o,$(SOURCES))
 
-# Inclusão das pastas classes, constants e utils
+# Include directories for classes, constants, utils, and assets
 INCLUDE_DIRS = -I$(SRC_DIR)/classes -I$(SRC_DIR)/constants -I$(SRC_DIR)/utils -I$(SRC_DIR)/assets
 
-# Nome do executável
+# Executable name
 EXECUTABLE = $(BIN_DIR)/main
 
-# Nome do executável de testes
+# Test executable name
 TEST_EXECUTABLE = $(BIN_DIR)/tests
 
-# Comandos
+# Commands
 .PHONY: all clean doc
 
 all: $(EXECUTABLE)
 
-# Compilação do programa principal
+# Compilation of the main program
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) $^ -o $@
 
-# Compilação dos arquivos de objeto
+# Compilation of object files
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
-# Compilação e execução dos testes
+# Compilation and execution of tests
 test:
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) $(TEST_DIR)/test.cpp -o $(TEST_EXECUTABLE)
 	$(TEST_EXECUTABLE)
 
-# Geração da documentação com Doxygen
+# Generation of documentation using Doxygen
 doc:
 	doxygen Doxyfile
 
-# Limpeza dos arquivos gerados
+# Cleaning of generated files
 clean:
 	rm -rf $(BIN_DIR)/*
 	rm -rf $(DOC_DIR)/*
+
+# Creation of bin directory if it doesn't exist
+$(shell mkdir -p $(BIN_DIR))
