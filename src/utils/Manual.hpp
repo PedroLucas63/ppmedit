@@ -5,8 +5,10 @@
  * @version 2.0
  * @date 2023-07-06
  * 
- * Defines the Manual functions, either of the program in general or of a
- * specific parameter.
+ * These functions provide the manual for various options and
+ * parameters of the ppmedit program.
+ * 
+ * @note This file is generated with the help of ChatGPT.
  * 
  * @copyright Copyright (c) 2023
  */
