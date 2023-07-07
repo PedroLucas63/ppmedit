@@ -76,7 +76,7 @@ void printBorderManual() {
  */
 void printCombineManual() {
 	std::cout << "Usage: ppmedit -c, --combine [OPTIONS] ... -i "
-	 	<< "[BACKGROUND_IMAGE] [FOREGROUND_IMAGE] -o [OUTPUT_FILE]\n\n";
+		<< "[BACKGROUND_IMAGE] [FOREGROUND_IMAGE] -o [OUTPUT_FILE]\n\n";
 	
 	std::cout << "Options:\n";
 	std::cout << "  !p, !!position [POSITION_X] [POSITION_Y]: Sets the "
