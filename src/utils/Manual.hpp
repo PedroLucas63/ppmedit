@@ -56,7 +56,7 @@ void printBorderManual() {
 
 	std::cout << "Additional Parameters:\n";
 	std::cout << "  !s, !!size [SIZE]: Set the border size (pixels or textual: "
-		<< "Slim, Normal, Large)\n";
+		<< "slim, normal, large)\n";
 	std::cout << "  !c, !!color [COLOR]: Set the border color (white, black, red"
 	<< ", green, blue, yellow, purple, cyan, pink, orange, brown, gray)\n";
 	std::cout << "  !e, !!extra [EXTRA_SIZE]: Set extra size for the border\n\n";
