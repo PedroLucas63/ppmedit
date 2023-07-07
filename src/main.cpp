@@ -12,28 +12,13 @@
  */
 
 #include <iostream>
-#include <fstream>
 #include "Manual.hpp"
+#include "Manipulator.hpp"
 #include "Editor.hpp"
 
 #define MIN_ARGUMENTS 4 /**< Minimum arguments when executed */
 
 using namespace std;
-
-/**
- * @brief Get image informations.
- * 
- * @param local Image Location.
- * @param[out] image Image memory position.
- */
-void getImage(string local, Image &image);
-
-/**
- * @brief Export image to program output.
- * @param local Image location.
- * @param editor Editor memory position.
- */
-void exportImage(string local, Editor &editor);
 
 /**
  * @brief Main function of the program (starting point). 
@@ -72,7 +57,7 @@ int main(int argc, char* argv[]) {
    }
 
    Image image;
-   getImage(argv[options], image);
+   openImage(argv[options], image);
 
    Editor editor { image };
       
@@ -109,7 +94,7 @@ int main(int argc, char* argv[]) {
          editor.applyBorder("normal", "polaroid");
       } else if (operation == "combine") {
          Image foreground;
-         getImage(argv[argc - 2], foreground);
+         openImage(argv[argc - 2], foreground);
          
          editor.combineImages(foreground);
       }
@@ -118,75 +103,4 @@ int main(int argc, char* argv[]) {
    exportImage(argv[argc - 1], editor);
    
    return 0;
-}
-
-void getImage(string local, Image& image) {
-   string type { "" };
-   int width { 0 };
-   int height { 0 };
-   int colors { 0 };
-
-   ifstream file(local, ios::binary);
-
-   if (!file.is_open()) {
-      cerr << "Reading error!" << endl;
-      abort();
-   }
-
-   file >> type;
-   file >> width;
-   file >> height;
-   file >> colors;
-
-   image.setType(type);
-   image.setSize(width, height);
-   image.setColors(colors);
-
-   if (type == BINARY_TYPE) {
-      colors = image.getColors();
-      file.ignore();
-   }
-
-   for (int row { 0 }; row < height; row++) {
-      for (int column { 0 }; column < width; column++) {
-         int red { 0 };
-         int green { 0 };
-         int blue { 0 };
-         Pixel pixel;
-         pixel.setColors(colors);
-
-         if (type == ASCII_TYPE) {
-            file >> red >> green >> blue;
-
-            pixel.setRed(red);
-            pixel.setGreen(green);
-            pixel.setBlue(blue);
-         } else {
-            char color;
-
-            file.get(color);
-            pixel.setRed((unsigned char) color);
-            file.get(color);
-            pixel.setGreen((unsigned char) color);
-            file.get(color);
-            pixel.setBlue((unsigned char) color);
-         }
-
-         image.setPixel(pixel, row, column);
-      }
-   }
-
-   file.close();
-}
-
-void exportImage(string local, Editor& editor) {
-   ofstream file(local);
-
-   if (!file.is_open()) {
-      cerr << "Writing error!" << endl;
-      abort();
-   }
-
-   file << editor.getImage().toString() << endl;
-   file.close();
 }
