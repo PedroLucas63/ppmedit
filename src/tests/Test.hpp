@@ -15,28 +15,8 @@
 
 #include <iostream>
 #include <fstream>
+#include "Manipulator.hpp"
 #include "Editor.hpp"
-
-/**
- * @enum Methods enumeration.
- * @brief Enumeration with all methods of the "Editor" class.
- */
-enum Methods {
-   Blurring,
-   Combine,
-   Edge_Sharpening,
-   Embossing,
-   Enlarge,
-   Gray,
-   Invert,
-   Negative,
-   Reduce,
-   Rotate_Left,
-   Rotate_Right,
-   Sharpening,
-   Border_Solid,
-   Border_Polaroid
-};
 
 /**
  * @class Test class.
@@ -53,10 +33,9 @@ public:
     * @brief Construct a new Test object with image data.
     *
     * @param original_image Original image local.
-    * @see openImage()
     */
    Test(std::string original_image) {
-      image = openImage(original_image);
+      openImage(original_image, image);
    }
 
    /**
@@ -65,63 +44,37 @@ public:
    ~Test() { }
 
    /**
-    * @brief Opens an image from the location.
-    * 
-    * @param local Image Location.
-    * @return Image.
+    * @brief Get the quantify of tests.
+    *
+    * @return An integer.
     */
-   Image openImage(std::string local) {
-      std::string type { "" };
-      int width { 0 };
-      int height { 0 };
-      int colors { 0 };
-      int red { 0 };
-      int green { 0 };
-      int blue { 0 };
+   int getTests() const {
+      return tests;
+   }
 
-      std::ifstream file(local);
-
-      if (!file.is_open()) {
-         std::cerr << "Reading error!" << std::endl;
-         abort();
-      }
-
-      file >> type;
-      file >> width;
-      file >> height;
-      file >> colors;
-
-      Image image { type, width, height, colors };
-
-      for (int row { 0 }; row < height; row++) {
-         for (int column { 0 }; column < width; column++) {
-            file >> red;
-            file >> green;
-            file >> blue;
-
-            Pixel pixel { red, green, blue, colors };
-            image.setPixel(pixel, row, column);
-         }
-      }
-
-      file.close();
-
-      return image;
+   /**
+    * @brief Get the quantify of success tests.
+    *
+    * @return An integer.
+    */
+   int getSuccessTests() const {
+      return success_tests;
    }
 
    /**
     * @brief Runs the method and checks for equality with expectation.
     * 
     * @param expected_image Expected image in the test.
-    * @param method Method used in the test.
-    * @see openImage()
+    * @param effect Effect used in the test.
     */
-   void test(std::string expected_image, Methods method) {
+   void testEffect(std::string expected_image, Effects effect) {
       Editor editor { image };
-      Image expected = openImage(expected_image);
+      Image expected;
       bool passed { false };
 
-      switch(method) {
+      openImage(expected_image, expected);
+
+      switch(effect) {
          case Blurring:
             std::cout << "Blurring:\n\t";
             editor.applyImageEffects("blurring");
@@ -177,62 +130,24 @@ public:
             editor.applyImageEffects("sharpening");
             passed = editor.getImage() == expected;
             break;
-         case Border_Solid:
-            std::cout << "Border Solid:\n\t";
-            editor.applyBorder("normal");
-            passed = editor.getImage() == expected;
-            break;
-         case Border_Polaroid:
-            std::cout << "Border Polaroid:\n\t";
-            editor.applyBorder("normal", "polaroid");
-            passed = editor.getImage() == expected;
-            break;
          default:
             break;
       }
 
       if (passed) {
          std::cout << "✔ Test success!" << std::endl;
+         success_tests++;
       } else {
          std::cout << "✕ Test error!" << std::endl;
       }
-   }
 
-   /**
-    * @brief Runs the method and checks for equality with expectation.
-    * 
-    * @param additional_image Additional image for the method.
-    * @param expected_image Expected image in the test.
-    * @param method Method used in the test.
-    * @see openImage()
-    */
-   void test(std::string additional_image, std::string expected_image,
-      Methods method) 
-   {
-      Editor editor { image };
-      Image additional = openImage(additional_image);
-      Image expected = openImage(expected_image);
-      bool passed { false };
-
-      switch(method) {
-         case Combine:
-            std::cout << "Combine:\n\t";
-            editor.combineImages(additional);
-            passed = editor.getImage() == expected;
-            break;
-         default:
-            break;
-      }
-
-      if (passed) {
-         std::cout << "✔ Test success!" << std::endl;
-      } else {
-         std::cout << "✕ Test error!" << std::endl;
-      }
+      tests++;
    }
 
 private:
-   Image image; /**< Image */
+   Image image;             /**< Image */
+   int tests { 0 };         /**< Quantify of tests */
+   int success_tests { 0 }; /**< Quantify of success tests */
 };
 
 #endif // TEST_HPP
