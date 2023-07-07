@@ -15,7 +15,8 @@
 
 #include <iostream>
 #include <fstream>
-#include "Effects.hpp"
+#include "Methods.hpp"
+#include "Manual.hpp"
 #include "Editor.hpp"
 
 /**
