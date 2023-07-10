@@ -539,16 +539,16 @@ public:
     * @brief Convert an image to the other type.
     * 
     * @param to_type Type to convert. Accepts #ASCII_TYPE, #BINARY_TYPE and
-    * "invert". Default is "invert".
+    * "automatic". Default is "automatic".
     */
-   void convertImage(std::string to_type = "invert") {
+   void convertImage(std::string to_type = "automatic") {
       if (to_type == ASCII_TYPE) {
          image.setType(ASCII_TYPE);
       } else if (to_type == BINARY_TYPE) {
          image.setType(BINARY_TYPE);
-      } else if (to_type == "invert" && image.getType() == ASCII_TYPE) {
+      } else if (to_type == "automatic" && image.getType() == ASCII_TYPE) {
          image.setType(BINARY_TYPE);
-      } else if (to_type == "invert" && image.getType() == BINARY_TYPE) {
+      } else if (to_type == "automatic" && image.getType() == BINARY_TYPE) {
          image.setType(ASCII_TYPE);
       }
    }
