@@ -32,7 +32,7 @@ enum Effects {
    Rotate_Left,
    Rotate_Right,
    Sharpening,
-   None
+   Effect_None
 };
 
 /**
@@ -41,7 +41,18 @@ enum Effects {
  */
 enum Borders {
    Solid,
-   Polaroid
+   Polaroid,
+   Border_None
+};
+
+/**
+ * @enum Types enumeration.
+ * @brief Enumeration with all types of the "Editor" class.
+ */
+enum Types {
+   Text,
+   Binary,
+   Automatic
 };
 
 /**
@@ -75,7 +86,7 @@ Effects getEffectByName(std::string effect_name) {
       return Embossing;
    }
 
-   return None;
+   return Effect_None;
 }
 
 /**
@@ -87,9 +98,27 @@ Effects getEffectByName(std::string effect_name) {
 Borders getBorderByType(std::string borders_type) {
    if (borders_type == "polaroid") {
       return Polaroid;
+   } else if (borders_type == "solid") {
+      return Solid;
    }
-   
-   return Solid;
+
+   return Border_None;
+}
+
+/**
+ * @brief Get the value from type enum.
+ * 
+ * @param type_to_convert Type to convert.
+ * @return An Type value.
+ */
+Types getTypeByValue(std::string type_to_convert) {
+   if (type_to_convert == "text") {
+      return Text;
+   } else if (type_to_convert == "binary") {
+      return Binary;
+   }
+
+   return Automatic;
 }
 
 /**
@@ -149,7 +178,7 @@ void setEffect(Editor& editor, Effects type) {
  * 
  * @todo Filter the values for defining the border.
  */
-void setBorder( Editor& editor, Borders type, std::string size = "normal",
+void setBorder(Editor& editor, Borders type, std::string size = "normal",
    int extra_size = 0, std::string color = "white") { }
 
 /**
@@ -163,7 +192,23 @@ void setBorder( Editor& editor, Borders type, std::string size = "normal",
  * 
  * @todo Filter the values for defining the border.
  */
-void setBorder( Editor& editor, Borders type, int size = 25,
+void setBorder(Editor& editor, Borders type, int size = 25,
    int extra_size = 0, std::string color = "white") { }
+
+/**
+ * @brief Performs image conversion.
+ * 
+ * @param Editor memory position.
+ * @param type Type to convert.
+ */
+void performConversion(Editor& editor, Types type) {
+   if (type == Text) {
+      editor.convertImage(ASCII_TYPE);
+   } else if (type == Binary) {
+      editor.convertImage(BINARY_TYPE);
+   } else {   
+      editor.convertImage();
+   }
+}
 
 #endif // METHODS_HPP

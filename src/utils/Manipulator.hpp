@@ -101,4 +101,280 @@ void exportImage(std::string local, Editor &editor) {
    file.close();
 }
 
+/**
+ * @brief Checks if a string is a directive.
+ * 
+ * @param str An string.
+ * @return An boolean.
+ */
+bool isDirective(std::string str) {
+   if (str == "-b" || str == "--border") {
+      return true;
+   } else if (str == "-c" || str == "--combine") {
+      return true;
+   } else if (str == "-C" || str == "--collage") {
+      return true;
+   } else if (str == "--convert") {
+      return true;
+   } else if (str == "-e" || str == "--effect") {
+      return true;
+   } else if (str == "-h" || str == "--help") {
+      return true;
+   } else if (str == "-i" || str == "--input") {
+      return true;
+   } else if (str == "-o" || str == "--output") {
+      return true;
+   } else if (str == "-t" || str == "--text") {
+      return true;
+   }
+
+   return false;
+}
+
+/**
+ * @brief Returns the position of a string.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param str An string.
+ * @return An integer. 
+ */
+int searchString(int argc, char* argv[], std::string str) {
+   int position { -1 };
+
+   for (int i { 0 }; i < argc; i++) {
+      if (std::string(argv[i]) == str) {
+         position = i;
+         break;
+      }
+   }
+
+   return position;
+}
+
+/**
+ * @brief Checks if help has been requested and what type of operation it is.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @return An boolean;
+ */
+bool getManualType(int argc, char* argv[]) {
+   bool used { false };
+   std::string type;
+
+   for (int i { 0 }; i < argc; i++) {
+      if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") {
+         used = true;
+
+         if (i + 1 < argc) {
+            type = argv[i + 1];
+         }
+
+         break;
+      }
+   }
+
+   if (type == "+b" || type == "++border") {
+      printBorderManual();
+   } else if (type == "+c" || type == "++combine") {
+      printCombineManual();
+   } else if (type == "+C" || type == "++collage") {
+      printCollageManual();
+   } else if (type == "++convert") {
+      printConvertManual();
+   } else if (type == "+e" || type == "++effect") {
+      printEffectManual();
+   } else if (type == "+i" || type == "++input") {
+      printInputManual();
+   } else if (type == "+o" || type == "++output") {
+      printOutputManual();
+   } else if (type == "+t" || type == "++text") {
+      printTextManual();
+   } else if (used) {
+      printManual();
+   }
+
+   return used;
+}
+
+/**
+ * @brief Identifies the effect values and runs them in an editor.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param editor Editor memory position.
+ * @return An boolean.
+ */
+bool getEffectType(int argc, char* argv[], Editor& editor) {
+   bool used { false };
+   int effects_init { 0 };
+
+   for (int i { 0 }; i < argc; i++) {
+      if (std::string(argv[i]) == "-e" || std::string(argv[i]) == "--effect") {
+         used = true;
+         effects_init = i;
+
+         break;
+      }
+   }
+
+   for (int i { effects_init + 1 }; i < argc; i++) {
+      Effects effect { getEffectByName(argv[i]) };
+
+      if (effect != Effect_None) {
+         setEffect(editor, effect);
+      } else {
+         break;
+      }
+   }
+
+   return used;
+}
+
+/**
+ * @brief Identifies if image conversion has been requested and executes.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param editor Editor memory position.
+ */
+void getConvertType(int argc, char* argv[], Editor& editor) {
+   int convert_search { searchString(argc, argv, "--convert") };
+   Types type;
+
+   if (convert_search != -1 && !isDirective(argv[convert_search + 1])) {
+      type = getTypeByValue(argv[convert_search + 1]);
+   } else if (convert_search != -1) {
+      type = Automatic;
+   }
+
+   if (convert_search != -1) {
+      performConversion(editor, type);
+   }
+}
+
+/**
+ * @brief Opens the images and returns the total amount.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param first_image First image memory position.
+ * @param second_image Second image memory position.
+ * @param third_image Third image memory position.
+ * @param fourth_image Fourth image memory position.
+ * @return An integer.
+ * @see isDirective()
+ */
+int getInputFiles(int argc, char* argv[], Image& first_image,
+   Image& second_image, Image& third_image, Image& fourth_image) 
+{
+   int images { 0 };
+
+   int first_search { searchString(argc, argv, "-i") };
+   int second_search { searchString(argc, argv, "--input") };
+
+   int input_position { 0 };
+
+   if (first_search != -1) {
+      input_position = first_search;
+   } else if (second_search != -1) {
+      input_position = second_search;
+   }
+
+   openImage(argv[++input_position], first_image);
+   images++;
+
+   for (int i { input_position }, j { 0 }; i < argc && j < 3; i++, j++) {
+      if (!isDirective(argv[i]) && images == 1) {
+         openImage(argv[input_position], second_image);
+         images++;
+      }
+
+      if (!isDirective(argv[i]) && images == 2) {
+         openImage(argv[input_position], third_image);
+         images++;
+      }
+
+      if (!isDirective(argv[i]) && images == 2) {
+         openImage(argv[input_position], fourth_image);
+         images++;
+      }
+   }
+
+   return images;
+}
+
+/**
+ * @brief Gets the location of the output image.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @return An string.
+ */
+std::string getOutputFile(int argc, char* argv[]) {
+   int first_search { searchString(argc, argv, "-o") };
+   int second_search { searchString(argc, argv, "--output") };
+
+   std::string output_local;
+
+   if (first_search != -1) {
+      output_local = std::string(argv[first_search + 1]);
+   } else if (second_search != -1) {
+      output_local = std::string(argv[second_search + 1]);
+   } else {
+      output_local = "./a.ppm";
+   }
+
+   return output_local;
+}
+
+/**
+ * @brief Performs the relevant edits on the image.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ */
+void performEditing(int argc, char* argv[]) {
+   Image main_image;
+   Image second_image;
+   Image third_image;
+   Image fourth_image;
+   std::string output_file { getOutputFile(argc, argv) };
+
+   if (getManualType(argc, argv)) {
+      return;
+   } else if (searchString(argc, argv, "--list-colors") != -1) {
+      listColors();
+      return;
+   } else if (searchString(argc, argv, "--list-emojis") != -1) {
+      listEmojis();
+      return;
+   }
+
+   if (searchString(argc, argv, "-i") == -1 && 
+      searchString(argc, argv, "--input") == -1) 
+   {
+      printManual();
+      return;
+   }
+
+   getInputFiles(
+      argc, 
+      argv, 
+      main_image, 
+      second_image, 
+      third_image, 
+      fourth_image
+   );
+
+   Editor editor { main_image };
+
+   getEffectType(argc, argv, editor);
+
+   getConvertType(argc, argv, editor);
+
+   exportImage(output_file, editor);
+}
+
 #endif // MANIPULATOR_HPP
