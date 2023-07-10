@@ -55,11 +55,11 @@ void printBorderManual() {
 	std::cout << "  polaroid: Add a polaroid-style border to the image\n\n";
 
 	std::cout << "Additional Parameters:\n";
-	std::cout << "  !s, !!size [SIZE]: Set the border size (pixels or textual: "
+	std::cout << "  +s, ++size [SIZE]: Set the border size (pixels or textual: "
 		<< "slim, normal, large)\n";
-	std::cout << "  !c, !!color [COLOR]: Set the border color (white, black, red"
+	std::cout << "  +c, ++color [COLOR]: Set the border color (white, black, red"
 	<< ", green, blue, yellow, purple, cyan, pink, orange, brown, gray)\n";
-	std::cout << "  !e, !!extra [EXTRA_SIZE]: Set extra size for the border\n\n";
+	std::cout << "  +e, ++extra [EXTRA_SIZE]: Set extra size for the border\n\n";
 	
 	std::cout << "Defaults:\n";
 	std::cout << "  Border size: Normal\n";
@@ -67,7 +67,7 @@ void printBorderManual() {
 	std::cout << "  Extra size: 0px\n\n";
 	
 	std::cout << "Example:\n";
-	std::cout << "  ppmedit -b solid !s large !c red !e 10 -i input.ppm -o "
+	std::cout << "  ppmedit -b solid +s large +c red +e 10 -i input.ppm -o "
 		<< "output.ppm\n";
 }
 
@@ -79,7 +79,7 @@ void printCombineManual() {
 		<< "[BACKGROUND_IMAGE] [FOREGROUND_IMAGE] -o [OUTPUT_FILE]\n\n";
 	
 	std::cout << "Options:\n";
-	std::cout << "  !p, !!position [POSITION_X] [POSITION_Y]: Sets the "
+	std::cout << "  +p, ++position [POSITION_X] [POSITION_Y]: Sets the "
 		<< "position of the background to start the collage\n\n";
 	
 	std::cout << "Defaults:\n";
@@ -220,11 +220,11 @@ void printTextManual() {
 	std::cout << "  [TEXT]...: Specify the text to be written\n\n";
 	
 	std::cout << "Additional Parameters:\n";
-	std::cout << "  !p, !!position [X] [Y]: Set the starting position "
+	std::cout << "  +p, ++position [X] [Y]: Set the starting position "
 		<< "(default: 0 0)\n";
-	std::cout << "  !a, !!align [ALIGNMENT]: Set the text alignment "
+	std::cout << "  +a, ++align [ALIGNMENT]: Set the text alignment "
 		<< "(left, right, center)\n";
-	std::cout << "  !f, !!font [FONT]: Set the font to be used (Highlander, "
+	std::cout << "  +f, ++font [FONT]: Set the font to be used (Highlander, "
 		<< "IBM, Satisfy, Netchild, Love, or specify a .bdf font file)\n\n";
 	
 	std::cout << "Text Format:\n";
