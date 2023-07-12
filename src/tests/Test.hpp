@@ -69,9 +69,9 @@ public:
     */
    void testEffect(std::string expected_image, Effects effect) {
       Editor editor { image };
-      Image expected;
       bool passed { false };
 
+      Image expected;
       openImage(expected_image, expected);
 
       switch(effect) {
@@ -135,6 +135,74 @@ public:
       }
 
       if (passed) {
+         std::cout << "✔ Test success!" << std::endl;
+         success_tests++;
+      } else {
+         std::cout << "✕ Test error!" << std::endl;
+      }
+
+      tests++;
+   }
+
+   /**
+    * @brief Runs the method and checks for equality with expectation.
+    * 
+    * @param foreground_image Foreground image.
+    * @param x Displacement in X axis.
+    * @param y Displacement in Y axis
+    * @param expected_image Expected image in the test.
+    */
+   void testCombine(std::string expected_image, std::string foreground_image, 
+      int x, int y) 
+   {
+      Editor editor { image };
+      Image foreground;
+
+      Image expected;
+      openImage(expected_image, expected);
+
+      openImage(foreground_image, foreground);
+
+      editor.combineImages(foreground, x, y);
+
+      std::cout << "Combine:\n\t";
+
+      if (editor.getImage() == expected) {
+         std::cout << "✔ Test success!" << std::endl;
+         success_tests++;
+      } else {
+         std::cout << "✕ Test error!" << std::endl;
+      }
+
+      tests++;
+   }
+
+   /**
+    * @brief Runs the method and checks for equality with expectation.
+    * 
+    * @param expected_image Expected image in the test.
+    * @param border Border used in the test.
+    */
+   void testBorders(std::string expected_image, Borders border) {
+      Editor editor { image };
+
+      Image expected;
+      openImage(expected_image, expected);
+
+      setBorder(editor, border, std::string("normal"), 0, "white");
+
+      switch(border) {
+         case Solid:
+            std::cout << "Solid:\n\t";
+            break;
+         case Polaroid:
+            std::cout << "Polaroid:\n\t";
+            break;
+         default:
+            break;
+      }
+
+      if (editor.getImage() == expected) {
          std::cout << "✔ Test success!" << std::endl;
          success_tests++;
       } else {
