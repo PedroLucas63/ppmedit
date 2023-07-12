@@ -144,8 +144,8 @@ Pixel const GRAY {
  * @return An global pixel color.
  */
 Pixel const& getColorByName(std::string color_name) {
-   if (color_name == "white") {
-      return WHITE;
+   if (color_name == "black") {
+      return BLACK;
    } else if (color_name == "red") {
       return RED;
    } else if (color_name == "green") {
@@ -168,7 +168,7 @@ Pixel const& getColorByName(std::string color_name) {
       return GRAY;
    }
 
-   return BLACK;
+   return WHITE;
 }
 
 #endif // COLORS_HPP
