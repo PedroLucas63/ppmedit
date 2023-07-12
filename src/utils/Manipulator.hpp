@@ -199,6 +199,61 @@ bool getManualType(int argc, char* argv[]) {
 }
 
 /**
+ * @brief Identifies the format of the combination function and executes.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param editor Editor memory position.
+ * @param foreground Foreground image.
+ * @return An boolean.
+ */
+bool getCombineFunction(int argc, char* argv[], Editor& editor, 
+   Image& foreground) 
+{
+   bool used { false };
+   int combine_init { searchString(argc, argv, "-c") };
+      
+   if (combine_init == -1) {
+      combine_init = searchString(argc, argv, "--combine");
+   }
+
+   if (combine_init == -1) {
+      return used;
+   }
+
+   if (editor.getWidth() < foreground.getWidth() ||
+      editor.getHeight() < foreground.getHeight()) 
+   {
+      std::cerr << "The foreground image should not be larger than the "
+         << "background image.\n" << std::endl;
+      return used;
+   }
+
+   used = true;
+
+   std::string first_position;
+   std::string second_position;
+
+   if (std::string(argv[combine_init + 1]) == "+p" ||
+      std::string(argv[combine_init + 1]) == "++position")
+   {
+      first_position = argv[combine_init + 2];
+      second_position = argv[combine_init + 3];
+   }
+
+   try {
+      int position_x { std::stoi(first_position) };
+      int position_y { std::stoi(second_position) };
+
+      setCombine(editor, foreground, position_x, position_y);
+   } catch (const std::invalid_argument&) {
+      setCombine(editor, foreground, first_position);
+   }
+
+   return used;
+}
+
+/**
  * @brief Identifies the effect values and runs them in an editor.
  * 
  * @param argc Number of arguments.
@@ -350,21 +405,18 @@ int getInputFiles(int argc, char* argv[], Image& first_image,
    openImage(argv[++input_position], first_image);
    images++;
 
-   for (int i { input_position }, j { 0 }; i < argc && j < 3; i++, j++) {
-      if (!isDirective(argv[i]) && images == 1) {
-         openImage(argv[input_position], second_image);
-         images++;
+   for (int i { input_position + 1 }; i < argc; i++) {
+      if (isDirective(argv[i])) {
+         break;
+      } else if (!isDirective(argv[i]) && images == 1) {
+         openImage(argv[i], second_image);
+      } else if (!isDirective(argv[i]) && images == 2) {
+         openImage(argv[i], third_image);
+      } else if (!isDirective(argv[i]) && images == 2) {
+         openImage(argv[i], fourth_image);
       }
 
-      if (!isDirective(argv[i]) && images == 2) {
-         openImage(argv[input_position], third_image);
-         images++;
-      }
-
-      if (!isDirective(argv[i]) && images == 2) {
-         openImage(argv[input_position], fourth_image);
-         images++;
-      }
+      images++;
    }
 
    return images;
@@ -435,6 +487,7 @@ void performEditing(int argc, char* argv[]) {
 
    Editor editor { main_image };
 
+   getCombineFunction(argc, argv, editor, second_image);
    getEffectType(argc, argv, editor);
    getBorderType(argc, argv, editor);
 

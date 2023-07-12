@@ -122,6 +122,60 @@ Types getTypeByValue(std::string type_to_convert) {
 }
 
 /**
+ * @brief Performs the image blending function
+ * 
+ * @param editor Editor memory position.
+ * @param foreground Foreground image.
+ * @param x Displacement in X axis.
+ * @param y Displacement in Y axis
+ */
+void setCombine(Editor& editor, Image& foreground, int x, int y) {
+   editor.combineImages(foreground, x, y);
+}
+
+/**
+ * @brief Performs the image blending function
+ * 
+ * @param editor Editor memory position.
+ * @param foreground Foreground image.
+ * @param position Displacement of the image in textual form.
+ * @see setCombine()
+ */
+void setCombine(Editor& editor, Image& foreground, std::string position) {
+   int back_width { editor.getWidth() };
+   int back_height { editor.getHeight() };
+   int fore_width { foreground.getWidth() };
+   int fore_height { foreground.getHeight() };
+
+   int x { 0 };
+   int y { 0 };
+
+   if (position == "center") {
+      x = (back_width - fore_width) / 2;
+      y = (back_height - fore_height) / 2;
+   } else if (position == "top") {
+      x = (back_width - fore_width) / 2;
+   } else if (position == "bottom") {
+      x = (back_width - fore_width) / 2;
+      y = back_height - fore_height;
+   } else if (position == "left") {
+      y = (back_height - fore_height) / 2;
+   } else if (position == "right") {
+      x = back_width - fore_width;
+      y = (back_height - fore_height) / 2;
+   } else if (position == "top-r") {
+      x = back_width - fore_width;
+   } else if (position == "bottom-l") {
+      y = back_height - fore_height;
+   } else if (position == "bottom-r") {
+      x = back_width - fore_width;
+      y = back_height - fore_height;
+   }
+
+   setCombine(editor, foreground, x, y);
+}
+
+/**
  * @brief Executes the effect method in the editor.
  * 
  * @param editor Editor memory position.
