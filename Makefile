@@ -15,7 +15,7 @@ SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BIN_DIR)/%.o,$(SOURCES))
 
 # Include directories for classes, constants, utils, and assets
-INCLUDE_DIRS = -I$(SRC_DIR)/classes -I$(SRC_DIR)/constants -I$(SRC_DIR)/utils -I$(SRC_DIR)/assets
+INCLUDE_DIRS = -I$(SRC_DIR)/classes -I$(SRC_DIR)/constants -I$(SRC_DIR)/utils -I/assets 
 
 # Executable name
 EXECUTABLE = $(BIN_DIR)/main
