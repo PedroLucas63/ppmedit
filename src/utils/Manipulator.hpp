@@ -233,6 +233,71 @@ bool getEffectType(int argc, char* argv[], Editor& editor) {
 }
 
 /**
+ * @brief Identifies the edge parameters and calls the applicator.
+ * 
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @param editor Editor memory position.
+ * @return An boolean.
+ */
+bool getBorderType(int argc, char* argv[], Editor& editor) {
+   bool used { false };
+   int border_init { searchString(argc, argv, "-b") };
+      
+   if (border_init == -1) {
+      border_init = searchString(argc, argv, "--border");
+   }
+
+   if (border_init == -1) {
+      return used;
+   }
+   
+   Borders border_type;
+   std::string border_size;
+   int extra_size { 0 };
+   std::string color;
+
+   border_type = getBorderByType(argv[++border_init]);
+
+   if (border_type == Border_None) {
+      return used;
+   }
+
+   used = true;
+
+   for (int i { border_init + 1 }; i < argc; i++) {
+      if (isDirective(argv[i])) {
+         break;
+      } else if (std::string(argv[i]) == "+s" ||
+         std::string(argv[i]) == "++size") 
+      {
+         border_size = argv[i + 1];
+      } else if (std::string(argv[i]) == "+c" || 
+         std::string(argv[i]) == "++color") 
+      {
+         color = argv[i + 1];
+      } else if (std::string(argv[i]) == "+e" || 
+         std::string(argv[i]) == "++extra") 
+      {
+         extra_size = std::stoi(argv[i + 1]);
+      }
+   }
+
+   /*
+    * Try to convert the border size to integer, if you can't it runs with 
+    * the size in std::string format.
+    */
+   try {
+      int size_integer { std::stoi(border_size) };
+      setBorder(editor, border_type, size_integer, extra_size, color);
+   } catch (const std::invalid_argument&) {
+      setBorder(editor, border_type, border_size, extra_size, color);
+   }
+
+   return used;
+}
+
+/**
  * @brief Identifies if image conversion has been requested and executes.
  * 
  * @param argc Number of arguments.
@@ -371,6 +436,7 @@ void performEditing(int argc, char* argv[]) {
    Editor editor { main_image };
 
    getEffectType(argc, argv, editor);
+   getBorderType(argc, argv, editor);
 
    getConvertType(argc, argv, editor);
 
