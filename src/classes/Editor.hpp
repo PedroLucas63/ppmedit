@@ -430,25 +430,31 @@ public:
     * @brief Combine an image with a foreground image of equal size.
     * 
     * @param foreground foreground image.
-    * @see getImage()
-    * @see setImage()
+    * @param x Displacement in X axis.
+    * @param y Displacement in Y axis
+    * @see getWidth()
+    * @see getHeight()
     */
-   void combineImages(Image const& foreground) {
-      int width { image.getWidth() };
-      int height { image.getHeight() };
+   void combineImages(Image const& foreground, int x, int y) {
+      int back_width { getWidth() };
+      int back_height { getHeight() };
+      int fore_width { foreground.getWidth() };
+      int fore_height { foreground.getHeight() };
 
-      if (width == foreground.getWidth() && height == foreground.getHeight()) {
-         Pixel first_pixel { foreground.getPixel(0, 0) }; /* Pixel to ignore */
+      Pixel first_pixel { foreground.getPixel(0, 0) }; /* Pixel to ignore */
 
-         for (int row { 0 }; row < height; row++) {
-            for (int column { 0 }; column < width; column++) {
-               /*
-                * Set all pixels in the image other than the ignore pixel.
-                */
-               Pixel foreground_pixel { foreground.getPixel(row, column) };
-               if (foreground_pixel != first_pixel) {
-                  image.setPixel(foreground_pixel, row, column);
-               }
+      for (int back_row { y }, fore_row { 0 }; 
+         back_row < back_height && fore_row < fore_height; 
+         back_row++, fore_row++) 
+      {
+         for (int back_column { x }, fore_column { 0 }; 
+            back_column < back_width && fore_column < fore_width; 
+            back_column++, fore_column++) 
+         {
+            Pixel pixel { foreground.getPixel(fore_row, fore_column) };
+
+            if (pixel != first_pixel) {
+               image.setPixel(pixel, back_row, back_column);
             }
          }
       }
@@ -460,12 +466,15 @@ public:
     * @param pixel An Pixel on the border. 
     * @param size Border size.
     * @param additional_size Additional size for the bottom border.
+    * @see getWidth()
+    * @see getHeight()
+    * @see getColors()
     * @see setImage()
     */
    void applyBorder(Pixel pixel, int size, int additional_size) {
-      int width { image.getWidth() };
-      int height { image.getHeight() };
-      int colors { image.getColors() };
+      int width { getWidth() };
+      int height { getHeight() };
+      int colors { getColors() };
 
       width += 2 * size;
       height += 2 * size + additional_size;
