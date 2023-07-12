@@ -114,6 +114,27 @@ public:
    Image getImage() const { return image; }
 
    /**
+    * @brief Get the image width.
+    *
+    * @return An integer.
+    */
+   int getWidth() const { return image.getWidth(); }
+
+   /**
+    * @brief Get the image height.
+    *
+    * @return An integer.
+    */
+   int getHeight() const { return image.getHeight(); }
+
+   /**
+    * @brief Get the maximum colors per pixel channel.
+    *
+    * @return An integer.
+    */
+   int getColors() const { return image.getColors(); }
+
+   /**
     * @brief Transform the image into grayscale.
     */
    void grayscaleImage() {
@@ -468,71 +489,6 @@ public:
       }
 
       setImage(border);
-   }
-
-   /**
-    * @brief Defines an outline in the image with intensity, type and color.
-    * 
-    * @param intensity Border intensity (size). Accepts "slim", "normal" and 
-    * "large". Default is "normal".
-    * @param type Border type. Accepts "solid" and "polaroid".
-    * Default is "solid".
-    * @param color Color of the border. Accepts "white", "black", "red", 
-    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
-    * and "gray". Default is "white".
-    * @see getColorPixel()
-    * @see applySolidBorder()
-    * @see applyPolaroidBorder()
-    */
-   void applyBorder(std::string intensity = "normal", std::string type = "solid",
-      std::string color = "white") 
-   {  
-      int size { 0 };
-      int width { image.getWidth() };
-      int height { image.getHeight() };
-      Pixel pixel { getColorByName(color) };
-      pixel.setColors(image.getColors());
-
-      if (intensity == "slim") {
-         size = width > height ? height / 10 : width / 10;
-      } else if (intensity == "large") {
-         size = width > height ? height / 2 : width / 2;
-      } else {
-         size = width > height ? height / 5 : width / 5;
-      } 
-
-      if (type == "polaroid") {
-         applyBorder(pixel, size, size * 2);
-      } else {
-         applyBorder(pixel, size, 0);
-      }
-   }
-
-      /**
-    * @brief Defines an outline in the image with sizes, type and color.
-    * 
-    * @param size Border size in pixels. Default is 25(px).
-    * @param additional_size Additional size for the bottom border. 
-    * Default is 0(px).
-    * @param type Border type. Accepts "solid" and "polaroid".
-    * Default is "solid".
-    * @param color Color of the border. Accepts "white", "black", "red", 
-    * "green", "blue", "yellow", "purple", "cyan", "pink", "orange", "brown",
-    * and "gray". Default is "white".
-    * @see getColorPixel()
-    * @see applyBorder()
-    */
-   void applyBorder(int size = 25, int additional_size = 0, 
-      std::string type = "solid", std::string color = "white") 
-   {  
-      Pixel pixel { getColorByName(color) };
-      pixel.setColors(image.getColors());
-
-      if (type == "polaroid") {
-         applyBorder(pixel, size, additional_size);
-      } else {
-         applyBorder(pixel, size, 0);
-      }
    }
 
    /**
