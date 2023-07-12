@@ -81,6 +81,8 @@ void printCombineManual() {
 	std::cout << "Options:\n";
 	std::cout << "  +p, ++position [POSITION_X] [POSITION_Y]: Sets the "
 		<< "position of the background to start the collage\n\n";
+   std::cout << "    You can use references: center, bottom, top, "
+      << "left, right, bottom-l, bottom-r, top-l, top-r\n\n";
 	
 	std::cout << "Defaults:\n";
 	std::cout << "  Position: 0px 0px\n\n";
