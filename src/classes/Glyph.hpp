@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Storage and bitmap properties of glyphs.
  * @version 2.0
- * @date 2023-07-03
+ * @date 2023-07-18
  *
  * @copyright Copyright (c) 2023
  */
@@ -41,6 +41,46 @@ public:
       if (bitmap != nullptr) {
          delete[] this->bitmap;
       }
+   }
+
+   /**
+    * @brief Operator to check equality of two glyphs.
+    *
+    * @param rhs A glyph to check equality.
+    * @return True if the glyphs are equal or false if they are not equal.
+    * @see getByte()
+    */
+   bool operator==(Glyph const& rhs) {
+      if (encoding == rhs.getEncoding() && width == rhs.getWidth() &&
+         height == rhs.getHeight() && offset_x == rhs.getXOffset() &&
+         offset_y == rhs.getYOffset() &&
+         device_width_x == rhs.getDeviceWidthX() &&
+         device_width_y == rhs.getDeviceWidthY()) 
+      {
+         for (int row { 0 }; row < height; row++) {
+            for (int column { 0 }; column < width; column++) {
+               if (getBit(column, row) != rhs.getBit(column, row)) {
+                  return false;
+               }
+            }
+         }
+
+         return true;
+      }
+      
+      return false;
+   }
+
+   /**
+    * @brief Operator to check inequality of two glyphs.
+    *
+    * @param rhs A glyph to check inequality.
+    * @return True if the glyphs are different or false if they are not
+    * different.
+    * @see operator==()
+    */
+   bool operator!=(Glyph const& rhs) {
+      return !((*this) == rhs);
    }
 
    /**
