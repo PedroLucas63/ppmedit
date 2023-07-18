@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Manipulator functions.
  * @version 2.0
- * @date 2023-07-07
+ * @date 2023-07-17
  * 
  * It reads, processes, and writes data, be it image files or directives.
  * 
@@ -15,9 +15,8 @@
 
 #include <iostream>
 #include <fstream>
-#include "Methods.hpp"
 #include "Manual.hpp"
-#include "Editor.hpp"
+#include "Methods.hpp"
 
 /**
    * @brief Open an image from the location and save in image object.
@@ -153,34 +152,33 @@ int searchString(int argc, char* argv[], std::string str) {
 }
 
 /**
- * @brief Checks if help has been requested and what type of operation it is.
+ * @brief Checks that the help has been used and runs properly.
  * 
  * @param argc Number of arguments.
  * @param argv Argument values.
- * @return An boolean;
+ * @return An boolean.
+ * @see searchString()
  */
 bool getManualType(int argc, char* argv[]) {
-   bool used { false };
-   std::string type;
+   int directive_search1 { searchString(argc, argv, "-h") };
+   int directive_search2 { searchString(argc, argv, "--help") };
 
-   for (int i { 0 }; i < argc; i++) {
-      if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") {
-         used = true;
+   int help_position { 0 };
 
-         if (i + 1 < argc) {
-            type = argv[i + 1];
-         }
-
-         break;
-      }
+   if (directive_search1 != -1) {
+      help_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      help_position = directive_search2;
+   } else {
+      return false;
    }
+
+   std::string type { argv[help_position + 1] };
 
    if (type == "+b" || type == "++border") {
       printBorderManual();
    } else if (type == "+c" || type == "++combine") {
       printCombineManual();
-   } else if (type == "+C" || type == "++collage") {
-      printCollageManual();
    } else if (type == "++convert") {
       printConvertManual();
    } else if (type == "+e" || type == "++effect") {
@@ -191,34 +189,37 @@ bool getManualType(int argc, char* argv[]) {
       printOutputManual();
    } else if (type == "+t" || type == "++text") {
       printTextManual();
-   } else if (used) {
+   } else {
       printManual();
    }
 
-   return used;
+   return true;
 }
 
 /**
- * @brief Identifies the format of the combination function and executes.
+ * @brief Checks that the combine has been used and runs properly.
  * 
+ * @param editor Editor memory position.
+ * @param foreground Position of the foreground image memory.
  * @param argc Number of arguments.
  * @param argv Argument values.
- * @param editor Editor memory position.
- * @param foreground Foreground image.
  * @return An boolean.
+ * @see searchString()
  */
-bool getCombineFunction(int argc, char* argv[], Editor& editor, 
-   Image& foreground) 
+bool getCombineFunction(Editor& editor, Image& foreground, 
+   int argc, char* argv[]) 
 {
-   bool used { false };
-   int combine_init { searchString(argc, argv, "-c") };
-      
-   if (combine_init == -1) {
-      combine_init = searchString(argc, argv, "--combine");
-   }
+   int directive_search1 { searchString(argc, argv, "-c") };
+   int directive_search2 { searchString(argc, argv, "--combine") };
 
-   if (combine_init == -1) {
-      return used;
+   int combine_position { 0 };
+
+   if (directive_search1 != -1) {
+      combine_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      combine_position = directive_search2;
+   } else {
+      return false;
    }
 
    if (editor.getWidth() < foreground.getWidth() ||
@@ -226,21 +227,24 @@ bool getCombineFunction(int argc, char* argv[], Editor& editor,
    {
       std::cerr << "The foreground image should not be larger than the "
          << "background image.\n" << std::endl;
-      return used;
+      return false;
    }
-
-   used = true;
 
    std::string first_position;
    std::string second_position;
 
-   if (std::string(argv[combine_init + 1]) == "+p" ||
-      std::string(argv[combine_init + 1]) == "++position")
+   if (std::string(argv[combine_position + 1]) == "+p" ||
+      std::string(argv[combine_position + 1]) == "++position")
    {
-      first_position = argv[combine_init + 2];
-      second_position = argv[combine_init + 3];
+      first_position = argv[combine_position + 2];
+      second_position = argv[combine_position + 3];
    }
 
+   /*
+    * An attempt is made to convert the positions to integers, if an invalid
+    * argument fails, it means that the position was passed in the textual
+    * model and not in the height x width mode.
+    */
    try {
       int position_x { std::stoi(first_position) };
       int position_y { std::stoi(second_position) };
@@ -250,31 +254,33 @@ bool getCombineFunction(int argc, char* argv[], Editor& editor,
       setCombine(editor, foreground, first_position);
    }
 
-   return used;
+   return true;
 }
 
 /**
- * @brief Identifies the effect values and runs them in an editor.
+ * @brief Checks that the effect has been used and runs properly.
  * 
+ * @param editor Editor memory position.
  * @param argc Number of arguments.
  * @param argv Argument values.
- * @param editor Editor memory position.
  * @return An boolean.
+ * @see searchString()
  */
-bool getEffectType(int argc, char* argv[], Editor& editor) {
-   bool used { false };
-   int effects_init { 0 };
+bool getEffectType(Editor& editor, int argc, char* argv[]) {
+   int directive_search1 { searchString(argc, argv, "-e") };
+   int directive_search2 { searchString(argc, argv, "--effect") };
 
-   for (int i { 0 }; i < argc; i++) {
-      if (std::string(argv[i]) == "-e" || std::string(argv[i]) == "--effect") {
-         used = true;
-         effects_init = i;
+   int effect_position { 0 };
 
-         break;
-      }
+   if (directive_search1 != -1) {
+      effect_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      effect_position = directive_search2;
+   } else {
+      return false;
    }
 
-   for (int i { effects_init + 1 }; i < argc; i++) {
+   for (int i { effect_position + 1 }; i < argc; i++) {
       Effects effect { getEffectByName(argv[i]) };
 
       if (effect != Effect_None) {
@@ -284,43 +290,43 @@ bool getEffectType(int argc, char* argv[], Editor& editor) {
       }
    }
 
-   return used;
+   return true;
 }
 
 /**
- * @brief Identifies the edge parameters and calls the applicator.
+ * @brief Checks that the border has been used and runs properly.
  * 
+ * @param editor Editor memory position.
  * @param argc Number of arguments.
  * @param argv Argument values.
- * @param editor Editor memory position.
  * @return An boolean.
+ * @see searchString()
  */
-bool getBorderType(int argc, char* argv[], Editor& editor) {
-   bool used { false };
-   int border_init { searchString(argc, argv, "-b") };
-      
-   if (border_init == -1) {
-      border_init = searchString(argc, argv, "--border");
-   }
+bool getBorderType(Editor& editor, int argc, char* argv[]) {
+   int directive_search1 { searchString(argc, argv, "-b") };
+   int directive_search2 { searchString(argc, argv, "--border") };
 
-   if (border_init == -1) {
-      return used;
+   int border_position { 0 };
+
+   if (directive_search1 != -1) {
+      border_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      border_position = directive_search2;
+   } else {
+      return false;
    }
    
-   Borders border_type;
+   Borders border_type { getBorderByType(argv[++border_position]) };
+
+   if (border_type == Border_None) {
+      return false;
+   }
+
    std::string border_size;
    int extra_size { 0 };
    std::string color;
 
-   border_type = getBorderByType(argv[++border_init]);
-
-   if (border_type == Border_None) {
-      return used;
-   }
-
-   used = true;
-
-   for (int i { border_init + 1 }; i < argc; i++) {
+   for (int i { border_position + 1 }; i < argc; i++) {
       if (isDirective(argv[i])) {
          break;
       } else if (std::string(argv[i]) == "+s" ||
@@ -338,9 +344,10 @@ bool getBorderType(int argc, char* argv[], Editor& editor) {
       }
    }
 
-   /*
-    * Try to convert the border size to integer, if you can't it runs with 
-    * the size in std::string format.
+   /* 
+    * An attempt is made to convert the border size to integer, if an invalid
+    * argument fails, it means that the position was passed in the textual
+    * model and not in the "size px" mode. 
     */
    try {
       int size_integer { std::stoi(border_size) };
@@ -349,73 +356,135 @@ bool getBorderType(int argc, char* argv[], Editor& editor) {
       setBorder(editor, border_type, border_size, extra_size, color);
    }
 
-   return used;
+   return true;
 }
 
 /**
- * @brief Identifies if image conversion has been requested and executes.
+ * @brief Checks that the text has been used and runs properly.
  * 
+ * @param editor Editor memory position.
  * @param argc Number of arguments.
  * @param argv Argument values.
- * @param editor Editor memory position.
+ * @return An boolean.
+ * @see searchString()
+ * @see isDirective()
  */
-void getConvertType(int argc, char* argv[], Editor& editor) {
+bool getText(Editor& editor, int argc, char* argv[]) {
+   int directive_search1 { searchString(argc, argv, "-t") };
+   int directive_search2 { searchString(argc, argv, "--text") };
+
+   int text_position { 0 };
+
+   if (directive_search1 != -1) {
+      text_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      text_position = directive_search2;
+   } else {
+      return false;
+   }
+
+   std::string x;
+   std::string y;
+   std::string font;
+
+   for (int i { text_position + 1 }; i < argc; i++) {
+      std::string expression { std::string(argv[i]) };
+
+      if (isDirective(expression)) {
+         break;
+      } else if (expression == "+p" || expression == "++position") {
+         x = argv[i + 1];
+         y = argv[i + 2];
+      } else if (expression == "+f" || expression == "++font") {
+         font = argv[i + 1];
+      }
+   }
+
+   std::string text;
+
+   std::cout << "Enter a text: ";
+   std::getline(std::cin, text);
+
+   int position_x { 0 };
+   int position_y { 0 };
+
+   /*
+    * An attempt is made to convert the size of the text positions to integer.
+    * If an invalid arguments error occurs, it means that a specific position
+    * was not defined and in that case the position will be given by 
+    * "0px x 0px" if no border was implemented in the image, or aligned with 
+    * the image border.
+    */
+   try {
+      position_x = std::stoi(x);
+      position_y = std::stoi(y);
+   } catch (const std::invalid_argument&) {
+      if (editor.getBorderSize() != 0) {
+         position_x = editor.getBorderSize();
+         position_y = editor.getHeight() - editor.getBorderSize() - 
+            editor.getExtraBorderSize();
+      }
+   }
+
+   setText(editor, text, position_x, position_y, font);
+
+   return true;
+}
+
+/**
+ * @brief Checks that the convert has been used and runs properly.
+ * @param editor Editor memory position.
+ * @param argc Number of arguments.
+ * @param argv Argument values.
+ * @return An boolean.
+ * @see searchString()
+ */
+bool getConvertType(Editor& editor, int argc, char* argv[]) {
    int convert_search { searchString(argc, argv, "--convert") };
-   Types type;
-
-   if (convert_search != -1 && !isDirective(argv[convert_search + 1])) {
-      type = getTypeByValue(argv[convert_search + 1]);
-   } else if (convert_search != -1) {
-      type = Automatic;
+   
+   if (convert_search == -1) {
+      return false;
    }
 
-   if (convert_search != -1) {
-      performConversion(editor, type);
-   }
+   Types type { getTypeByValue(argv[convert_search + 1]) };
+
+   performConversion(editor, type);
+
+   return true;
 }
 
 /**
  * @brief Opens the images and returns the total amount.
  * 
- * @param argc Number of arguments.
- * @param argv Argument values.
  * @param first_image First image memory position.
  * @param second_image Second image memory position.
- * @param third_image Third image memory position.
- * @param fourth_image Fourth image memory position.
+ * @param argc Number of arguments.
+ * @param argv Argument values.
  * @return An integer.
+ * @see searchString()
  * @see isDirective()
  */
-int getInputFiles(int argc, char* argv[], Image& first_image,
-   Image& second_image, Image& third_image, Image& fourth_image) 
+int getInputFiles(Image& first_image, Image& second_image, 
+   int argc, char* argv[]) 
 {
-   int images { 0 };
-
-   int first_search { searchString(argc, argv, "-i") };
-   int second_search { searchString(argc, argv, "--input") };
+   int directive_search1 { searchString(argc, argv, "-i") };
+   int directive_search2 { searchString(argc, argv, "--input") };
 
    int input_position { 0 };
 
-   if (first_search != -1) {
-      input_position = first_search;
-   } else if (second_search != -1) {
-      input_position = second_search;
+   if (directive_search1 != -1) {
+      input_position = directive_search1;
+   } else if (directive_search2 != -1) {
+      input_position = directive_search2;
    }
 
-   openImage(argv[++input_position], first_image);
+   int images { 0 };
+
+   openImage(argv[input_position + 1], first_image);
    images++;
 
-   for (int i { input_position + 1 }; i < argc; i++) {
-      if (isDirective(argv[i])) {
-         break;
-      } else if (!isDirective(argv[i]) && images == 1) {
-         openImage(argv[i], second_image);
-      } else if (!isDirective(argv[i]) && images == 2) {
-         openImage(argv[i], third_image);
-      } else if (!isDirective(argv[i]) && images == 2) {
-         openImage(argv[i], fourth_image);
-      }
-
+   if (!isDirective(argv[input_position + 2])) {
+      openImage(argv[input_position + 2], second_image);
       images++;
    }
 
@@ -428,6 +497,7 @@ int getInputFiles(int argc, char* argv[], Image& first_image,
  * @param argc Number of arguments.
  * @param argv Argument values.
  * @return An string.
+ * @see searchString()
  */
 std::string getOutputFile(int argc, char* argv[]) {
    int first_search { searchString(argc, argv, "-o") };
@@ -444,56 +514,6 @@ std::string getOutputFile(int argc, char* argv[]) {
    }
 
    return output_local;
-}
-
-/**
- * @brief Performs the relevant edits on the image.
- * 
- * @param argc Number of arguments.
- * @param argv Argument values.
- */
-void performEditing(int argc, char* argv[]) {
-   Image main_image;
-   Image second_image;
-   Image third_image;
-   Image fourth_image;
-   std::string output_file { getOutputFile(argc, argv) };
-
-   if (getManualType(argc, argv)) {
-      return;
-   } else if (searchString(argc, argv, "--list-colors") != -1) {
-      listColors();
-      return;
-   } else if (searchString(argc, argv, "--list-emojis") != -1) {
-      listEmojis();
-      return;
-   }
-
-   if (searchString(argc, argv, "-i") == -1 && 
-      searchString(argc, argv, "--input") == -1) 
-   {
-      printManual();
-      return;
-   }
-
-   getInputFiles(
-      argc, 
-      argv, 
-      main_image, 
-      second_image, 
-      third_image, 
-      fourth_image
-   );
-
-   Editor editor { main_image };
-
-   getCombineFunction(argc, argv, editor, second_image);
-   getEffectType(argc, argv, editor);
-   getBorderType(argc, argv, editor);
-
-   getConvertType(argc, argv, editor);
-
-   exportImage(output_file, editor);
 }
 
 #endif // MANIPULATOR_HPP
