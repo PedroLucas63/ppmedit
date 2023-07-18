@@ -8,44 +8,75 @@ ppmedit is a command line image editing program written in C++. It provides vari
 ## Features :sparkles:
 ppmedit offers the following features:
 
-1. Image resizing: The program can resize images, allowing users to decrease or increase their dimensions while maintaining the aspect ratio. :framed_picture:
+1. Support for both P3 and P6 PPM image formats.
+2. Add borders to images to enhance their appearance.
+3. Combine two images, background, and foreground, for creative compositions.
+4. Convert images between P3 and P6 formats.
+5. Apply various effects to images to achieve artistic enhancements.
+6. Write text on images to add annotations or captions.
 
-2. Filter application: Users can apply various filters to images, enhancing or modifying their appearance. :art:
-
-3. Rotation: ppmedit allows users to rotate images by left and right, enabling them to change the orientation of the image. :arrows_counterclockwise:
-
-4. Image composition: The program supports combining two images, a background image, and a foreground image, to create a composite image. This feature is useful for overlaying one image onto another. :twisted_rightwards_arrows:
-
-## Usage
+## Usage :wrench:
 To use ppmedit, open a command prompt or terminal and navigate to the directory where the program executable is located. Then, use the following syntax:
 
 ```
-ppmedit [options] input_file [additional_input_file] output_file
+ppmedit [OPTIONS]... -i [INPUT_FILES] -o [OUTPUT_FILE]
 ```
 
-### Options
+### Options :label:
 ppmedit supports the following options:
 
-| Option        | Description                                           |
-|---------------|-------------------------------------------------------|
-| gray          | Transform the image into grayscale.                   |
-| negative      | Transform the image into negative.                    |
-| rotate        | Rotate the image 90 degrees to the right.             |
-| rotate-l      | Rotate the image 90 degrees to the left.              |
-| invert        | Invert the image.                                     |
-| enlarge       | Enlarge the image by 2x.                              |
-| reduce        | Reduce the image by 2x.                               |
-| sharp         | Apply the sharpening filter to the image.             |
-| sharp-e       | Apply the edge sharpening filter to the image.        |
-| blur          | Apply the blurring filter to the image.               |
-| embossing     | Apply the embossing filter to the image.              |
-| combine       | Combine the first image (background) with the second image (foreground). |
+| Directive       | Description                                        |
+|-----------------|----------------------------------------------------|
+| -b              | Add a border to the image.                         |
+| -c              | Combine two images (background and foreground).   |
+| --convert       | Convert an image to P3 or P6 format.              |
+| -e              | Apply specific effects to the image.              |
+| -h              | Display the program's manual and usage instructions. You can use `-h +[DIRECTIVE]` to get help specifically for a directive (e.g., `ppmedit -h +e`). Also, if you have any questions, suggestions, or need further assistance, you can post them on the GitHub [Issues](https://github.com/dimap-ufrn/processamento-de-imagens---p1-team-1/issues) section for this project. |
+| -i              | Specify the input image (at least one image is required, two for the -c directive).|
+| -o              | Define the output location of the image. The default is `./a.ppm` if not specified.|
+| -t              | Write text on the image.                          |
 
-## License
-ppmedit is distributed under the MIT License. You can find the full text of the license in the LICENSE file accompanying the program. :page_facing_up:
+## Building the Project :hammer:
 
-## Contributions
-Contributions to ppmedit are welcome. If you encounter any issues or have suggestions for improvements, please submit them to the project's GitHub repository. :octocat:
+To build the project, you can use the following make commands:
 
-## Contact
-If you have any questions or inquiries, you can reach out to Pedro Lucas at pedrolucas.jsrn@gmail.com. :email:
+### `make all`
+
+This command builds the project and saves the compilation in the `bin/` directory.
+
+```bash
+make all
+```
+
+Please ensure that you have `g++` with C++11 support installed on your system to successfully build the project.
+
+### `make doc`
+
+The `make doc` command generates automatic documentation for the project and saves it in the `doc/` directory.
+
+```bash
+make doc
+```
+
+To use this command, you need to have Doxyfile version 1.9.1 or higher installed on your system.
+
+### `make test`
+
+The `make test` command compiles and executes the test files.
+
+```bash
+make test
+```
+
+This command will help you run test cases and verify that the project is functioning correctly.
+
+Please note that before using these commands, make sure you are in the root directory of the project where the necessary Makefile and source files are located. Additionally, ensure you have the required dependencies installed on your system to avoid any issues during the building process.
+
+## License :page_facing_up:
+ppmedit is distributed under the MIT License. You can find the full text of the license in the LICENSE file accompanying the program.
+
+## Contributions :octocat:
+Contributions to ppmedit are welcome. If you encounter any issues or have suggestions for improvements, please submit them to the project's GitHub repository.
+
+## Contact :email:
+If you have any questions or inquiries, you can reach out to Pedro Lucas at pedrolucas.jsrn@gmail.com.
