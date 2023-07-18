@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Stores source information in BDF format.
  * @version 2.0
- * @date 2023-07-03
+ * @date 2023-07-18
  * 
  * @copyright Copyright (c) 2023
  */
@@ -58,6 +58,12 @@ public:
    void readBDF(std::string const filename) {
       int count_glyphs = 0;
       std::ifstream file(filename);
+
+      if (!file.is_open()) {
+         std::cerr << "Reading error!" << std::endl;
+         abort();
+      }
+
       std::string prop = "";
 
       while (prop != "CHARS") {
