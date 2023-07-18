@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Images settings.
  * @version 2.0
- * @date 2023-06-25
+ * @date 2023-07-18
  *
  * Portable pixmap image (ppm) definition with rules and functions for
  * comparisons and editing the data in an editor.
@@ -132,11 +132,7 @@ public:
     *
     * @param rhs A image to check equality.
     * @return True if the images are equal or false if they are not equal.
-    * @see getType()
-    * @see getWidth()
-    * @see getHeight()
-    * @see getColors()
-    * @see getPixels()
+    * @see getPixel()
     */
    bool operator==(Image const& rhs) const {
       if (type == rhs.getType() && width == rhs.getWidth() &&
