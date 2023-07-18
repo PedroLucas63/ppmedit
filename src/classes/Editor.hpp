@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Editor settings.
  * @version 2.0
- * @date 2023-06-25
+ * @date 2023-07-18
  *
  * Portable pixmap image editor (ppm) with several methods to modify images.
  *
@@ -15,8 +15,10 @@
 
 #include <iostream>
 #include <string.h>
+#include <vector>
 #include "Image.hpp"
-#include "Colors.hpp"
+#include "Pair.hpp"
+#include "Enums.hpp"
 
 #define MASK_SIZE 3 /**< Mask width and height */
 
@@ -63,6 +65,8 @@ public:
     */
    Editor(Editor const& rhs) {
       setImage(rhs.getImage());
+      setBorderSize(rhs.getBorderSize());
+      setExtraBorderSize(rhs.getExtraBorderSize());
    }
 
    /**
@@ -74,6 +78,8 @@ public:
     */
    void operator=(Editor const& rhs) {
       setImage(rhs.getImage());
+      setBorderSize(rhs.getBorderSize());
+      setExtraBorderSize(rhs.getExtraBorderSize());
    }
 
    /**
@@ -133,6 +139,20 @@ public:
     * @return An integer.
     */
    int getColors() const { return image.getColors(); }
+
+   /**
+    * @brief Get the border size.
+    *
+    * @return An integer.
+    */
+   int getBorderSize() const { return border_size; }
+
+   /**
+    * @brief Get the extra border size.
+    *
+    * @return An integer.
+    */
+   int getExtraBorderSize() const { return extra_border_size; }
 
    /**
     * @brief Transform the image into grayscale.
@@ -497,7 +517,48 @@ public:
          }
       }
 
+      setBorderSize(size);
+      setExtraBorderSize(additional_size);
       setImage(border);
+   }
+
+   /**
+    * @brief Writes a text on the image at the specified position.
+    * 
+    * @param mapped_text Mapped text.
+    * @param x Displacement in X axis.
+    * @param y Displacement in Y axis
+    * @param font Font memory position.
+    */
+   void writeText(std::vector<Pair<TypeText, std::string>> mapped_text,
+      int x, int y, Font const& font)
+   {  
+      Pixel color { getColorByCode("#BLACK") };
+      color.setColors(getColors());
+      y += 24; /* Adds the size of the line */
+
+      for (auto pair : mapped_text) {
+         if (pair.getDescription() == Color) {
+            color = getColorByCode(pair.getValue());
+            color.setColors(getColors());
+         } else if (pair.getDescription() == Emoji) {
+            Glyph const* glyph { getEmojiByCode(pair.getValue()) };
+            writeGlyph(glyph, color, x, y);
+            x += glyph->getDeviceWidthX();
+         } else {
+            for (auto c : pair.getValue()) {
+               Glyph const* glyph { font.getGlyph(c) };
+               writeGlyph(glyph, color, x, y);
+               x += glyph->getDeviceWidthX();
+            }
+         }
+
+         if (pair.getDescription() != Color) {
+            Glyph const* glyph { font.getGlyph(' ') };
+            writeGlyph(glyph, color, x, y);
+            x += glyph->getDeviceWidthX();
+         }
+      }
    }
 
    /**
@@ -519,7 +580,27 @@ public:
    }
 
 private:
-   Image image; /**< Image */
+   Image image;                  /**< Image */
+   int border_size { 0 };        /**< Border size */
+   int extra_border_size { 0 };  /**< Extra border size */
+
+   /**
+    * @brief Set the border size.
+    *
+    * @param size Border size.
+    */
+   void setBorderSize(int size) {
+      border_size = size;
+   }
+
+   /**
+    * @brief Set the extra border size.
+    *
+    * @param size Extra border size.
+    */
+   void setExtraBorderSize(int size) {
+      extra_border_size = size;
+   }
 
    /**
     * @public
@@ -634,6 +715,33 @@ private:
       }
 
       setImage(mask_image);
+   }
+
+   /**
+    * @brief Writes a single glyph at the specified position.
+    * 
+    * @param glyph Glyph memory position.
+    * @param color Glyph color.
+    * @param x Displacement in X axis.
+    * @param y Displacement in Y axis
+    */
+   void writeGlyph(Glyph const* glyph, Pixel color, int x, int y) {
+      int initial_row { y + glyph->getYOffset() };
+      int initial_column { x + glyph->getXOffset() };
+      int height { initial_row - glyph->getHeight() };
+      int width { initial_column + glyph->getWidth() };
+
+      for (int row { initial_row }, glyph_row { glyph->getHeight() - 1 };
+         row > height; row--, glyph_row--) 
+      {
+         for (int column { initial_column }, glyph_column { 0 }; 
+            column < width; column++, glyph_column++) 
+         {
+            if (glyph->getBit(glyph_column, glyph_row)) {
+               image.setPixel(color, row, column);
+            }
+         }
+      }
    }
 };
 
