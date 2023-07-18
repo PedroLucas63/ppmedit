@@ -3,7 +3,10 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Fonts standards.
  * @version 2.0
- * @date 2023-07-03
+ * @date 2023-07-18
+ * 
+ * Definition of default fonts and functions to pick up a font and/or an 
+ * emoji by name.
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,32 +20,32 @@
 /**
  * @brief Global Highlander font.
  */
-Font const HIGHLANDER { "fonts/highlander_std.bdf" };
+Font const HIGHLANDER { "assets/fonts/highlander_std.bdf" };
 
 /**
  * @brief Global IBM Bios 16x16 font.
  */
-Font const IBM_BIOS { "fonts/ib16x16u.bdf" };
+Font const IBM_BIOS { "assets/fonts/ib16x16u.bdf" };
 
 /**
  * @brief Global Satisfy font.
  */
-Font const SATISFY { "fonts/satisfy16.bdf" };
+Font const SATISFY { "assets/fonts/satisfy16.bdf" };
 
 /**
  * @brief Global DS Net Child font.
  */
-Font const NETCHILD { "fonts/DSnetChild.bdf" };
+Font const NETCHILD { "assets/fonts/DSnetChild.bdf" };
 
 /**
  * @brief Global Love Script font.
  */
-Font const LOVESCRIPT { "fonts/LoveScript.bdf" };
+Font const LOVESCRIPT { "assets/fonts/LoveScript.bdf" };
 
 /**
  * @brief Global Pixel Icons Compilation font.
  */
-Font const PIXELICONS { "fonts/PixelIconsCompilation.bdf" };
+Font const PIXELICONS { "assets/fonts/PixelIconsCompilation.bdf" };
 
 /**
  * @brief Get the global font by font name.
