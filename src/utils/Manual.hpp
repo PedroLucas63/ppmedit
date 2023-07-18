@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Manual functions.
  * @version 2.0
- * @date 2023-07-06
+ * @date 2023-07-18
  * 
  * These functions provide the manual for various options and
  * parameters of the ppmedit program.
@@ -28,7 +28,6 @@ void printManual() {
 	std::cout << "Options:\n";
 	std::cout << "  -b, --border [OPTIONS]: Add a border to the image\n";
 	std::cout << "  -c, --combine [OPTIONS]: Combines two images\n";
-	std::cout << "  -C, --collage [OPTIONS]: Create a collage of images\n";
 	std::cout << "  --convert: Convert the image to another format\n";
 	std::cout << "  -e, --effect [OPTIONS]: Apply an effect to the image\n";
 	std::cout << "  -h, --help [OPTIONS]: Display this Manual manual\n";
@@ -90,35 +89,6 @@ void printCombineManual() {
 	std::cout << "Example:\n";
 	std::cout << "  ppmedit -c -i background.ppm foreground.ppm -o "
 		<< "output.ppm\n";
-}
-
-/**
- * @brief Print the tutorial on how to use the collage option.
- */
-void printCollageManual() {
-	std::cout << "Usage: ppmedit -C, --collage [COLLAGE_TYPE] -i [INPUT_FILES] "
-		<< "... -o [OUTPUT_FILE]\n\n";
-	
-	std::cout << "Options:\n";
-	std::cout << "  [COLLAGE_TYPE]: Specify the collage type (Full, Square)\n";
-	
-	std::cout << "Collage Types:\n";
-	std::cout << "  Full: The entire image will be pasted onto the others\n";
-	std::cout << "  Square: The images will be resized to fit a square "
-		<< "format\n\n";
-	
-	std::cout << "Image Arrangement:\n";
-	std::cout << "  2 images: Side by side\n";
-	std::cout << "  3 images: First image next to the second, third image "
-		<< "below the first two\n";
-	std::cout << "  4 images: First two images side by side, last two images "
-		<< "below them\n\n";
-	
-	std::cout << "Defaults: No defaults\n\n";
-	
-	std::cout << "Example:\n";
-	std::cout << "  ppmedit -C Full -i image1.ppm image2.ppm image3.ppm "
-		<< "-o output.ppm\n";
 }
 
 /**
@@ -215,22 +185,16 @@ void printOutputManual() {
  * @brief Print the tutorial on how to use the text option.
  */
 void printTextManual() { 
-	std::cout << "Usage: ppmedit -t, --text [TEXT]... -i [INPUT_FILES] "
+	std::cout << "Usage: ppmedit -t, --text [OPTIONS]... -i [INPUT_FILES] "
 		<< "-o [OUTPUT_FILE]\n\n";
 	
 	std::cout << "Options:\n";
-	std::cout << "  [TEXT]...: Specify the text to be written\n\n";
-	
-	std::cout << "Additional Parameters:\n";
 	std::cout << "  +p, ++position [X] [Y]: Set the starting position "
 		<< "(default: 0 0)\n";
-	std::cout << "  +a, ++align [ALIGNMENT]: Set the text alignment "
-		<< "(left, right, center)\n";
-	std::cout << "  +f, ++font [FONT]: Set the font to be used (Highlander, "
-		<< "IBM, Satisfy, Netchild, Love, or specify a .bdf font file)\n\n";
+	std::cout << "  +f, ++font [FONT]: Set the font to be used (highlander, "
+		<< "ibm, satisfy, netchild, love)\n\n";
 	
 	std::cout << "Text Format:\n";
-	std::cout << "  Enclose the text in double quotes, e.g., \"My text\"\n";
 	std::cout << "  Color can be defined using the format \"#COLOR\", e.g., "
 		<< "\"My #RED love\"\n";
 	std::cout << "  Emojis can be included using their reference between "
@@ -238,8 +202,9 @@ void printTextManual() {
 	
 	std::cout << "Defaults:\n";
 	std::cout << "  Position: 0px 0px\n";
-	std::cout << "  Alignment: Left\n";
-	std::cout << "  Font: Highlander\n\n";
+	std::cout << "  Position: If a border is defined, it will be on the bottom "
+		<< "border\n";
+	std::cout << "  Font: IBM\n\n";
 
 	std::cout << "Available Colors:\n";
    std::cout << "  To see the list of available colors, use the command: "
@@ -250,7 +215,7 @@ void printTextManual() {
 		<< "ppmedit --list-emojis\n\n";
 	
 	std::cout << "Example:\n";
-	std::cout << "  ppmedit -t \"My #RED love\" -i input.ppm -o output.ppm\n";
+	std::cout << "  ppmedit -t -i input.ppm -o output.ppm\n";
 }
 
 /**
