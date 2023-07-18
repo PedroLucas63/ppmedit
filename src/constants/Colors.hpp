@@ -3,7 +3,7 @@
  * @author Pedro Lucas (pedrolucas.jsrn@gmail.com)
  * @brief Color pixel standards.
  * @version 2.0
- * @date 2023-06-25
+ * @date 2023-07-18
  * 
  * Setting default color pixels based on the maximum color (#MAX_AMOUNT_COLORS)
  * and minimum color (#MIN_COLOR) values.
@@ -165,6 +165,40 @@ Pixel const& getColorByName(std::string color_name) {
    } else if (color_name == "brown") {
       return BROWN;
    } else if (color_name == "gray") {
+      return GRAY;
+   }
+
+   return WHITE;
+}
+
+/**
+ * @brief Get the global pixel color by color code.
+ * 
+ * @param color_name Color code.
+ * @return An global pixel color.
+ */
+Pixel const& getColorByCode(std::string color_code) {
+   if (color_code == "#BLACK") {
+      return BLACK;
+   } else if (color_code == "#RED") {
+      return RED;
+   } else if (color_code == "#GREEN") {
+      return GREEN;
+   } else if (color_code == "#BLUE") {
+      return BLUE;
+   } else if (color_code == "#YELLOW") {
+      return YELLOW;
+   } else if (color_code == "#PURPLE") {
+      return PURPLE;
+   } else if (color_code == "#CYAN") {
+      return CYAN;
+   } else if (color_code == "#PINK") {
+      return PINK;
+   } else if (color_code == "#ORANGE") {
+      return ORANGE;
+   } else if (color_code == "#BROWN") {
+      return BROWN;
+   } else if (color_code == "#GRAY") {
       return GRAY;
    }
 
