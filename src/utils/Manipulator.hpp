@@ -483,9 +483,11 @@ int getInputFiles(Image& first_image, Image& second_image,
    openImage(argv[input_position + 1], first_image);
    images++;
 
-   if (!isDirective(argv[input_position + 2])) {
-      openImage(argv[input_position + 2], second_image);
-      images++;
+   if (argc < input_position + 2) {
+      if (!isDirective(argv[input_position + 2])) {
+         openImage(argv[input_position + 2], second_image);
+         images++;
+      }
    }
 
    return images;
