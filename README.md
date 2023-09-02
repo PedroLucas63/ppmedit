@@ -1,6 +1,6 @@
 # ppmedit - Command Line Image Editing Program :art:
 
-[![Download](https://img.shields.io/badge/Download-ppmedit-blue.svg)](https://github.com/dimap-ufrn/processamento-de-imagens---p1-team-1/releases)
+[![Download](https://img.shields.io/badge/Download-ppmedit-blue.svg)](https://github.com/PedroLucas63/ppmedit/releases)
 
 ## Overview :rocket:
 ppmedit is a command line image editing program written in C++. It provides various functionalities for image manipulation, including image resizing, filter application, rotation, and image composition. The program is designed and developed by Pedro Lucas and is licensed under the MIT License.
